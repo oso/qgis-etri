@@ -26,113 +26,127 @@ q = [15,   80, 1, 0.5, 1]
 p = [40,  350, 3, 3.5, 5]
 v = [100, 850, 5, 4.5, 8]
 
-# Vector A (1xN) - Vector B (1xN)
-def v_substract(a, b):
-	return [a - b for a, b in zip(a, b)]
+# Lambda
+lbda = 0.75
 
-def v_multiply(a, b):
-	return [a * b for a, b in zip(a, b)]
+class electre_tri:
 
-def partial_concordance(a, b):
-	# compute g_j(b) - g_j(a)
-	diff = v_substract(b, a)
+	def __init__(self, a, b, q, p, v, lbda):
+		self.a = a
+		self.b = b
+		self.q = q
+		self.p = p
+		self.v = v
+		self.lbda = lbda
 
-	# compute c_j(a, b)
-	c = []
-	for i in range(len(diff)):
-		if diff[i] > p[i]:
-			c.append(0)
-		elif diff[i] <= q[i]:
-			c.append(1)
-		else:
-			num = float(p[i]-diff[i])
-			den = float(p[i]-q[i])
-			c.append(num/den)
+	def v_substract(self, x, y):
+		return [x - y for x, y in zip(x, y)]
+
+	def v_multiply(self, x, y):
+		return [x * y for x, y in zip(x, y)]
+
+	def partial_concordance(self, x, y):
+		# compute g_j(b) - g_j(a)
+		diff = self.v_substract(y, x)
+
+		# compute c_j(a, b)
+		c = []
+		for i in range(len(diff)):
+			if diff[i] > self.p[i]:
+				c.append(0)
+			elif diff[i] <= self.q[i]:
+				c.append(1)
+			else:
+				num = float(self.p[i]-diff[i])
+				den = float(self.p[i]-self.q[i])
+				c.append(num/den)
 	
-	return c
+		return c
 
-def concordance(a, b):
-	cj = partial_concordance(a, b)
-	pjcj = float(sum(v_multiply(w, cj)))
-	wsum = float(sum(w))
-	return pjcj/wsum
+	def concordance(self, A, B):
+		cj = self.partial_concordance(A, B)
+		pjcj = float(sum(self.v_multiply(w, cj)))
+		wsum = float(sum(w))
+		return pjcj/wsum
 
-def partial_discordance(a, b):
-	# compute g_j(b) - g_j(a)
-	diff = v_substract(b, a)
-
-	# compute d_j(a,b)
-	d = []
-	for i in range(len(diff)):
-		if diff[i] > v[i]:
-			d.append(1)
-		elif diff[i] <= p[i]:
-			d.append(0)
+	def partial_discordance(self, x, y):
+		# compute g_j(b) - g_j(a)
+		diff = self.v_substract(y, x)
+	
+		# compute d_j(a,b)
+		d = []
+		for i in range(len(diff)):
+			if diff[i] > self.v[i]:
+				d.append(1)
+			elif diff[i] <= self.p[i]:
+				d.append(0)
+			else:
+				num = float(self.v[i]-diff[i])
+				den = float(self.v[i]-self.p[i])
+				d.append(1-num/den)
+	
+		return d
+	
+	def credibility(self, x, y):
+		dj = self.partial_discordance(x, y)
+		C = self.concordance(x, y)
+	
+		sigma = C
+		for disc in dj:
+			if disc > C:
+				num = float(1-disc)
+				den = float(1-C)
+				sigma = sigma*num/den
+	
+		return sigma
+	
+	def outrank(self, action, profil, lbda):
+		s_ab = self.credibility(action, profil)
+		s_ba = self.credibility(profil, action)
+	
+		if s_ab >= lbda:
+			if s_ba >= lbda:
+				return "I"
+			else:
+				return "S"
 		else:
-			num = float(v[i]-diff[i])
-			den = float(v[i]-p[i])
-			d.append(1-num/den)
+			if s_ba >= lbda:
+				return "-"
+			else:
+				return "R"
+	
+	def pessimist(self):
+		profils = self.b
+		profils.reverse()
+		nprofils = len(b)+1
+		affectations = []
+		for action in self.a:
+			category = nprofils 
+			for profil in profils:
+				outr = self.outrank(action, profil, self.lbda)
+				if outr != "S" and outr != "I":
+					category -= 1
+	
+			affectations.append(category)
+	
+		return affectations
+	
+	def optimist(self):
+		profils = self.b
+		affectations = []
+		for action in self.a:
+			category = 1
+			for profil in profils:
+				outr = self.outrank(action, profil, self.lbda)
+				if outr != "-":
+					category += 1
+	
+			affectations.append(category)
+	
+		return affectations
 
-	return d
-
-def credibility(a, b):
-	dj = partial_discordance(a, b)
-	C = concordance(a, b)
-
-	sigma = C
-	for disc in dj:
-		if disc > C:
-			num = float(1-disc)
-			den = float(1-C)
-			sigma = sigma*num/den
-
-	return sigma
-
-def outrank(action, profil, lbda):
-	s_ab = credibility(action, profil)
-	s_ba = credibility(profil, action)
-
-	if s_ab >= lbda:
-		if s_ba >= lbda:
-			return "I"
-		else:
-			return "S"
-	else:
-		if s_ba >= lbda:
-			return "-"
-		else:
-			return "R"
-
-def etri_p(actions, profils, lbda):
-	profils.reverse()
-	nprofils = len(profils)+1
-	affectations = []
-	for action in actions:
-		category = nprofils 
-		for profil in profils:
-			outr = outrank(action, profil, lbda)
-			if outr != "S" and outr != "I":
-				category -= 1
-
-		affectations.append(category)
-
-	return affectations
-
-def etri_o(actions, profils, lbda):
-	affectations = []
-
-	for action in actions:
-		category = 1
-		for profil in profils:
-			outr = outrank(action, profil, lbda)
-			if outr != "-":
-				category += 1
-
-		affectations.append(category)
-
-	return affectations
-
+etri = electre_tri(a, b, q, p, v, lbda)
 print "ELECTRE TRI - Pessimist"
-print etri_p(a, b, 0.75)
+print etri.pessimist()
 print "ELECTRE TRI - Optimist"
-print etri_o(a, b, 0.75)
+print etri.optimist()
