@@ -88,19 +88,6 @@ def credibility(a, b):
 
 	return sigma
 
-def electre_tri(actions, profils, lbda):
-	affectations = []
-	for action in actions:
-		category = 1
-		for profil in profils:
-			sigma = credibility(action, profil)
-			if sigma >= lbda:
-				category += 1
-
-		affectations.append(category)
-
-	print affectations
-
 def outrank(action, profil, lbda):
 	s_ab = credibility(action, profil)
 	s_ba = credibility(profil, action)
