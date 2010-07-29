@@ -41,6 +41,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+	self.mpActionAddLayer = QtGui.QAction(MainWindow)
+#        self.mpActionAddLayer.setIcon(QtGui.QIcon(":/mActionAddLayer.png"))
+        self.mpActionAddLayer.setObjectName("mpActionAddLayer")
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
