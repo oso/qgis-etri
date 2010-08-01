@@ -26,6 +26,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		checkbox.setText(QApplication.translate("MainWindow", name, None, QApplication.UnicodeUTF8))
 		self.table_crit.setCellWidget(nrow, 0, checkbox)
 
+#		lineEdit = QLineEdit(self.centralwidget)
+#		lineEdit.setGeometry(QRect(150, 30, 40, 20))
+#		lineEdit.setObjectName("lineEdit")
+#		self.table_crit.setCellWidget(nrow, 1, lineEdit)
+
 	def set_data(self):
 		for crit in criterions:
 			self.add_criteria(crit)

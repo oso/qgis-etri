@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Sat Jul 31 23:07:34 2010
+# Created: Sun Aug  1 21:08:00 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,7 @@ class Ui_MainWindow(object):
         self.table_crit.setDragEnabled(False)
         self.table_crit.setAlternatingRowColors(False)
         self.table_crit.setShowGrid(False)
+        self.table_crit.setCornerButtonEnabled(False)
         self.table_crit.setRowCount(0)
         self.table_crit.setObjectName("table_crit")
         self.table_crit.setColumnCount(2)

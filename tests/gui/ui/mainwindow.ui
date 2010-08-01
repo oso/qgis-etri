@@ -36,6 +36,9 @@
           <property name="showGrid">
            <bool>false</bool>
           </property>
+          <property name="cornerButtonEnabled">
+           <bool>false</bool>
+          </property>
           <property name="rowCount">
            <number>0</number>
           </property>
