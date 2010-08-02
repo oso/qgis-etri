@@ -30,10 +30,11 @@ def main(argv):
 	QgsApplication.setPrefixPath("/usr", True)
 	QgsApplication.initQgis()
 
-	layer = load_layer("data/criterions.shp", "criterions")
+	layer = load_layer("/home/oso/tfe/qgis_data/france.shp", "criterions")
 
 	provider = layer.dataProvider()
 	fields = get_field_list(provider)
+	print "fields:", fields
 
 	QgsApplication.exitQgis()
 
