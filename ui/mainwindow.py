@@ -6,6 +6,8 @@ from qgis.gui import *
 
 from Ui_mainwindow import Ui_MainWindow
 
+COL_CRITERIONS = 2
+
 criterions = [ "Densite_POP", "Tx chomage", "PIB" ]
 weights = [ 10, 20, 30]
 
@@ -14,7 +16,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        self.table_crit.setColumnWidth(0, 200)
+        self.table_crit.setColumnWidth(0, 235)
         self.table_crit.setColumnWidth(1, 60)
         self.table_crit.setColumnWidth(2, 50)
         self.table_prof.setColumnWidth(0, 50)
@@ -36,6 +38,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+        item.setText("10")
         self.table_crit.setItem(nrow, 2, item)
         
         checkBox = QtGui.QCheckBox(self)
@@ -57,11 +60,33 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for crit in criterions:
             self.add_criteria(crit)
 
+    def check_criteria_weight(self, item):
+        val = item.text()
+        try:
+            round(float(val), 2)
+            item.setBackgroundColor(QtCore.Qt.white)
+        except:
+            item.setBackgroundColor(QtCore.Qt.red)
+
     def on_table_crit_cellChanged(self, row, column):
         print "ceil changed: row",  row,  "column",  column
+
+        if column == COL_CRITERIONS:
+            item = self.table_crit.item(row, column)
+            self.check_criteria_weight(item)
+
         self.table_crit.setCurrentCell(row+1,column)
 
     def on_criteria_stateChanged(self, row):
         print "Row", row
         item = self.table_crit.cellWidget(row, 0)
         print "Checked:", item.isChecked()
+
+    def get_criterions_weights(self):
+        nrows = self.table_crit.rowCount()
+        W = []
+        for i in range(nrows):
+            w = self.table_crit.item(i,2) 
+            W.append(round(float(w.text()), 2))
+
+        return W
