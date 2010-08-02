@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Sun Aug  1 21:49:27 2010
+# Created: Sun Aug  1 22:40:17 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,12 +34,14 @@ class Ui_MainWindow(object):
         self.table_crit.setCornerButtonEnabled(False)
         self.table_crit.setRowCount(0)
         self.table_crit.setObjectName("table_crit")
-        self.table_crit.setColumnCount(2)
+        self.table_crit.setColumnCount(3)
         self.table_crit.setRowCount(0)
         item = QtGui.QTableWidgetItem()
         self.table_crit.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
         self.table_crit.setHorizontalHeaderItem(1, item)
+        item = QtGui.QTableWidgetItem()
+        self.table_crit.setHorizontalHeaderItem(2, item)
         self.table_crit.horizontalHeader().setVisible(True)
         self.table_crit.horizontalHeader().setDefaultSectionSize(100)
         self.table_crit.horizontalHeader().setHighlightSections(False)
@@ -91,7 +93,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.criterions.setTitle(QtGui.QApplication.translate("MainWindow", "Criterions", None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("MainWindow", "Criteria", None, QtGui.QApplication.UnicodeUTF8))
-        self.table_crit.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("MainWindow", "Weight", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_crit.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("MainWindow", "Weight", None, QtGui.QApplication.UnicodeUTF8))
         self.profiles.setTitle(QtGui.QApplication.translate("MainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.table_prof.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("MainWindow", "Q", None, QtGui.QApplication.UnicodeUTF8))
         self.table_prof.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("MainWindow", "P", None, QtGui.QApplication.UnicodeUTF8))
