@@ -1,14 +1,13 @@
 #from PyQt4.QtCore import *
 #from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
-from qgis.core import *
-from qgis.gui import *
 
 from Ui_mainwindow import Ui_MainWindow
+from qgis_utils import *
 
 COL_CRITERIONS = 2
 
-criterions = [ "Densite_POP", "Tx chomage", "PIB" ]
+#criterions = [ "Densite_POP", "Tx chomage", "PIB" ]
 weights = [ 10, 20, 30]
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -22,7 +21,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_prof.setColumnWidth(0, 50)
         self.table_prof.setColumnWidth(1, 50)
         self.table_prof.setColumnWidth(2, 50)
-        self.add_criterions()
+
+        self.load_data()
+
+    def load_data(self):
+        self.crit_layer = layer_load("/home/oso/tfe/qgis_data/france.shp", "criterions")
+        criterions = layer_get_criterions(self.crit_layer)
+        self.add_criterions(criterions)
 
     def add_criteria(self, crit):
         nrow = self.table_crit.rowCount()
@@ -56,7 +61,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         comboBox.addItem("Max")
         self.table_crit.setCellWidget(nrow, 1, comboBox)
 
-    def add_criterions(self):
+    def add_criterions(self, criterions):
         for crit in criterions:
             self.add_criteria(crit)
 
