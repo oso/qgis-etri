@@ -4,6 +4,7 @@ from PyQt4 import QtCore, QtGui
 
 from Ui_mainwindow import Ui_MainWindow
 from qgis_utils import *
+from utils import *
 
 COL_CRITERIONS = 2
 
@@ -22,6 +23,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_prof.setColumnWidth(1, 50)
         self.table_prof.setColumnWidth(2, 50)
 
+        self.table_thres.setColumnWidth(0, 170)
+        self.table_thres.setColumnWidth(1, 170)
+        self.table_thres.setColumnWidth(2, 170)
+
         self.load_data()
 
     def load_data(self):
@@ -29,7 +34,53 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         criterions = layer_get_criterions(self.crit_layer)
         self.add_criterions(criterions)
 
+        minmax = layer_get_minmax(self.crit_layer)
+        self.crit_min = minmax[0]
+        self.crit_max = minmax[1]
+
+        self.add_profile(0)
+
+    def get_profile(self, n):
+        ncrit = self.table_prof.columnCount()
+        pvalues = []
+        for j in range(crit):
+            item = self.table_crit.item(n,j) 
+            pvalues.append(round(float(item.text()), 2))
+
+        return pvalues
+
+    def add_profile(self, index):
+        nprof = self.table_prof.rowCount()
+        if index > nprof:
+            index = nprof
+
+        # Profiles table
+        self.table_prof.insertRow(index)
+
+        if index == 0:
+            min = self.crit_min
+        else:
+            min = get_profile(index-1)
+
+        if index == nprof:
+            max = self.crit_max
+        else:
+            max = get_profile(index+1)
+
+        abs = v_substract(max, min)
+        mean = [x/2 for x in abs]
+
+        for j in range(len(mean)):
+            item = QtGui.QTableWidgetItem()
+            item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+            item.setText(str(round(mean[j],2)))
+            self.table_prof.setItem(index, j, item)
+
+        # Thresholds table
+        self.table_thres.insertRow(nprof)
+
     def add_criteria(self, crit):
+        # Add row in criteria table
         nrow = self.table_crit.rowCount()
         self.table_crit.insertRow(nrow)
 
@@ -43,7 +94,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-        item.setText("10")
+        item.setText("10.0")
         self.table_crit.setItem(nrow, 2, item)
         
         checkBox = QtGui.QCheckBox(self)
@@ -60,6 +111,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         comboBox.addItem("Min")
         comboBox.addItem("Max")
         self.table_crit.setCellWidget(nrow, 1, comboBox)
+
+        # Add column in profiles table
+        self.table_prof.insertColumn(nrow)
+        item = QtGui.QTableWidgetItem()
+        self.table_prof.setHorizontalHeaderItem(nrow, item)
+        self.table_prof.horizontalHeaderItem(nrow).setText(crit)
 
     def add_criterions(self, criterions):
         for crit in criterions:
