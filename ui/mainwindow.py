@@ -42,42 +42,60 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def get_profile(self, n):
         ncrit = self.table_prof.columnCount()
-        pvalues = []
-        for j in range(crit):
-            item = self.table_crit.item(n,j) 
-            pvalues.append(round(float(item.text()), 2))
+        values = []
+        for j in range(ncrit):
+            item = self.table_prof.item(n,j) 
+            values.append(round(float(item.text()), 2))
 
-        return pvalues
+        return values
+
+    def get_threshold(self, n):
+        nthres = self.table_thres.columnCount()
+        values = []
+        for j in range(nthres):
+            item = self.table_thres.item(n,j)
+            values.append(round(float(item.text()), 2))
+
+        return values
+
+    def set_row(self, table, index, vector):
+        for j in range(len(vector)):
+            item = QtGui.QTableWidgetItem()
+            item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+            item.setText(str(round(vector[j],2)))
+            table.setItem(index, j, item)
 
     def add_profile(self, index):
         nprof = self.table_prof.rowCount()
-        if index > nprof:
+        if index > nprof or index == -1:
             index = nprof
 
         # Profiles table
         self.table_prof.insertRow(index)
 
-        if index == 0:
+        try:
+            min = self.get_profile(index-1)
+        except:
             min = self.crit_min
-        else:
-            min = get_profile(index-1)
 
-        if index == nprof:
+        try:
+            max = self.get_profile(index+1)
+        except:
             max = self.crit_max
-        else:
-            max = get_profile(index+1)
 
-        abs = v_substract(max, min)
+        abs = v_add(max, min)
         mean = [x/2 for x in abs]
 
-        for j in range(len(mean)):
-            item = QtGui.QTableWidgetItem()
-            item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-            item.setText(str(round(mean[j],2)))
-            self.table_prof.setItem(index, j, item)
+        self.set_row(self.table_prof, index, mean)
 
         # Thresholds table
         self.table_thres.insertRow(nprof)
+        if index == 0:
+            thresholds = [0] * self.table_thres.columnCount()
+        else:
+            thresholds = self.get_threshold(index-1)
+
+        self.set_row(self.table_thres, index, thresholds)
 
     def add_criteria(self, crit):
         # Add row in criteria table
@@ -122,28 +140,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for crit in criterions:
             self.add_criteria(crit)
 
-    def check_criteria_weight(self, item):
-        val = item.text()
-        try:
-            round(float(val), 2)
-            item.setBackgroundColor(QtCore.Qt.white)
-        except:
-            item.setBackgroundColor(QtCore.Qt.red)
-
-    def on_table_crit_cellChanged(self, row, column):
-        print "ceil changed: row",  row,  "column",  column
-
-        if column == COL_CRITERIONS:
-            item = self.table_crit.item(row, column)
-            self.check_criteria_weight(item)
-
-        self.table_crit.setCurrentCell(row+1,column)
-
-    def on_criteria_stateChanged(self, row):
-        print "Row", row
-        item = self.table_crit.cellWidget(row, 0)
-        print "Checked:", item.isChecked()
-
     def get_criterions_weights(self):
         nrows = self.table_crit.rowCount()
         W = []
@@ -152,3 +148,73 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             W.append(round(float(w.text()), 2))
 
         return W
+    
+    def check_criteria_weight(self, row, column):
+        item = self.table_crit.item(row, column)
+        val = item.text()
+        try:
+            round(float(val), 2)
+            item.setBackgroundColor(QtCore.Qt.white)
+        except:
+            item.setBackgroundColor(QtCore.Qt.red)
+
+    def check_profile_crit(self, row, column):
+        item = self.table_prof.item(row, column)
+        val = item.text()
+        try:
+            val = round(float(val), 2)
+        except:
+            item.setBackgroundColor(QtCore.Qt.red)
+            return
+
+        if val < self.crit_min[column] or val > self.crit_max[column]:
+            item.setBackgroundColor(QtCore.Qt.red)
+            return
+
+        try:
+            profile = self.get_profile(row-1)
+            if profile[column] > val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
+                item.setBackgroundColor(QtCore.Qt.red)
+                return
+            else:
+                item2 = self.table_prof.item(row-1, column)
+                item2.setBackgroundColor(QtCore.Qt.white)
+        except:
+            pass
+
+        try:
+            profile = self.get_profile(row+1)
+            if profile[column] < val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
+                item.setBackgroundColor(QtCore.Qt.red)
+                return
+            else:
+                item2 = self.table_prof.item(row+1, column)
+                item2.setBackgroundColor(QtCore.Qt.white)
+        except:
+            pass
+
+        item.setBackgroundColor(QtCore.Qt.white)
+
+    def on_table_crit_cellChanged(self, row, column):
+        if column == COL_CRITERIONS:
+            self.check_criteria_weight(row, column)
+
+        self.table_crit.setCurrentCell(row+1,column)
+
+    def on_criteria_stateChanged(self, row):
+        print "Row", row
+        item = self.table_crit.cellWidget(row, 0)
+        print "Checked:", item.isChecked()
+
+    def on_Badd_profile_pressed(self):
+        self.add_profile(-1)
+
+    def on_table_prof_cellChanged(self, row, column):
+        nrows = self.table_prof.rowCount()
+        print "ceil changed: row",  row,  "column",  column
+        self.check_profile_crit(row, column)
+
+        if row == nrows-1:
+            self.table_prof.setCurrentCell(0,column+1)
+        else:
+            self.table_prof.setCurrentCell(row+1,column)
