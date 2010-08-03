@@ -153,14 +153,14 @@
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
        <item row="0" column="0">
-        <widget class="QCommandLinkButton" name="commandLinkButton">
+        <widget class="QCommandLinkButton" name="Badd_profile">
          <property name="text">
           <string>Add Profile</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QCommandLinkButton" name="commandLinkButton_2">
+        <widget class="QCommandLinkButton" name="Bdel_profile">
          <property name="text">
           <string>Del Profile</string>
          </property>

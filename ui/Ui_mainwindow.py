@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Tue Aug  3 20:53:53 2010
+# Created: Tue Aug  3 21:24:10 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -79,12 +79,12 @@ class Ui_MainWindow(object):
         self.formLayout = QtGui.QFormLayout(self.options)
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout.setObjectName("formLayout")
-        self.commandLinkButton = QtGui.QCommandLinkButton(self.options)
-        self.commandLinkButton.setObjectName("commandLinkButton")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.commandLinkButton)
-        self.commandLinkButton_2 = QtGui.QCommandLinkButton(self.options)
-        self.commandLinkButton_2.setObjectName("commandLinkButton_2")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.commandLinkButton_2)
+        self.Badd_profile = QtGui.QCommandLinkButton(self.options)
+        self.Badd_profile.setObjectName("Badd_profile")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.Badd_profile)
+        self.Bdel_profile = QtGui.QCommandLinkButton(self.options)
+        self.Bdel_profile.setObjectName("Bdel_profile")
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.Bdel_profile)
         self.gridLayout_6.addWidget(self.options, 0, 2, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -110,6 +110,6 @@ class Ui_MainWindow(object):
         self.table_thres.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("MainWindow", "V (Veto)", None, QtGui.QApplication.UnicodeUTF8))
         self.params_tab.setTabText(self.params_tab.indexOf(self.Profiles), QtGui.QApplication.translate("MainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.options.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))
-        self.commandLinkButton.setText(QtGui.QApplication.translate("MainWindow", "Add Profile", None, QtGui.QApplication.UnicodeUTF8))
-        self.commandLinkButton_2.setText(QtGui.QApplication.translate("MainWindow", "Del Profile", None, QtGui.QApplication.UnicodeUTF8))
+        self.Badd_profile.setText(QtGui.QApplication.translate("MainWindow", "Add Profile", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bdel_profile.setText(QtGui.QApplication.translate("MainWindow", "Del Profile", None, QtGui.QApplication.UnicodeUTF8))
 
