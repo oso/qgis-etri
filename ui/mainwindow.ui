@@ -16,17 +16,17 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="1">
-     <widget class="QGroupBox" name="params">
+     <widget class="QGroupBox" name="group_params">
       <property name="title">
        <string>Parameters</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QTabWidget" name="params_tab">
+        <widget class="QTabWidget" name="Tab_params">
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="Criterions">
+         <widget class="QWidget" name="tab_criterions">
           <attribute name="title">
            <string>Criterions</string>
           </attribute>
@@ -103,7 +103,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="Profiles">
+         <widget class="QWidget" name="tab_profiles">
           <attribute name="title">
            <string>Profiles</string>
           </attribute>
@@ -112,22 +112,46 @@
             <widget class="QTableWidget" name="table_prof"/>
            </item>
            <item row="1" column="0">
-            <widget class="QTableWidget" name="table_thres">
-             <column>
-              <property name="text">
-               <string>Q (Indifference)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>P (Preference)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>V (Veto)</string>
-              </property>
-             </column>
+            <widget class="QTabWidget" name="tabWidget">
+             <property name="tabPosition">
+              <enum>QTabWidget::North</enum>
+             </property>
+             <property name="tabShape">
+              <enum>QTabWidget::Rounded</enum>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="indiff_tab">
+              <attribute name="title">
+               <string>Indifference</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <item row="0" column="1">
+                <widget class="QTableWidget" name="table_indiff"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="pref_tab">
+              <attribute name="title">
+               <string>Preference</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="table_pref"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="veto_tab">
+              <attribute name="title">
+               <string>Veto</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="table_veto"/>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
@@ -138,7 +162,7 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QGroupBox" name="options">
+     <widget class="QGroupBox" name="group_options">
       <property name="maximumSize">
        <size>
         <width>388</width>

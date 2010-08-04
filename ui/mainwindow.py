@@ -19,13 +19,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_crit.setColumnWidth(0, 235)
         self.table_crit.setColumnWidth(1, 60)
         self.table_crit.setColumnWidth(2, 50)
-        self.table_prof.setColumnWidth(0, 50)
-        self.table_prof.setColumnWidth(1, 50)
-        self.table_prof.setColumnWidth(2, 50)
-
-        self.table_thres.setColumnWidth(0, 170)
-        self.table_thres.setColumnWidth(1, 170)
-        self.table_thres.setColumnWidth(2, 170)
 
         self.load_data()
 
@@ -40,22 +33,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.add_profile(0)
 
-    def get_profile(self, n):
-        ncrit = self.table_prof.columnCount()
+    def get_row(self, table, index):
+        ncols = table.columnCount()
         values = []
-        for j in range(ncrit):
-            item = self.table_prof.item(n,j) 
+        for j in range(ncols):
+            item = table.item(index,j)
             values.append(round(float(item.text()), 2))
-
-        return values
-
-    def get_threshold(self, n):
-        nthres = self.table_thres.columnCount()
-        values = []
-        for j in range(nthres):
-            item = self.table_thres.item(n,j)
-            values.append(round(float(item.text()), 2))
-
         return values
 
     def set_row(self, table, index, vector):
@@ -74,12 +57,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_prof.insertRow(index)
 
         try:
-            min = self.get_profile(index-1)
+            min = self.get_row(self.table_prof, index-1)
         except:
             min = self.crit_min
 
         try:
-            max = self.get_profile(index+1)
+            max = self.get_row(self.table_prof, index+1)
         except:
             max = self.crit_max
 
@@ -89,13 +72,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.set_row(self.table_prof, index, mean)
 
         # Thresholds table
-        self.table_thres.insertRow(nprof)
-        if index == 0:
-            thresholds = [0] * self.table_thres.columnCount()
-        else:
-            thresholds = self.get_threshold(index-1)
-
-        self.set_row(self.table_thres, index, thresholds)
+        self.table_pref.insertRow(nprof)
+        self.table_indiff.insertRow(nprof)
+        self.table_veto.insertRow(nprof)
+        for table in [self.table_pref, self.table_indiff, self.table_veto]:
+            try:
+                thresholds = self.get_row(table, index-1)
+            except:
+                thresholds = [0] * table.columnCount()
+            self.set_row(table, index, thresholds)
 
     def add_criteria(self, crit):
         # Add row in criteria table
@@ -130,11 +115,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         comboBox.addItem("Max")
         self.table_crit.setCellWidget(nrow, 1, comboBox)
 
-        # Add column in profiles table
-        self.table_prof.insertColumn(nrow)
-        item = QtGui.QTableWidgetItem()
-        self.table_prof.setHorizontalHeaderItem(nrow, item)
-        self.table_prof.horizontalHeaderItem(nrow).setText(crit)
+        # Add column in profiles and thresholds table
+        for table in [ self.table_prof, self.table_pref, self.table_indiff, self.table_veto ]:
+            table.insertColumn(nrow)
+            item = QtGui.QTableWidgetItem()
+            table.setHorizontalHeaderItem(nrow, item)
+            table.horizontalHeaderItem(nrow).setText(crit)
 
     def add_criterions(self, criterions):
         for crit in criterions:
@@ -149,14 +135,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         return W
     
-    def check_criteria_weight(self, row, column):
-        item = self.table_crit.item(row, column)
+    def check_is_float(self, table, row, column):
+        item = table.item(row, column)
         val = item.text()
         try:
             round(float(val), 2)
-            item.setBackgroundColor(QtCore.Qt.white)
         except:
             item.setBackgroundColor(QtCore.Qt.red)
+            return
+
+        item.setBackgroundColor(QtCore.Qt.white)
 
     def check_profile_crit(self, row, column):
         item = self.table_prof.item(row, column)
@@ -172,7 +160,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
 
         try:
-            profile = self.get_profile(row-1)
+            profile = self.get_row(self.table_prof, row-1)
             if profile[column] > val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
                 item.setBackgroundColor(QtCore.Qt.red)
                 return
@@ -183,7 +171,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             pass
 
         try:
-            profile = self.get_profile(row+1)
+            profile = self.get_row(self.table_prof, row+1)
             if profile[column] < val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
                 item.setBackgroundColor(QtCore.Qt.red)
                 return
@@ -195,9 +183,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         item.setBackgroundColor(QtCore.Qt.white)
 
+    def goto_next_cell(self, table, c_row, c_col):
+        nrows = table.rowCount()
+        if c_row == nrows-1:
+            table.setCurrentCell(0, c_col+1)
+        else:
+            table.setCurrentCell(c_row+1,c_col)
+
     def on_table_crit_cellChanged(self, row, column):
         if column == COL_CRITERIONS:
-            self.check_criteria_weight(row, column)
+            self.check_is_float(self.table_crit, row, column)
 
         self.table_crit.setCurrentCell(row+1,column)
 
@@ -210,11 +205,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.add_profile(-1)
 
     def on_table_prof_cellChanged(self, row, column):
-        nrows = self.table_prof.rowCount()
-        print "ceil changed: row",  row,  "column",  column
         self.check_profile_crit(row, column)
+        self.goto_next_cell(self.table_prof, row, column)
 
-        if row == nrows-1:
-            self.table_prof.setCurrentCell(0,column+1)
-        else:
-            self.table_prof.setCurrentCell(row+1,column)
+    def on_table_indiff_cellChanged(self, row, column):
+        self.check_is_float(self.table_indiff, row, column)
+        self.goto_next_cell(self.table_indiff, row, column)
+
+    def on_table_pref_cellChanged(self, row, column):
+        self.check_is_float(self.table_pref, row, column)
+        self.goto_next_cell(self.table_pref, row, column)
+
+    def on_table_veto_cellChanged(self, row, column):
+        self.check_is_float(self.table_veto, row, column)
+        self.goto_next_cell(self.table_veto, row, column)
