@@ -5,8 +5,10 @@ from PyQt4 import QtCore, QtGui
 from Ui_mainwindow import Ui_MainWindow
 from qgis_utils import *
 from utils import *
+from etri import *
 
 COL_CRITERIONS = 2
+COL_DIRECTION = 1
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
@@ -21,8 +23,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ncriterions = 0
         self.load_data()
 
+        self.table_prof.resizeColumnsToContents()
+        self.table_indiff.resizeColumnsToContents()
+        self.table_pref.resizeColumnsToContents()
+        self.table_veto.resizeColumnsToContents()
+
     def load_data(self):
-        self.crit_layer = layer_load("/home/oso/tfe/qgis_data/france.shp", "criterions")
+        self.crit_layer = layer_load("/home/oso/tfe/qgis_data/tessin.shp", "criterions")
         criterions = layer_get_criterions(self.crit_layer)
         self.add_criterions(criterions)
 
@@ -34,22 +41,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.add_profile(0)
 
+    def check_row_float(self, row):
+        for i in row:
+            round(float(i), 2)
+
     def get_row(self, table, index):
         ncols = table.columnCount()
         values = []
         for j in range(ncols):
-            item = table.item(index,j)
-            try:
-                values.append(round(float(item.text()), 2))
-            except:
-                values.append(round(float(0, 2)))
+            item = table.item(index, j)
+            values.append(round(float(item.text()), 2))
+        return values
+
+    def get_row_as_str(self, table, index):
+        ncols = table.columnCount()
+        values = []
+        for j in range(ncols):
+            item = table.item(index, j)
+            values.append(str(item.text()))
         return values
 
     def set_row(self, table, index, vector):
         for j in range(len(vector)):
             item = QtGui.QTableWidgetItem()
             item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-            item.setText(str(round(vector[j],2)))
+            item.setText(str(round(float(vector[j]),2)))
             table.setItem(index, j, item)
 
     def add_profile(self, index):
@@ -61,10 +77,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_prof.insertRow(index)
 
         if nprof == 0:
-            abs = v_add(self.crit_max, self.crit_max)
+            abs = v_add(self.crit_max, self.crit_min)
             val = [x/2 for x in abs]
         else:
-            val = self.get_row(self.table_prof, index-1)
+            val = self.get_row_as_str(self.table_prof, index-1)
 
         self.set_row(self.table_prof, index, val)
 
@@ -72,12 +88,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_pref.insertRow(nprof)
         self.table_indiff.insertRow(nprof)
         self.table_veto.insertRow(nprof)
-        for table in [self.table_pref, self.table_indiff, self.table_veto]:
+        for table in [self.table_pref, self.table_indiff]:
             try:
-                thresholds = self.get_row(table, index-1)
+                thresholds = self.get_row_as_str(table, index-1)
             except:
                 thresholds = [0] * table.columnCount()
             self.set_row(table, index, thresholds)
+
+        try:
+            thresholds = self.get_row_as_str(table, index-1)
+        except:
+            thresholds = v_substract(self.crit_max, self.crit_min) 
+        self.set_row(self.table_veto, index, thresholds)
 
     def add_criteria(self, crit):
         # Add row in criteria table
@@ -108,8 +130,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(signalMapper, QtCore.SIGNAL("mapped(int)"), self.on_criteria_stateChanged)
 
         comboBox = QtGui.QComboBox(self)
-        comboBox.addItem("Min")
         comboBox.addItem("Max")
+        comboBox.addItem("Min")
         self.table_crit.setCellWidget(nrow, 1, comboBox)
 
         # Add column in profiles and thresholds table
@@ -135,6 +157,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         return W
 
+    def get_criterions_directions(self):
+        nrows = self.table_crit.rowCount()
+
+        directions = []
+        for row in range(nrows):
+            item = self.table_crit.cellWidget(row, COL_DIRECTION)
+            index = item.currentIndex()
+            if index == 0:
+                directions.append(1)
+            else:
+                directions.append(-1)
+
+        return directions
+
     def get_criterions_values(self, tablew):
         nrows = tablew.rowCount()
         ncols = tablew.columnCount()
@@ -158,8 +194,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def get_veto_thresholds(self):
         return self.get_criterions_values(self.table_veto)
 
-    def get_profiles(self): 
-        return self.get_criterions_values(self.table_prof)
+    def get_profiles(self):
+        nrows = self.table_prof.rowCount()
+        ncols = self.table_prof.columnCount()
+
+        profiles = []
+        for row in range(nrows):
+            r = self.get_row(self.table_prof, row) 
+            q = self.get_row(self.table_indiff, row)
+            p = self.get_row(self.table_pref, row)
+            v = self.get_row(self.table_veto, row)
+            profile = { 'refs':r, 'q': q, 'p': p, 'v': v }
+            profiles.append(profile)
+
+        return profiles
 
     def check_is_float(self, table, row, column):
         item = table.item(row, column)
@@ -259,22 +307,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def on_Bgenerate_pressed(self):
         print "Generate Decision Map"
-        w = self.get_criterions_weights()
-        print "Weights:", w
+        weights = self.get_criterions_weights()
+        print "Weights:", weights
         profiles = self.get_profiles()
         print "Profiles:", profiles
-        q = self.get_indiff_thresholds()
-        print "Indifference:", q
-        p = self.get_pref_thresholds()
-        print "Preference:", p
-        v = self.get_veto_thresholds()
-        print "Veto:", v
 
+        directions = self.get_criterions_directions()
         actions = []
         for a in self.actions:
             action = []
             for j in self.criterions_activated:
-                value = a[j]
+                value = a[j]*directions[j]
                 action.append(value)
             actions.append(action)
         print "Actions:", actions
+
+        etri = electre_tri(actions, profiles, weights, 0.75)
+        print "ELECTRE TRI - Pessimist:", etri.pessimist()
