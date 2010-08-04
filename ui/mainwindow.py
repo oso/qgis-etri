@@ -17,6 +17,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_crit.setColumnWidth(1, 60)
         self.table_crit.setColumnWidth(2, 50)
 
+        self.criterions_activated = []
+        self.ncriterions = 0
         self.load_data()
 
     def load_data(self):
@@ -115,21 +117,47 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             table.setHorizontalHeaderItem(nrow, item)
             table.horizontalHeaderItem(nrow).setText(crit)
 
+        self.ncriterions += 1
+        self.criterions_activated.append(nrow)
+        self.criterions_activated.sort()
+
     def add_criterions(self, criterions):
         for crit in criterions:
             self.add_criteria(crit)
 
     def get_criterions_weights(self):
-        nrows = self.table_crit.rowCount()
         W = []
-        for i in range(nrows):
+        for i in self.criterions_activated:
             w = self.table_crit.item(i,2) 
             W.append(round(float(w.text()), 2))
 
         return W
 
+    def get_criterions_values(self, tablew):
+        nrows = tablew.rowCount()
+        ncols = tablew.columnCount()
+
+        table_values = []
+        for row in range(nrows):
+            row_values = []
+            for col in self.criterions_activated:
+                item = tablew.item(row, col)
+                row_values.append(round(float(item.text()), 2))
+            table_values.append(row_values)
+
+        return table_values
+
+    def get_indiff_thresholds(self):
+        return self.get_criterions_values(self.table_indiff)
+
+    def get_pref_thresholds(self):
+        return self.get_criterions_values(self.table_pref)
+
+    def get_veto_thresholds(self):
+        return self.get_criterions_values(self.table_veto)
+
     def get_profiles(self): 
-        print "coucou"
+        return self.get_criterions_values(self.table_prof)
     
     def check_is_float(self, table, row, column):
         item = table.item(row, column)
@@ -193,9 +221,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_crit.setCurrentCell(row+1,column)
 
     def on_criteria_stateChanged(self, row):
-        print "Row", row
         item = self.table_crit.cellWidget(row, 0)
-        print "Checked:", item.isChecked()
+        if item.isChecked() == False:
+            self.table_prof.setColumnHidden(row, 1)
+            self.table_indiff.setColumnHidden(row, 1)
+            self.table_pref.setColumnHidden(row, 1)
+            self.table_veto.setColumnHidden(row, 1)
+            self.criterions_activated.append(row)
+            self.criterions_activated.sort()
+        else:
+            self.table_prof.setColumnHidden(row, 0)
+            self.table_indiff.setColumnHidden(row, 0)
+            self.table_pref.setColumnHidden(row, 0)
+            self.table_veto.setColumnHidden(row, 0)
+            self.criterions_activated.remove(row)
 
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
@@ -215,3 +254,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def on_table_veto_cellChanged(self, row, column):
         self.check_is_float(self.table_veto, row, column)
         self.goto_next_cell(self.table_veto, row, column)
+
+    def on_Bgenerate_pressed(self):
+        print "Generate Decision Map"
+        w = self.get_criterions_weights()
+        print "Weights:", w
+        profiles = self.get_profiles()
+        print "Profiles:", profiles
+        q = self.get_indiff_thresholds()
+        print "Indifference:", q
+        p = self.get_pref_thresholds()
+        print "Preference:", p
+        v = self.get_veto_thresholds()
+        print "Veto:", v
