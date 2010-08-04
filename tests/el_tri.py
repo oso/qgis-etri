@@ -35,9 +35,10 @@ lbda = 0.75
 
 class electre_tri:
 
-    def __init__(self, actions, profiles, lbda):
-        self.a = actions
+    def __init__(self, actions, profiles, weights, lbda):
+        self.actions = actions
         self.profiles = profiles
+        self.weights = weights
         self.lbda = lbda
 
     def v_substract(self, x, y):
@@ -64,7 +65,7 @@ class electre_tri:
 
         return c
 
-    def concordance(self, x, y, q, p):
+    def concordance(self, x, y, q, p, w):
         cj = self.partial_concordance(x, y, q, p)
         pjcj = float(sum(self.v_multiply(w, cj)))
         wsum = float(sum(w))
@@ -88,9 +89,9 @@ class electre_tri:
 
         return d
 
-    def credibility(self, x, y, q, p, v):
+    def credibility(self, x, y, q, p, v, w):
         dj = self.partial_discordance(x, y, p, v)
-        C = self.concordance(x, y, q, p)
+        C = self.concordance(x, y, q, p, w)
 
         sigma = C
         for disc in dj:
@@ -101,9 +102,9 @@ class electre_tri:
 
         return sigma
     
-    def outrank(self, action, profil, lbda):
-        s_ab = self.credibility(action, profil['refs'], profil['q'], profil['p'], profil['v'])
-        s_ba = self.credibility(profil['refs'], action, profil['q'], profil['p'], profil['v'])
+    def outrank(self, action, profil, weights, lbda):
+        s_ab = self.credibility(action, profil['refs'], profil['q'], profil['p'], profil['v'], weights)
+        s_ba = self.credibility(profil['refs'], action, profil['q'], profil['p'], profil['v'], weights)
 
         if s_ab >= lbda:
             if s_ba >= lbda:
@@ -121,10 +122,10 @@ class electre_tri:
         profils.reverse()
         nprofils = len(b)+1
         affectations = []
-        for action in self.a:
+        for action in self.actions:
             category = nprofils 
             for profil in profils:
-                outr = self.outrank(action, profil, self.lbda)
+                outr = self.outrank(action, profil, self.weights, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
     
@@ -135,10 +136,10 @@ class electre_tri:
     def optimist(self):
         profils = self.profiles
         affectations = []
-        for action in self.a:
+        for action in self.actions:
             category = 1
             for profil in profils:
-                outr = self.outrank(action, profil, self.lbda)
+                outr = self.outrank(action, profil, self.weights, self.lbda)
                 if outr != "-":
                     category += 1
     
@@ -146,7 +147,7 @@ class electre_tri:
     
         return affectations
 
-etri = electre_tri(a, profiles, lbda)
+etri = electre_tri(a, profiles, w, lbda)
 print "ELECTRE TRI - Pessimist"
 print etri.pessimist()
 print "ELECTRE TRI - Optimist"
