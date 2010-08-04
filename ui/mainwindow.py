@@ -8,9 +8,6 @@ from utils import *
 
 COL_CRITERIONS = 2
 
-#criterions = [ "Densite_POP", "Tx chomage", "PIB" ]
-weights = [ 10, 20, 30]
-
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent = None):
@@ -38,7 +35,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         values = []
         for j in range(ncols):
             item = table.item(index,j)
-            values.append(round(float(item.text()), 2))
+            try:
+                values.append(round(float(item.text()), 2))
+            except:
+                values.append(round(float(0, 2)))
         return values
 
     def set_row(self, table, index, vector):
@@ -56,20 +56,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Profiles table
         self.table_prof.insertRow(index)
 
-        try:
-            min = self.get_row(self.table_prof, index-1)
-        except:
-            min = self.crit_min
+        if nprof == 0:
+            abs = v_add(self.crit_max, self.crit_max)
+            val = [x/2 for x in abs]
+        else:
+            val = self.get_row(self.table_prof, index-1)
 
-        try:
-            max = self.get_row(self.table_prof, index+1)
-        except:
-            max = self.crit_max
-
-        abs = v_add(max, min)
-        mean = [x/2 for x in abs]
-
-        self.set_row(self.table_prof, index, mean)
+        self.set_row(self.table_prof, index, val)
 
         # Thresholds table
         self.table_pref.insertRow(nprof)
@@ -134,6 +127,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             W.append(round(float(w.text()), 2))
 
         return W
+
+    def get_profiles(self): 
+        print "coucou"
     
     def check_is_float(self, table, row, column):
         item = table.item(row, column)
