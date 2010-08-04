@@ -30,6 +30,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.crit_min = minmax[0]
         self.crit_max = minmax[1]
 
+        self.actions = layer_get_values(self.crit_layer)
+
         self.add_profile(0)
 
     def get_row(self, table, index):
@@ -158,7 +160,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def get_profiles(self): 
         return self.get_criterions_values(self.table_prof)
-    
+
     def check_is_float(self, table, row, column):
         item = table.item(row, column)
         val = item.text()
@@ -267,3 +269,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         print "Preference:", p
         v = self.get_veto_thresholds()
         print "Veto:", v
+
+        actions = []
+        for a in self.actions:
+            action = []
+            for j in self.criterions_activated:
+                value = a[j]
+                action.append(value)
+            actions.append(action)
+        print "Actions:", actions

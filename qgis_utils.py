@@ -44,3 +44,21 @@ def layer_get_minmax(layer):
                 if maxs[k] < value: maxs[k] = value
 
     return [mins, maxs]
+
+def layer_get_values(layer):
+    provider = layer.dataProvider()
+    allAttrs = provider.attributeIndexes()
+    provider.select(allAttrs)
+    feat = QgsFeature()
+
+    actions = []
+    while provider.nextFeature(feat):
+        attrs = feat.attributeMap()
+
+        action = []
+        for (k, attr) in attrs.iteritems():
+            value = attr.toFloat()[0]
+            action.append(value)
+        actions.append(action)
+
+    return actions
