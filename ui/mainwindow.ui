@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="1">
+    <item row="0" column="0">
      <widget class="QGroupBox" name="group_params">
       <property name="title">
        <string>Parameters</string>
@@ -161,37 +161,70 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QGroupBox" name="group_options">
-      <property name="maximumSize">
-       <size>
-        <width>388</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Options</string>
-      </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
-       <item row="0" column="0">
-        <widget class="QCommandLinkButton" name="Badd_profile">
-         <property name="text">
-          <string>Add Profile</string>
+    <item row="0" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="group_options">
+        <property name="maximumSize">
+         <size>
+          <width>388</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Options</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCommandLinkButton" name="Bdel_profile">
-         <property name="text">
-          <string>Del Profile</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+         <item row="1" column="0">
+          <widget class="QCommandLinkButton" name="Badd_profile">
+           <property name="text">
+            <string>Add Profile</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCommandLinkButton" name="Bdel_profile">
+           <property name="text">
+            <string>Del Profile</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="group_electre">
+        <property name="title">
+         <string>Electre Tri</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_8">
+         <item row="0" column="0">
+          <widget class="QCommandLinkButton" name="Bgenerate">
+           <property name="text">
+            <string>Generate Decision Map</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Wed Aug  4 18:02:38 2010
+# Created: Wed Aug  4 20:22:31 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -96,7 +96,11 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.tabWidget, 1, 0, 1, 1)
         self.Tab_params.addTab(self.tab_profiles, "")
         self.gridLayout.addWidget(self.Tab_params, 0, 0, 1, 1)
-        self.gridLayout_6.addWidget(self.group_params, 0, 1, 1, 1)
+        self.gridLayout_6.addWidget(self.group_params, 0, 0, 1, 1)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        spacerItem = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem)
         self.group_options = QtGui.QGroupBox(self.centralwidget)
         self.group_options.setMaximumSize(QtCore.QSize(388, 16777215))
         self.group_options.setObjectName("group_options")
@@ -105,11 +109,20 @@ class Ui_MainWindow(object):
         self.formLayout.setObjectName("formLayout")
         self.Badd_profile = QtGui.QCommandLinkButton(self.group_options)
         self.Badd_profile.setObjectName("Badd_profile")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.Badd_profile)
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.Badd_profile)
         self.Bdel_profile = QtGui.QCommandLinkButton(self.group_options)
         self.Bdel_profile.setObjectName("Bdel_profile")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.Bdel_profile)
-        self.gridLayout_6.addWidget(self.group_options, 0, 2, 1, 1)
+        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.Bdel_profile)
+        self.verticalLayout_2.addWidget(self.group_options)
+        self.group_electre = QtGui.QGroupBox(self.centralwidget)
+        self.group_electre.setObjectName("group_electre")
+        self.gridLayout_8 = QtGui.QGridLayout(self.group_electre)
+        self.gridLayout_8.setObjectName("gridLayout_8")
+        self.Bgenerate = QtGui.QCommandLinkButton(self.group_electre)
+        self.Bgenerate.setObjectName("Bgenerate")
+        self.gridLayout_8.addWidget(self.Bgenerate, 0, 0, 1, 1)
+        self.verticalLayout_2.addWidget(self.group_electre)
+        self.gridLayout_6.addLayout(self.verticalLayout_2, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 25))
@@ -137,4 +150,6 @@ class Ui_MainWindow(object):
         self.group_options.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))
         self.Badd_profile.setText(QtGui.QApplication.translate("MainWindow", "Add Profile", None, QtGui.QApplication.UnicodeUTF8))
         self.Bdel_profile.setText(QtGui.QApplication.translate("MainWindow", "Del Profile", None, QtGui.QApplication.UnicodeUTF8))
+        self.group_electre.setTitle(QtGui.QApplication.translate("MainWindow", "Electre Tri", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bgenerate.setText(QtGui.QApplication.translate("MainWindow", "Generate Decision Map", None, QtGui.QApplication.UnicodeUTF8))
 
