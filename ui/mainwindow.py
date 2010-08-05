@@ -48,6 +48,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for i in row:
             round(float(i), 2)
 
+    def get_active_row(self, table, index):
+        ncols = table.columnCount()
+        values = []
+        for j in self.criterions_activated:
+            item = table.item(index, j)
+            values.append(round(float(item.text()), 2))
+        return values
+
     def get_row(self, table, index):
         ncols = table.columnCount()
         values = []
@@ -178,10 +186,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         return W
 
     def get_criterions_directions(self):
-        nrows = self.table_crit.rowCount()
-
         directions = []
-        for row in range(nrows):
+        for row in self.criterions_activated:
             item = self.table_crit.cellWidget(row, COL_DIRECTION)
             index = item.currentIndex()
             if index == 0:
@@ -221,7 +227,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         profiles = []
         for row in range(nrows):
-            prof = self.get_row(self.table_prof, row)
+            prof = self.get_active_row(self.table_prof, row)
             r = v_multiply(prof, directions) 
 
             if row == 0 or self.samethresholds == 1: 
@@ -229,17 +235,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 index = row
 
-            q = self.get_row(self.table_indiff, index)
+            q = self.get_active_row(self.table_indiff, index)
 
             if self.sameqp == 1:
                 p = q
             else:
-                p = self.get_row(self.table_pref, index)
+                p = self.get_active_row(self.table_pref, index)
 
             if self.noveto == 1:
                 v = v_substract(self.crit_max, self.crit_min) 
             else:
-                v = self.get_row(self.table_veto, index)
+                v = self.get_active_row(self.table_veto, index)
 
             profile = { 'refs':r, 'q': q, 'p': p, 'v': v }
             profiles.append(profile)
@@ -310,14 +316,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.table_indiff.setColumnHidden(row, 1)
             self.table_pref.setColumnHidden(row, 1)
             self.table_veto.setColumnHidden(row, 1)
-            self.criterions_activated.append(row)
-            self.criterions_activated.sort()
+            self.criterions_activated.remove(row)
         else:
             self.table_prof.setColumnHidden(row, 0)
             self.table_indiff.setColumnHidden(row, 0)
             self.table_pref.setColumnHidden(row, 0)
             self.table_veto.setColumnHidden(row, 0)
-            self.criterions_activated.remove(row)
+            self.criterions_activated.append(row)
+            self.criterions_activated.sort()
+
+        print 'activated', self.criterions_activated
 
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
