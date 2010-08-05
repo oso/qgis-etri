@@ -81,7 +81,7 @@ class electre_tri:
     def pessimist(self):
         profils = self.profiles
         profils.reverse()
-        nprofils = len(b)+1
+        nprofils = len(profils)+1
         affectations = []
         for action in self.actions:
             category = nprofils 
