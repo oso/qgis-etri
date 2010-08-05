@@ -21,6 +21,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.criterions_activated = []
         self.ncriterions = 0
+        self.samethresholds = 0
+        self.sameqp = 0
+        self.noveto = 0
         self.load_data()
 
         self.table_prof.resizeColumnsToContents()
@@ -84,7 +87,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.set_row(self.table_prof, index, val)
 
-        # Thresholds table
+        # P, Q thresholds table
         self.table_pref.insertRow(nprof)
         self.table_indiff.insertRow(nprof)
         self.table_veto.insertRow(nprof)
@@ -94,12 +97,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             except:
                 thresholds = [0] * table.columnCount()
             self.set_row(table, index, thresholds)
+            if self.samethresholds == 1:
+                table.setRowHidden(index, 1)
 
+        # V thresholds table
         try:
             thresholds = self.get_row_as_str(table, index-1)
         except:
             thresholds = v_substract(self.crit_max, self.crit_min) 
         self.set_row(self.table_veto, index, thresholds)
+        if self.samethresholds == 1:
+            self.table_veto.setRowHidden(index, 1)
 
     def add_criteria(self, crit):
         # Add row in criteria table
@@ -149,6 +157,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for crit in criterions:
             self.add_criteria(crit)
 
+    def get_actions(self):
+        directions = self.get_criterions_directions()
+        actions = []
+        for a in self.actions:
+            action = []
+            for j in self.criterions_activated:
+                value = a[j]*directions[j]
+                action.append(value)
+            actions.append(action)
+
+        return actions
+
     def get_criterions_weights(self):
         W = []
         for i in self.criterions_activated:
@@ -197,13 +217,30 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def get_profiles(self):
         nrows = self.table_prof.rowCount()
         ncols = self.table_prof.columnCount()
+        directions = self.get_criterions_directions()
 
         profiles = []
         for row in range(nrows):
-            r = self.get_row(self.table_prof, row) 
-            q = self.get_row(self.table_indiff, row)
-            p = self.get_row(self.table_pref, row)
-            v = self.get_row(self.table_veto, row)
+            prof = self.get_row(self.table_prof, row)
+            r = v_multiply(prof, directions) 
+
+            if row == 0 or self.samethresholds == 1: 
+                index = 0
+            else:
+                index = row
+
+            q = self.get_row(self.table_indiff, index)
+
+            if self.sameqp == 1:
+                p = q
+            else:
+                p = self.get_row(self.table_pref, index)
+
+            if self.noveto == 1:
+                v = v_substract(self.crit_max, self.crit_min) 
+            else:
+                v = self.get_row(self.table_veto, index)
+
             profile = { 'refs':r, 'q': q, 'p': p, 'v': v }
             profiles.append(profile)
 
@@ -258,11 +295,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         item.setBackgroundColor(QtCore.Qt.white)
 
     def goto_next_cell(self, table, c_row, c_col):
-        nrows = table.rowCount()
-        if c_row == nrows-1:
-            table.setCurrentCell(0, c_col+1)
-        else:
-            table.setCurrentCell(c_row+1,c_col)
+        table.focusNextChild() 
 
     def on_table_crit_cellChanged(self, row, column):
         if column == COL_CRITERIONS:
@@ -290,7 +323,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.add_profile(-1)
 
     def on_table_prof_cellChanged(self, row, column):
-        self.check_profile_crit(row, column)
+#        self.check_profile_crit(row, column)
         self.goto_next_cell(self.table_prof, row, column)
 
     def on_table_indiff_cellChanged(self, row, column):
@@ -305,22 +338,50 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.check_is_float(self.table_veto, row, column)
         self.goto_next_cell(self.table_veto, row, column)
 
+    def on_cbox_samethresholds_stateChanged(self, state):
+        if state == 0:
+            self.samethresholds = 0
+            for i in range(1, self.ncriterions):
+                self.table_indiff.setRowHidden(i, 0)
+                self.table_pref.setRowHidden(i, 0)
+                self.table_veto.setRowHidden(i, 0)
+        else:
+            self.samethresholds = 1
+            for i in range(1, self.ncriterions):
+                self.table_indiff.setRowHidden(i, 1)
+                self.table_pref.setRowHidden(i, 1)
+                self.table_veto.setRowHidden(i, 1)
+
+    def on_cbox_noveto_stateChanged(self, state):
+        if state == 0:
+            self.noveto = 0
+            self.tab_thresholds.insertTab(2, self.tab_veto, "Veto")
+        else:
+            self.noveto = 1
+            index = self.tab_thresholds.indexOf(self.tab_veto)
+            self.tab_thresholds.removeTab(index)
+
+    def on_cbox_sameqp_stateChanged(self, state):
+        if state == 0:
+            self.sameqp = 0
+            self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
+        else:
+            self.sameqp = 1
+            index = self.tab_thresholds.indexOf(self.tab_pref)
+            self.tab_thresholds.removeTab(index)
+
     def on_Bgenerate_pressed(self):
         print "Generate Decision Map"
         weights = self.get_criterions_weights()
         print "Weights:", weights
         profiles = self.get_profiles()
         print "Profiles:", profiles
-
-        directions = self.get_criterions_directions()
-        actions = []
-        for a in self.actions:
-            action = []
-            for j in self.criterions_activated:
-                value = a[j]*directions[j]
-                action.append(value)
-            actions.append(action)
+        actions = self.get_actions()
         print "Actions:", actions
 
         etri = electre_tri(actions, profiles, weights, 0.75)
-        print "ELECTRE TRI - Pessimist:", etri.pessimist()
+
+        if self.combo_procedure.currentIndex() == 1:
+            print "ELECTRE TRI - Optimist:", etri.optimist()
+        else:
+            print "ELECTRE TRI - Pessimist:", etri.pessimist()
