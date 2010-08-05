@@ -270,38 +270,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             val = round(float(val), 2)
         except:
             item.setBackgroundColor(QtCore.Qt.red)
-            return
+            return False
 
         if val < self.crit_min[column] or val > self.crit_max[column]:
             item.setBackgroundColor(QtCore.Qt.red)
-            return
-
-        try:
-            profile = self.get_row(self.table_prof, row-1)
-            if profile[column] > val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
-                item.setBackgroundColor(QtCore.Qt.red)
-                return
-            else:
-                item2 = self.table_prof.item(row-1, column)
-                item2.setBackgroundColor(QtCore.Qt.white)
-        except:
-            pass
-
-        try:
-            profile = self.get_row(self.table_prof, row+1)
-            if profile[column] < val and profile[column] > self.crit_min[column] and profile[column] < self.crit_max[column]:
-                item.setBackgroundColor(QtCore.Qt.red)
-                return
-            else:
-                item2 = self.table_prof.item(row+1, column)
-                item2.setBackgroundColor(QtCore.Qt.white)
-        except:
-            pass
+            return False
 
         item.setBackgroundColor(QtCore.Qt.white)
 
     def goto_next_cell(self, table, c_row, c_col):
-        table.focusNextChild() 
+        if table.currentRow() == c_row and table.currentColumn() == c_col:
+            table.focusNextChild() 
 
     def on_table_crit_cellChanged(self, row, column):
         if column == COL_CRITERIONS:
@@ -331,8 +310,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.add_profile(-1)
 
     def on_table_prof_cellChanged(self, row, column):
-#        self.check_profile_crit(row, column)
-        self.goto_next_cell(self.table_prof, row, column)
+        self.check_profile_crit(row, column)
+        if self.table_prof.currentRow() == row and self.table_prof.currentColumn() == column:
+            self.table_prof.focusNextChild()
 
     def on_table_indiff_cellChanged(self, row, column):
         self.check_is_float(self.table_indiff, row, column)
