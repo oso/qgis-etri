@@ -1,3 +1,7 @@
+import os
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
@@ -62,3 +66,29 @@ def layer_get_values(layer):
         actions.append(action)
 
     return actions
+
+def generate_decision_map(layer_in, affectations):
+    print "Generate Decision Map"
+    vprovider = layer_in.dataProvider()
+    allAttrs = vprovider.attributeIndexes()
+    vprovider.select( allAttrs )
+    fields = {0:QgsField("Category", QVariant.Int)}
+
+    try:
+        os.unlink("/home/oso/tfe/qgis_data/test.shp")
+    except:
+        pass
+
+    writer = QgsVectorFileWriter( "/home/oso/tfe/qgis_data/test.shp", "UTF-8", fields, vprovider.geometryType(), vprovider.crs() )
+
+    inFeat = QgsFeature()
+    outFeat = QgsFeature()
+    inGeom = QgsGeometry()
+    nFeat = vprovider.featureCount()
+    nElement = 0 
+    while vprovider.nextFeature(inFeat):
+        inGeom = inFeat.geometry()
+        outFeat.setGeometry(inGeom)
+        outFeat.addAttribute(0, affectations[nElement])
+        writer.addFeature(outFeat)
+        nElement += 1    

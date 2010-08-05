@@ -382,6 +382,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         etri = electre_tri(actions, profiles, weights, 0.75)
 
         if self.combo_procedure.currentIndex() == 1:
-            print "ELECTRE TRI - Optimist:", etri.optimist()
+            affectations = etri.optimist()
         else:
-            print "ELECTRE TRI - Pessimist:", etri.pessimist()
+            affectations = etri.pessimist()
+
+        print "Affectations:", affectations
+
+        generate_decision_map(self.crit_layer, affectations)
