@@ -4,6 +4,7 @@ from Ui_mainwindow import Ui_MainWindow
 from qgis_utils import *
 from utils import *
 from etri import *
+from ui_utils import *
 
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.pardir))
@@ -405,6 +406,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.tab_thresholds.removeTab(index)
 
     def on_Bgenerate_pressed(self):
+        ( file, encoding ) = saveDialog(self)
+        if file is None or encoding is None:
+            return # FIXME
+
         print "Generate Decision Map"
         weights = self.get_criterions_weights()
         print "Weights:", weights
@@ -422,4 +427,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         print "Affectations:", affectations
 
-        generate_decision_map(self.crit_layer, affectations)
+        generate_decision_map(self.crit_layer, affectations, file, encoding)
+
+        addtocDialog(self, file)

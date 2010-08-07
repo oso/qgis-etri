@@ -67,7 +67,7 @@ def layer_get_values(layer):
 
     return actions
 
-def generate_decision_map(layer_in, affectations):
+def generate_decision_map(layer_in, affectations, out, out_encoding):
     print "Generate Decision Map"
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
@@ -75,11 +75,11 @@ def generate_decision_map(layer_in, affectations):
     fields = {0:QgsField("Category", QVariant.Int)}
 
     try:
-        os.unlink("/home/oso/tfe/qgis_data/test.shp")
+        os.unlink(out)
     except:
         pass
 
-    writer = QgsVectorFileWriter( "/home/oso/tfe/qgis_data/test.shp", "UTF-8", fields, vprovider.geometryType(), vprovider.crs() )
+    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.geometryType(), vprovider.crs())
 
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -91,4 +91,5 @@ def generate_decision_map(layer_in, affectations):
         outFeat.setGeometry(inGeom)
         outFeat.addAttribute(0, affectations[nElement])
         writer.addFeature(outFeat)
-        nElement += 1    
+        nElement += 1
+    del writer
