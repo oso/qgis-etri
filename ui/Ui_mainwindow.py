@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Thu Aug  5 19:25:55 2010
+# Created: Sat Aug  7 17:53:20 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -101,6 +101,17 @@ class Ui_MainWindow(object):
         self.vertical_layout.setObjectName("vertical_layout")
         spacerItem = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.vertical_layout.addItem(spacerItem)
+        self.group_input = QtGui.QGroupBox(self.centralwidget)
+        self.group_input.setObjectName("group_input")
+        self.gridLayout_9 = QtGui.QGridLayout(self.group_input)
+        self.gridLayout_9.setObjectName("gridLayout_9")
+        self.combo_layer = QtGui.QComboBox(self.group_input)
+        self.combo_layer.setObjectName("combo_layer")
+        self.gridLayout_9.addWidget(self.combo_layer, 0, 0, 1, 1)
+        self.Bloadlayer = QtGui.QPushButton(self.group_input)
+        self.Bloadlayer.setObjectName("Bloadlayer")
+        self.gridLayout_9.addWidget(self.Bloadlayer, 0, 1, 1, 1)
+        self.vertical_layout.addWidget(self.group_input)
         self.group_profiles = QtGui.QGroupBox(self.centralwidget)
         self.group_profiles.setObjectName("group_profiles")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.group_profiles)
@@ -136,10 +147,7 @@ class Ui_MainWindow(object):
         self.combo_procedure.setObjectName("combo_procedure")
         self.combo_procedure.addItem("")
         self.combo_procedure.addItem("")
-        self.gridLayout_8.addWidget(self.combo_procedure, 1, 0, 1, 1)
-        self.affectation = QtGui.QLabel(self.group_electre)
-        self.affectation.setObjectName("affectation")
-        self.gridLayout_8.addWidget(self.affectation, 0, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.combo_procedure, 0, 0, 1, 1)
         self.vertical_layout.addWidget(self.group_electre)
         self.Bgenerate = QtGui.QCommandLinkButton(self.centralwidget)
         self.Bgenerate.setObjectName("Bgenerate")
@@ -160,7 +168,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Electre Tri", None, QtGui.QApplication.UnicodeUTF8))
         self.group_params.setTitle(QtGui.QApplication.translate("MainWindow", "Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("MainWindow", "Criteria", None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("MainWindow", "Weight", None, QtGui.QApplication.UnicodeUTF8))
@@ -169,6 +177,8 @@ class Ui_MainWindow(object):
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_pref), QtGui.QApplication.translate("MainWindow", "Preference", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_veto), QtGui.QApplication.translate("MainWindow", "Veto", None, QtGui.QApplication.UnicodeUTF8))
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_profiles), QtGui.QApplication.translate("MainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
+        self.group_input.setTitle(QtGui.QApplication.translate("MainWindow", "Input Layer", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bloadlayer.setText(QtGui.QApplication.translate("MainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
         self.group_profiles.setTitle(QtGui.QApplication.translate("MainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.Badd_profile.setText(QtGui.QApplication.translate("MainWindow", "Add Profile", None, QtGui.QApplication.UnicodeUTF8))
         self.Bdel_profile.setText(QtGui.QApplication.translate("MainWindow", "Del Profile", None, QtGui.QApplication.UnicodeUTF8))
@@ -176,9 +186,8 @@ class Ui_MainWindow(object):
         self.cbox_samethresholds.setText(QtGui.QApplication.translate("MainWindow", "Use same for all profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.cbox_noveto.setText(QtGui.QApplication.translate("MainWindow", "No Veto", None, QtGui.QApplication.UnicodeUTF8))
         self.cbox_sameqp.setText(QtGui.QApplication.translate("MainWindow", "Indifference = Preference", None, QtGui.QApplication.UnicodeUTF8))
-        self.group_electre.setTitle(QtGui.QApplication.translate("MainWindow", "Affectation", None, QtGui.QApplication.UnicodeUTF8))
+        self.group_electre.setTitle(QtGui.QApplication.translate("MainWindow", "Affectation procedure", None, QtGui.QApplication.UnicodeUTF8))
         self.combo_procedure.setItemText(0, QtGui.QApplication.translate("MainWindow", "Pessimist", None, QtGui.QApplication.UnicodeUTF8))
         self.combo_procedure.setItemText(1, QtGui.QApplication.translate("MainWindow", "Optimist", None, QtGui.QApplication.UnicodeUTF8))
-        self.affectation.setText(QtGui.QApplication.translate("MainWindow", "Procedure :", None, QtGui.QApplication.UnicodeUTF8))
         self.Bgenerate.setText(QtGui.QApplication.translate("MainWindow", "Generate Decision Map", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -5,6 +5,9 @@ from qgis_utils import *
 from utils import *
 from etri import *
 
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.pardir))
+
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
 
@@ -22,23 +25,63 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.samethresholds = 0
         self.sameqp = 0
         self.noveto = 0
-        self.load_data()
+        self.crit_layers = []
+
+#        layer = layer_load("/home/oso/tfe/qgis_data/tessin.shp", "criterions")
+#        self.set_crit_layer(layer)
 
         self.table_prof.resizeColumnsToContents()
         self.table_indiff.resizeColumnsToContents()
         self.table_pref.resizeColumnsToContents()
         self.table_veto.resizeColumnsToContents()
 
-    def load_data(self):
-        self.crit_layer = layer_load("/home/oso/tfe/qgis_data/tessin.shp", "criterions")
-        criterions = layer_get_criterions(self.crit_layer)
+    def add_crit_layer(self, layer):
+        self.combo_layer.addItem(layer.name())
+        self.crit_layers.append(layer)
+
+    def clear_rows(self, table):
+        nrows = table.rowCount()
+        print 'nrows', nrows
+        for i in range(nrows):
+            table.removeRow(i)
+        table.setRowCount(0)
+
+    def clear_table(self, table):
+        nrows = table.rowCount()
+        ncols = table.columnCount()
+        print 'nrows', nrows
+        print 'ncols', ncols
+        for i in range(nrows):
+            table.removeRow(i)
+        for i in range(ncols):
+            table.removeColumn(i)
+        table.setRowCount(0)
+        table.setColumnCount(0)
+
+    def set_crit_layer(self, layer):
+        self.criterions_activated = []
+        self.ncriterions = 0
+        self.samethresholds = 0
+        self.sameqp = 0
+        self.noveto = 0
+        self.clear_rows(self.table_crit)
+        self.clear_table(self.table_prof)
+        self.clear_table(self.table_indiff)
+        self.clear_table(self.table_pref)
+        self.clear_table(self.table_veto)
+
+        self.crit_layer = layer
+        self.crit_layer_load(layer)
+
+    def crit_layer_load(self, layer):
+        criterions = layer_get_criterions(layer)
         self.add_criterions(criterions)
 
-        minmax = layer_get_minmax(self.crit_layer)
+        minmax = layer_get_minmax(layer)
         self.crit_min = minmax[0]
         self.crit_max = minmax[1]
 
-        self.actions = layer_get_values(self.crit_layer)
+        self.actions = layer_get_values(layer)
 
         self.add_profile(0)
 
@@ -304,6 +347,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         print 'activated', self.criterions_activated
 
+    def on_Bloadlayer_pressed(self):
+        index = self.combo_layer.currentIndex()
+        print "index = ", index # FIXME: bad index handling
+        self.set_crit_layer(self.crit_layers[index])
+
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
 
@@ -365,12 +413,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         actions = self.get_actions()
         print "Actions:", actions
 
-        etri = electre_tri(actions, profiles, weights, 0.75)
+        tri = electre_tri(actions, profiles, weights, 0.75)
 
         if self.combo_procedure.currentIndex() == 1:
-            affectations = etri.optimist()
+            affectations = tri.optimist()
         else:
-            affectations = etri.pessimist()
+            affectations = tri.pessimist()
 
         print "Affectations:", affectations
 
