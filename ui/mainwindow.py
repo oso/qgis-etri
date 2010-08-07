@@ -429,4 +429,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         generate_decision_map(self.crit_layer, affectations, file, encoding)
 
-        addtocDialog(self, file)
+        addtocDialog(self, file, self.table_prof.rowCount())
