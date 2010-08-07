@@ -1,5 +1,3 @@
-#from PyQt4.QtCore import *
-#from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
 
 from Ui_mainwindow import Ui_MainWindow
