@@ -2,11 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="306.31653"
@@ -20,6 +22,22 @@
    inkscape:export-ydpi="90">
   <defs
      id="defs4">
+    <linearGradient
+       id="linearGradient5526"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffff00;stop-opacity:1;"
+         offset="0"
+         id="stop5528" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient5436"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop5438" />
+    </linearGradient>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -55,6 +73,57 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5436"
+       id="linearGradient5440"
+       x1="7.4540629"
+       y1="85.177902"
+       x2="163.25406"
+       y2="85.177902"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5526"
+       id="linearGradient5530"
+       x1="7.4578776"
+       y1="235.18938"
+       x2="163.25788"
+       y2="235.18938"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.50507627,-0.50507627)" />
+    <filter
+       inkscape:collect="always"
+       id="filter5732">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.25"
+         id="feGaussianBlur5734" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter5740">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.25"
+         id="feGaussianBlur5742" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter5756">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.25"
+         id="feGaussianBlur5758" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter5764">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.25"
+         id="feGaussianBlur5766" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -63,9 +132,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="510.30651"
-     inkscape:cy="138.22075"
+     inkscape:zoom="1.979899"
+     inkscape:cx="121.68072"
+     inkscape:cy="140.21527"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -77,7 +146,12 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0">
+     fit-margin-bottom="0"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-grids="false"
+     inkscape:snap-to-guides="false"
+     inkscape:snap-page="true">
     <inkscape:grid
        type="xygrid"
        id="grid3075"
@@ -104,7 +178,7 @@
      id="layer1"
      transform="translate(-7.4540629,-7.2779021)">
     <rect
-       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:url(#linearGradient5440);fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019000000044;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1;filter:url(#filter5732)"
        id="rect2926"
        width="150"
        height="150"
@@ -114,7 +188,7 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
-       style="fill:#000080;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#000080;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019000000044;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1;filter:url(#filter5740)"
        id="rect2926-8"
        width="150"
        height="150"
@@ -124,17 +198,17 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
-       style="fill:#ffff00;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:url(#linearGradient5530);fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019000000044;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter5764)"
        id="rect2926-7"
        width="150"
        height="150"
-       x="10.357878"
-       y="160.18938"
+       x="10.862954"
+       y="159.6843"
        inkscape:export-filename="/home/oso/fpms/tfe/qgis_app/etri.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
-       style="fill:#008000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#008000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.80000019000000044;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1;filter:url(#filter5756)"
        id="rect2926-6"
        width="150"
        height="150"
