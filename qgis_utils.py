@@ -55,7 +55,7 @@ def layer_get_values(layer):
     provider.select(allAttrs)
     feat = QgsFeature()
 
-    actions = []
+    actions = {}
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
 
@@ -63,7 +63,8 @@ def layer_get_values(layer):
         for (k, attr) in attrs.iteritems():
             value = attr.toFloat()[0]
             action.append(value)
-        actions.append(action)
+
+        actions[feat.id()] = action 
 
     return actions
 

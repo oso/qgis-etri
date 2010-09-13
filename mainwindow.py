@@ -1,13 +1,9 @@
 from PyQt4 import QtCore, QtGui
-
 from Ui_mainwindow import Ui_MainWindow
 from qgis_utils import *
 from utils import *
-from etri import *
 from ui_utils import *
-
-import os, sys
-sys.path.insert(0, os.path.dirname(os.path.pardir))
+from etri import *
 
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
@@ -209,13 +205,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def get_actions(self):
         directions = self.get_criterions_directions()
-        actions = []
-        for a in self.actions:
-            action = []
+        actions = {}
+        for action, values in self.actions.iteritems():
+            evals = []
             for j in self.criterions_activated:
-                value = a[j]*directions[j]
-                action.append(value)
-            actions.append(action)
+                value = values[j]*directions[j]
+                evals.append(value)
+            actions[action] = evals
 
         return actions
 

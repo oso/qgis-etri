@@ -1,5 +1,15 @@
 #!/usr/bin/python
 
+# Result should be:
+# ELECTRE TRI - Pessimist
+# [2, 1, 2, 3, 1, 2, 2]
+# ELECTRE TRI - Optimist
+# [2, 3, 2, 3, 2, 2, 2]
+
+import sys
+sys.path.append("..")
+from etri import *
+
 # Criterias
 criterias = ['prix', 'transport', 'envir', 'residents', 'competitions']
 
@@ -14,7 +24,7 @@ a4 = [ -60,  -596, 6, 8.0, 20]
 a5 = [ -30, -1321, 8, 7.5, 16]
 a6 = [ -80,  -734, 5, 4.0, 21]
 a7 = [ -45,  -982, 7, 8.5, 13]
-a = [a1, a2, a3, a4, a5, a6, a7]
+a = {'a1': a1, 'a2': a2, 'a3': a3, 'a4': a4, 'a5': a5, 'a6': a6, 'a7': a7}
 
 # Reference actions
 b1 = [-100, -1000, 4, 4, 15]
@@ -32,120 +42,6 @@ profiles = [ prof1, prof2 ]
 
 # Lambda
 lbda = 0.75
-
-class electre_tri:
-
-    def __init__(self, actions, profiles, weights, lbda):
-        self.actions = actions
-        self.profiles = profiles
-        self.weights = weights
-        self.lbda = lbda
-
-    def v_substract(self, x, y):
-        return [x - y for x, y in zip(x, y)]
-
-    def v_multiply(self, x, y):
-        return [x * y for x, y in zip(x, y)]
-
-    def partial_concordance(self, x, y, q, p):
-        # compute g_j(b) - g_j(a)
-        diff = self.v_substract(y, x)
-
-        # compute c_j(a, b)
-        c = []
-        for i in range(len(diff)):
-            if diff[i] > p[i]:
-                c.append(0)
-            elif diff[i] <= q[i]:
-                c.append(1)
-            else:
-                num = float(p[i]-diff[i])
-                den = float(p[i]-q[i])
-                c.append(num/den)
-
-        return c
-
-    def concordance(self, x, y, q, p, w):
-        cj = self.partial_concordance(x, y, q, p)
-        pjcj = float(sum(self.v_multiply(w, cj)))
-        wsum = float(sum(w))
-        return pjcj/wsum
-
-    def partial_discordance(self, x, y, p, v):
-        # compute g_j(b) - g_j(a)
-        diff = self.v_substract(y, x)
-
-        # compute d_j(a,b)
-        d = []
-        for i in range(len(diff)):
-            if diff[i] > v[i]:
-                d.append(1)
-            elif diff[i] <= p[i]:
-                d.append(0)
-            else:
-                num = float(v[i]-diff[i])
-                den = float(v[i]-p[i])
-                d.append(1-num/den)
-
-        return d
-
-    def credibility(self, x, y, q, p, v, w):
-        dj = self.partial_discordance(x, y, p, v)
-        C = self.concordance(x, y, q, p, w)
-
-        sigma = C
-        for disc in dj:
-            if disc > C:
-                num = float(1-disc)
-                den = float(1-C)
-                sigma = sigma*num/den
-
-        return sigma
-    
-    def outrank(self, action, profil, weights, lbda):
-        s_ab = self.credibility(action, profil['refs'], profil['q'], profil['p'], profil['v'], weights)
-        s_ba = self.credibility(profil['refs'], action, profil['q'], profil['p'], profil['v'], weights)
-
-        if s_ab >= lbda:
-            if s_ba >= lbda:
-                return "I"
-            else:
-                return "S"
-        else:
-            if s_ba >= lbda:
-                return "-"
-            else:
-                return "R"
-    
-    def pessimist(self):
-        profils = self.profiles
-        profils.reverse()
-        nprofils = len(b)+1
-        affectations = []
-        for action in self.actions:
-            category = nprofils 
-            for profil in profils:
-                outr = self.outrank(action, profil, self.weights, self.lbda)
-                if outr != "S" and outr != "I":
-                    category -= 1
-    
-            affectations.append(category)
-    
-        return affectations
-    
-    def optimist(self):
-        profils = self.profiles
-        affectations = []
-        for action in self.actions:
-            category = 1
-            for profil in profils:
-                outr = self.outrank(action, profil, self.weights, self.lbda)
-                if outr != "-":
-                    category += 1
-    
-            affectations.append(category)
-    
-        return affectations
 
 etri = electre_tri(a, profiles, w, lbda)
 print "ELECTRE TRI - Pessimist"

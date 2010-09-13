@@ -82,28 +82,28 @@ class electre_tri:
         profils = self.profiles
         profils.reverse()
         nprofils = len(profils)+1
-        affectations = []
-        for action in self.actions:
+        affectations = {}
+        for action, evals in self.actions.iteritems():
             category = nprofils 
             for profil in profils:
-                outr = self.outrank(action, profil, self.weights, self.lbda)
+                outr = self.outrank(evals, profil, self.weights, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
     
-            affectations.append(category)
-    
+            affectations[action] = category
+
         return affectations
     
     def optimist(self):
         profils = self.profiles
-        affectations = []
-        for action in self.actions:
+        affectations = {}
+        for action, evals in self.actions.iteritems():
             category = 1
             for profil in profils:
-                outr = self.outrank(action, profil, self.weights, self.lbda)
+                outr = self.outrank(evals, profil, self.weights, self.lbda)
                 if outr != "-":
                     category += 1
-    
-            affectations.append(category)
-    
+
+            affectations[action] = category
+
         return affectations
