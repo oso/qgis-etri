@@ -6,7 +6,7 @@ import resources
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-from ui.mainwindow import MainWindow
+from mainwindow import MainWindow
 
 class etri_plugin:
     def __init__(self, iface):
