@@ -24,9 +24,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.noveto = 0
         self.crit_layers = []
 
-#        layer = layer_load("/home/oso/tfe/qgis_data/tessin.shp", "criterions")
-#        self.set_crit_layer(layer)
-
         self.table_prof.resizeColumnsToContents()
         self.table_indiff.resizeColumnsToContents()
         self.table_pref.resizeColumnsToContents()
@@ -38,7 +35,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def clear_rows(self, table):
         nrows = table.rowCount()
-        print 'nrows', nrows
         for i in range(nrows):
             table.removeRow(i)
         table.setRowCount(0)
@@ -46,8 +42,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def clear_table(self, table):
         nrows = table.rowCount()
         ncols = table.columnCount()
-        print 'nrows', nrows
-        print 'ncols', ncols
         for i in range(nrows):
             table.removeRow(i)
         for i in range(ncols):
@@ -342,11 +336,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.criterions_activated.append(row)
             self.criterions_activated.sort()
 
-        print 'activated', self.criterions_activated
-
     def on_Bloadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
-        print "index = ", index # FIXME: bad index handling
         self.set_crit_layer(self.crit_layers[index])
 
     def on_Badd_profile_pressed(self):
