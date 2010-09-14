@@ -6,15 +6,55 @@ from qgis.core import *
 from qgis.gui import *
 
 def layer_get_criterions(layer):
+    minmax = layer_get_minmax(layer)
+    mins = minmax['mins']
+    maxs = minmax['maxs']
+
     provider = layer.dataProvider()
     fields = provider.fields()
+    i = 0
     criterions = []
-    for (i, field) in fields.iteritems():
+    for (id, field) in fields.iteritems():
+        #FIXME: Check the type to only include numbers
+        criteria = {}
         print "type=", field.type()
         str = '%s' % field.name().trimmed()
-        criterions.append(str)
+        criteria['name'] = str
+        criteria['id'] = id
+        criteria['min'] = mins[id]
+        criteria['max'] = maxs[id]
+        criteria['mean'] = (maxs[id]+mins[id])/2
+        criteria['diff'] = maxs[id]-mins[id]
+        criterions.append(criteria)
 
+    print 'Criterions', criterions
     return criterions
+
+def layer_get_minmax(layer):
+    provider = layer.dataProvider()
+    allAttrs = provider.attributeIndexes()
+    provider.select(allAttrs)
+    feat = QgsFeature()
+
+    first = True
+    mins = {}
+    maxs = {}
+    while provider.nextFeature(feat):
+        attrs = feat.attributeMap()
+        for (k, attr) in attrs.iteritems():
+            value = attr.toFloat()[0]
+            if first == True:
+                mins[k] = value
+                maxs[k] = value
+            else:
+                if value < mins[k]:
+                    mins[k] = value
+                if value > maxs[k]:
+                    maxs[k] = value
+
+        first = False
+
+    return {'mins': mins, 'maxs': maxs}
 
 def layer_load(path, name):
     layerProvider = "ogr"
@@ -24,32 +64,32 @@ def layer_load(path, name):
 
     return layer
 
-def layer_get_minmax(layer):
-    provider = layer.dataProvider()
-    allAttrs = provider.attributeIndexes()
-    provider.select(allAttrs)
-    feat = QgsFeature()
+#def layer_get_minmax(layer):
+#    provider = layer.dataProvider()
+#    allAttrs = provider.attributeIndexes()
+#    provider.select(allAttrs)
+#    feat = QgsFeature()
+#
+#    first = True
+#    while provider.nextFeature(feat):
+#        attrs = feat.attributeMap()
+#        if first == True:
+#            mins = []
+#            maxs = []
+#            for (k, attr) in attrs.iteritems():
+#                value = attr.toFloat()[0]
+#                mins.append(value)
+#                maxs.append(value)
+#            first = False
+#        else:
+#            for (k, attr) in attrs.iteritems():
+#                value = attr.toFloat()[0]
+#                if mins[k] > value: mins[k] = value
+#                if maxs[k] < value: maxs[k] = value
+#
+#    return [mins, maxs]
 
-    first = True
-    while provider.nextFeature(feat):
-        attrs = feat.attributeMap()
-        if first == True:
-            mins = []
-            maxs = []
-            for (k, attr) in attrs.iteritems():
-                value = attr.toFloat()[0]
-                mins.append(value)
-                maxs.append(value)
-            first = False
-        else:
-            for (k, attr) in attrs.iteritems():
-                value = attr.toFloat()[0]
-                if mins[k] > value: mins[k] = value
-                if maxs[k] < value: maxs[k] = value
-
-    return [mins, maxs]
-
-def layer_get_values(layer):
+def layer_get_attributes(layer):
     provider = layer.dataProvider()
     allAttrs = provider.attributeIndexes()
     provider.select(allAttrs)
@@ -58,13 +98,11 @@ def layer_get_values(layer):
     actions = {}
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
-
-        action = []
+        attributes = {}
         for (k, attr) in attrs.iteritems():
-            value = attr.toFloat()[0]
-            action.append(value)
+            attributes[k] = attr.toFloat()[0]
 
-        actions[feat.id()] = action 
+        actions[feat.id()] = attributes
 
     return actions
 
@@ -86,11 +124,10 @@ def generate_decision_map(layer_in, affectations, out, out_encoding):
     outFeat = QgsFeature()
     inGeom = QgsGeometry()
     nFeat = vprovider.featureCount()
-    nElement = 0 
     while vprovider.nextFeature(inFeat):
         inGeom = inFeat.geometry()
+        id = inFeat.id()
         outFeat.setGeometry(inGeom)
-        outFeat.addAttribute(0, affectations[nElement])
+        outFeat.addAttribute(0, affectations[id])
         writer.addFeature(outFeat)
-        nElement += 1
     del writer

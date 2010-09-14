@@ -1,5 +1,14 @@
 from utils import v_multiply,v_substract
 
+def d_add(a, b):
+    return dict( (n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b) )
+
+def d_substract(a, b):
+    return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
+
+def d_multiply(a, b):
+    return dict( (n, a.get(n, 0)*b.get(n, 0)) for n in set(a)|set(b) )
+
 class electre_tri:
 
     def __init__(self, actions, profiles, weights, lbda):
@@ -10,43 +19,44 @@ class electre_tri:
 
     def partial_concordance(self, x, y, q, p):
         # compute g_j(b) - g_j(a)
-        diff = v_substract(y, x)
+        diff = d_substract(y, x)
 
         # compute c_j(a, b)
-        c = []
-        for i in range(len(diff)):
-            if diff[i] > p[i]:
-                c.append(0)
-            elif diff[i] <= q[i]:
-                c.append(1)
+        c = {}
+        for key, value in diff.iteritems():
+            if value > p[key]:
+                c[key] = 0
+            elif value <= q[key]:
+                c[key] = 1
             else:
-                num = float(p[i]-diff[i])
-                den = float(p[i]-q[i])
-                c.append(num/den)
+                num = float(p[key]-diff[key])
+                den = float(p[key]-q[key])
+                c[key] = num/den
 
         return c
 
     def concordance(self, x, y, q, p, w):
         cj = self.partial_concordance(x, y, q, p)
-        pjcj = float(sum(v_multiply(w, cj)))
-        wsum = float(sum(w))
+        wcj = d_multiply(w, cj)
+        pjcj = float(sum([i for i in wcj.values()]))
+        wsum = float(sum([i for i in w.values()]))
         return pjcj/wsum
 
     def partial_discordance(self, x, y, p, v):
         # compute g_j(b) - g_j(a)
-        diff = v_substract(y, x)
+        diff = d_substract(y, x)
 
         # compute d_j(a,b)
-        d = []
-        for i in range(len(diff)):
-            if diff[i] > v[i]:
-                d.append(1)
-            elif diff[i] <= p[i]:
-                d.append(0)
-            else:
-                num = float(v[i]-diff[i])
-                den = float(v[i]-p[i])
-                d.append(1-num/den)
+        d = {}
+        for key, value in diff.iteritems():
+             if value > v[key]:
+                d[key] = 1
+             elif value <= p[key]:
+                d[key] = 0
+             else:
+                num = float(v[key]-value)
+                den = float(v[key]-p[key])
+                d[key] = 1-num/den
 
         return d
 
@@ -55,9 +65,9 @@ class electre_tri:
         C = self.concordance(x, y, q, p, w)
 
         sigma = C
-        for disc in dj:
-            if disc > C:
-                num = float(1-disc)
+        for key, value in dj.iteritems():
+            if value > C:
+                num = float(1-value)
                 den = float(1-C)
                 sigma = sigma*num/den
 

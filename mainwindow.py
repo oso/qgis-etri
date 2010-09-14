@@ -65,14 +65,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.crit_layer_load(layer)
 
     def crit_layer_load(self, layer):
-        criterions = layer_get_criterions(layer)
-        self.add_criterions(criterions)
+        self.criterions = layer_get_criterions(layer)
+        for crit in self.criterions:
+            self.add_criteria(crit)
 
-        minmax = layer_get_minmax(layer)
-        self.crit_min = minmax[0]
-        self.crit_max = minmax[1]
-
-        self.actions = layer_get_values(layer)
+        self.actions = layer_get_attributes(layer)
 
         self.add_profile(0)
 
@@ -82,10 +79,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def get_active_row(self, table, index):
         ncols = table.columnCount()
-        values = []
+        values = {}
         for j in self.criterions_activated:
+            criteria = self.criterions[j]['id']
             item = table.item(index, j)
-            values.append(round(float(item.text()), 2))
+            values[criteria] = round(float(item.text()), 2)
         return values
 
     def get_row(self, table, index):
@@ -120,8 +118,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.table_prof.insertRow(index)
 
         if nprof == 0:
-            abs = v_add(self.crit_max, self.crit_min)
-            val = [x/2 for x in abs]
+            val = [x['mean'] for x in self.criterions]
         else:
             val = self.get_row_as_str(self.table_prof, index-1)
 
@@ -144,7 +141,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         try:
             thresholds = self.get_row_as_str(table, index-1)
         except:
-            thresholds = v_substract(self.crit_max, self.crit_min) 
+            thresholds = [x['diff'] for x in self.criterions]
         self.set_row(self.table_veto, index, thresholds)
         if self.samethresholds == 1:
             self.table_veto.setRowHidden(index, 1)
@@ -169,7 +166,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         checkBox = QtGui.QCheckBox(self)
         checkBox.setCheckState(QtCore.Qt.Checked)
-        checkBox.setText(QtGui.QApplication.translate("MainWindow", crit, None, QtGui.QApplication.UnicodeUTF8))
+        checkBox.setText(QtGui.QApplication.translate("MainWindow", crit['name'], None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.setCellWidget(nrow, 0, checkBox)
 
         signalMapper = QtCore.QSignalMapper(self)
@@ -187,70 +184,53 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             table.insertColumn(nrow)
             item = QtGui.QTableWidgetItem()
             table.setHorizontalHeaderItem(nrow, item)
-            table.horizontalHeaderItem(nrow).setText(crit)
+            table.horizontalHeaderItem(nrow).setText(crit['name'])
 
         self.ncriterions += 1
         self.criterions_activated.append(nrow)
         self.criterions_activated.sort()
 
-    def add_criterions(self, criterions):
-        for crit in criterions:
-            self.add_criteria(crit)
+    def get_criterions_index(self):
+        index = []
+        for i in self.criterions_activated:
+            index.append(self.criterions[i]['id'])
+        return index
 
     def get_actions(self):
+        index = self.get_criterions_index()
         directions = self.get_criterions_directions()
+
         actions = {}
-        for action, values in self.actions.iteritems():
-            evals = []
-            for j in self.criterions_activated:
-                value = values[j]*directions[j]
-                evals.append(value)
-            actions[action] = evals
+        for action, attrs in self.actions.iteritems():
+            attributes = {}
+            for id in index:
+                attributes[id] = attrs[id]
+            attributes = d_multiply(attributes, directions)
+            actions[action] = attributes
 
         return actions
 
     def get_criterions_weights(self):
-        W = []
+        W = {}
         for i in self.criterions_activated:
+            criteria = self.criterions[i]['id']
             w = self.table_crit.item(i,2) 
-            W.append(round(float(w.text()), 2))
+            W[criteria] = round(float(w.text()), 2)
 
         return W
 
     def get_criterions_directions(self):
-        directions = []
-        for row in self.criterions_activated:
-            item = self.table_crit.cellWidget(row, COL_DIRECTION)
+        directions = {}
+        for i in self.criterions_activated:
+            criteria = self.criterions[i]['id']
+            item = self.table_crit.cellWidget(i, COL_DIRECTION)
             index = item.currentIndex()
             if index == 0:
-                directions.append(1)
+                directions[criteria] = 1 
             else:
-                directions.append(-1)
+                directions[criteria] = -1 
 
         return directions
-
-    def get_criterions_values(self, tablew):
-        nrows = tablew.rowCount()
-        ncols = tablew.columnCount()
-
-        table_values = []
-        for row in range(nrows):
-            row_values = []
-            for col in self.criterions_activated:
-                item = tablew.item(row, col)
-                row_values.append(round(float(item.text()), 2))
-            table_values.append(row_values)
-
-        return table_values
-
-    def get_indiff_thresholds(self):
-        return self.get_criterions_values(self.table_indiff)
-
-    def get_pref_thresholds(self):
-        return self.get_criterions_values(self.table_pref)
-
-    def get_veto_thresholds(self):
-        return self.get_criterions_values(self.table_veto)
 
     def get_profiles(self):
         nrows = self.table_prof.rowCount()
@@ -260,7 +240,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         profiles = []
         for row in range(nrows):
             prof = self.get_active_row(self.table_prof, row)
-            r = v_multiply(prof, directions) 
+            r = d_multiply(prof, directions) 
 
             if row == 0 or self.samethresholds == 1: 
                 index = 0
@@ -274,8 +254,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 p = self.get_active_row(self.table_pref, index)
 
+            # FIXME
             if self.noveto == 1:
-                v = v_substract(self.crit_max, self.crit_min) 
+                v = dict( (crit.get('id'), crit.get('diff')) for crit in self.criterions )
             else:
                 v = self.get_active_row(self.table_veto, index)
 
@@ -304,7 +285,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             item.setBackgroundColor(QtCore.Qt.red)
             return False
 
-        if val < self.crit_min[column] or val > self.crit_max[column]:
+        if val < self.criterions[column]['min'] or val > self.criterions[column]['max']:
             item.setBackgroundColor(QtCore.Qt.red)
             return False
 
