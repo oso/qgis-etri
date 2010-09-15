@@ -398,8 +398,10 @@ class EtriDialog(QtGui.QDialog, Ui_EtriDialog):
         print "Profiles:", profiles
         actions = self.get_actions()
         print "Actions:", actions
+        cutlevel = self.spinbox_cutlevel.value()
+        print "Cutting level:", cutlevel
 
-        tri = electre_tri(actions, profiles, weights, 0.75)
+        tri = electre_tri(actions, profiles, weights, cutlevel)
 
         if self.combo_procedure.currentIndex() == 1:
             affectations = tri.optimist()
