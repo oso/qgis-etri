@@ -1,3 +1,5 @@
+from etri_plugin import etri_plugin
+
 def name():
     return "Electre Tri plugin"
 
@@ -14,5 +16,4 @@ def authorName():
     return "Olivier Sobrie"
 
 def classFactory(iface):
-    from etri_plugin import etri_plugin
     return etri_plugin(iface)

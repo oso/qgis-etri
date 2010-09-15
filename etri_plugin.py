@@ -4,11 +4,11 @@ from qgis.core import *
 
 import resources
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
 from etridialog import EtriDialog
 
 class etri_plugin:
+
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
@@ -22,7 +22,7 @@ class etri_plugin:
         self.iface.addToolBarIcon(self.action)
 
     def unload(self):
-        print 'Unloading plugin'
+        self.iface.removeToolBarIcon(self.action)
 
     def run(self):
         ui = EtriDialog(self.iface.mainWindow())
