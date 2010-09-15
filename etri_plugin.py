@@ -6,7 +6,7 @@ import resources
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-from mainwindow import MainWindow
+from etridialog import EtriDialog
 
 class etri_plugin:
     def __init__(self, iface):
@@ -25,13 +25,11 @@ class etri_plugin:
         print 'Unloading plugin'
 
     def run(self):
-        ui = MainWindow(self.iface.mainWindow())
+        ui = EtriDialog(self.iface.mainWindow())
 
         mapCanvas = self.iface.mapCanvas()
         for i in range(mapCanvas.layerCount()):
             layer = mapCanvas.layer(i)
             ui.add_crit_layer(layer)
-#            if i == 0:
-#                ui.set_crit_layer(layer)
 
         ui.show()

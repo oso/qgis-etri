@@ -8,7 +8,7 @@ from etri import *
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
 
-class MainWindow(QtGui.QDialog, Ui_EtriDialog):
+class EtriDialog(QtGui.QDialog, Ui_EtriDialog):
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
