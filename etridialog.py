@@ -139,12 +139,22 @@ class EtriDialog(QtGui.QDialog, Ui_EtriDialog):
 
         # V thresholds table
         try:
-            thresholds = self.get_row_as_str(table, index-1)
+            thresholds = self.get_row_as_str(self.table_veto, index-1)
         except:
             thresholds = [x['diff'] for x in self.criterions]
         self.set_row(self.table_veto, index, thresholds)
         if self.samethresholds == 1:
             self.table_veto.setRowHidden(index, 1)
+
+    def del_profile(self, index):
+        nprof = self.table_prof.rowCount()
+        if index > nprof or index < 1:
+            return #FIXME: Add dialog box warning
+
+        self.table_prof.removeRow(index)
+        self.table_pref.removeRow(index)
+        self.table_indiff.removeRow(index)
+        self.table_veto.removeRow(index)
 
     def add_criteria(self, crit):
         # Add row in criteria table
@@ -323,6 +333,9 @@ class EtriDialog(QtGui.QDialog, Ui_EtriDialog):
 
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
+
+    def on_Bdel_profile_pressed(self):
+        self.del_profile(self.table_prof.rowCount()-1)
 
     def on_table_prof_cellChanged(self, row, column):
         self.check_profile_crit(row, column)
