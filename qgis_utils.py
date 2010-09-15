@@ -64,31 +64,6 @@ def layer_load(path, name):
 
     return layer
 
-#def layer_get_minmax(layer):
-#    provider = layer.dataProvider()
-#    allAttrs = provider.attributeIndexes()
-#    provider.select(allAttrs)
-#    feat = QgsFeature()
-#
-#    first = True
-#    while provider.nextFeature(feat):
-#        attrs = feat.attributeMap()
-#        if first == True:
-#            mins = []
-#            maxs = []
-#            for (k, attr) in attrs.iteritems():
-#                value = attr.toFloat()[0]
-#                mins.append(value)
-#                maxs.append(value)
-#            first = False
-#        else:
-#            for (k, attr) in attrs.iteritems():
-#                value = attr.toFloat()[0]
-#                if mins[k] > value: mins[k] = value
-#                if maxs[k] < value: maxs[k] = value
-#
-#    return [mins, maxs]
-
 def layer_get_attributes(layer):
     provider = layer.dataProvider()
     allAttrs = provider.attributeIndexes()

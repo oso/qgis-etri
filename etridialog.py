@@ -1,7 +1,6 @@
 from PyQt4 import QtCore, QtGui
 from Ui_etridialog import Ui_EtriDialog
 from qgis_utils import *
-from utils import *
 from ui_utils import *
 from etri import *
 

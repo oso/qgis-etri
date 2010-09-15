@@ -1,5 +1,3 @@
-from utils import v_multiply,v_substract
-
 def d_add(a, b):
     return dict( (n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b) )
 
