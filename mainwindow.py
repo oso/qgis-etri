@@ -1,5 +1,5 @@
 from PyQt4 import QtCore, QtGui
-from Ui_mainwindow import Ui_MainWindow
+from Ui_etridialog import Ui_EtriDialog
 from qgis_utils import *
 from utils import *
 from ui_utils import *
@@ -8,7 +8,7 @@ from etri import *
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtGui.QDialog, Ui_EtriDialog):
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)

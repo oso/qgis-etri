@@ -1,12 +1,17 @@
-all: resources.py mainwindow_ui.py 
+TARGETS := resources.py Ui_etridialog.py
+
+all: $(TARGETS) 
 
 resources.py: resources.qrc
 	pyrcc4 -o resources.py resources.qrc
 
-mainwindow_ui.py: mainwindow.ui
-	pyuic4 -o mainwindow_ui.py mainwindow.ui
+Ui_etridialog.py: etridialog.ui
+	pyuic4 -o $@ $<
 
 clean: 
 	rm -f *.pyc
 
-.PHONY: all clean
+mrproper: clean
+	rm -f $(TARGETS)
+
+.PHONY: all clean mrproper
