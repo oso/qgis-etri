@@ -1,3 +1,4 @@
+import colorsys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -28,17 +29,17 @@ def addtocDialog(parent, filename, nprofils):
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
 
 def render_decision_map(layer, nprofils):
-        sr = QgsContinuousColorRenderer(QGis.Polygon)
-        sr.setClassificationField(0)
+    sr = QgsUniqueValueRenderer(QGis.Polygon)
+    sr.setClassificationField(0)
 
+    for i in range(1, nprofils+2):
         s = QgsSymbol(QGis.Polygon)
-        s.setBrush(QBrush(QColor(0,0,255)))
-        s.setLowerValue(str(1))
-        sr.setMaximumSymbol(s)
+        r, g, b = colorsys.hls_to_rgb(0+float(i)/(nprofils+1), 0.5, 0.5)
+        s.setBrush(QBrush(QColor(r*255, g*255, b*255)))
+        label = 'Category %d' % i
+        s.setLabel(label)
+        s.setLowerValue(str(i))
+        s.setUpperValue(str(i))
+        sr.insertValue(str(i), s)
 
-        s2 = QgsSymbol(QGis.Polygon)
-        s2.setBrush(QBrush(QColor(0,0,100)))
-        s2.setLowerValue(str(nprofils+1))
-        sr.setMinimumSymbol(s2)
-
-        layer.setRenderer(sr)
+    layer.setRenderer(sr)
