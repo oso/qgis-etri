@@ -87,7 +87,7 @@ class electre_tri:
                 return "R"
     
     def pessimist(self):
-        profils = self.profiles
+        profils = self.profiles[:]
         profils.reverse()
         nprofils = len(profils)+1
         affectations = {}
