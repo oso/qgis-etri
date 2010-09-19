@@ -1,11 +1,11 @@
-TARGETS := resources.py Ui_etridialog.py
+TARGETS := resources.py Ui_etrimain.py
 
 all: $(TARGETS) 
 
 resources.py: resources.qrc
 	pyrcc4 -o resources.py resources.qrc
 
-Ui_etridialog.py: etridialog.ui
+Ui_etrimain.py: etrimain.ui
 	pyuic4 -o $@ $<
 
 clean: 
