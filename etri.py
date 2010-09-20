@@ -47,11 +47,13 @@ class electre_tri:
         # compute d_j(a,b)
         d = {}
         for key, value in diff.iteritems():
-             if value > v[key]:
-                d[key] = 1
-             elif value <= p[key]:
+            if v.has_key(key) == False:
                 d[key] = 0
-             else:
+            elif value > v[key]:
+                d[key] = 1
+            elif value <= p[key]:
+                d[key] = 0
+            else:
                 num = float(v[key]-value)
                 den = float(v[key]-p[key])
                 d[key] = 1-num/den
@@ -115,3 +117,54 @@ class electre_tri:
             affectations[action] = category
 
         return affectations
+
+    def print_concordance_table(self):
+        profils = self.profiles
+
+        print 'Concordance Table'
+        print '================='
+        prtstr = 'ACTION' + ' ' * (16-len('ACTION'))
+        for i in range(1, len(profils)+1):
+            prtstr2 = 'ai,b%d' % i
+            prtstr +=  prtstr2
+            prtstr += ' ' * (16-len(prtstr2))
+            prtstr2 = 'b%d,ai' % i
+            prtstr +=  prtstr2
+            prtstr += ' ' * (16-len(prtstr2))
+
+        print prtstr
+        print '-' * len(prtstr)
+
+        for action, evals in self.actions.iteritems():
+            print '%s\t\t' % action,
+            for profil in profils:
+                concordance = self.concordance(evals, profil['refs'], profil['q'], profil['p'], self.weights)
+                print '%.2f\t\t' % concordance, 
+                concordance = self.concordance(profil['refs'], evals, profil['q'], profil['p'], self.weights)
+                print '%.2f\t\t' % concordance, 
+            print ''
+
+    def print_credibility_table(self):
+        profils = self.profiles
+
+        print 'Credibility Table'
+        print '================='
+        prtstr = 'ACTION' + ' ' * (16-len('ACTION'))
+        for i in range(1, len(profils)+1):
+            prtstr2 = 'ai,b%d' % i
+            prtstr +=  prtstr2
+            prtstr += ' ' * (16-len(prtstr2))
+            prtstr2 = 'b%d,ai' % i
+            prtstr +=  prtstr2
+            prtstr += ' ' * (16-len(prtstr2))
+        print prtstr
+        print '-' * len(prtstr)
+
+        for action, evals in self.actions.iteritems():
+            print '%s\t\t' % action,
+            for profil in profils:
+                credibility = self.credibility(evals, profil['refs'], profil['q'], profil['p'], profil['v'], self.weights)
+                print '%.2f\t\t' % credibility,
+                credibility = self.credibility(profil['refs'], evals, profil['q'], profil['p'], profil['v'], self.weights)
+                print '%.2f\t\t' % credibility,
+            print ''

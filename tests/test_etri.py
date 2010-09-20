@@ -48,3 +48,6 @@ print "ELECTRE TRI - Pessimist"
 print etri.pessimist()
 print "ELECTRE TRI - Optimist"
 print etri.optimist()
+
+etri.print_concordance_table()
+etri.print_credibility_table()
