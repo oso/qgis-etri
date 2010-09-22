@@ -82,7 +82,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for j in self.criterions_activated:
             criteria = self.criterions[j]['id']
             item = table.item(index, j)
-            values[criteria] = round(float(item.text()), 2)
+            if item <> None and len(item.text()) > 0:
+                values[criteria] = round(float(item.text()), 2)
         return values
 
     def get_row(self, table, index):
@@ -98,14 +99,22 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         values = []
         for j in range(ncols):
             item = table.item(index, j)
-            values.append(str(item.text()))
+            if item <> None:
+                values.append(str(item.text()))
+            else:
+                values.append("")
+
         return values
 
     def set_row(self, table, index, vector):
         for j in range(len(vector)):
             item = QtGui.QTableWidgetItem()
             item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-            item.setText(str(round(float(vector[j]),2)))
+            try:
+                item.setText(str(round(float(vector[j]),2)))
+            except:
+                pass
+
             table.setItem(index, j, item)
 
     def add_profile(self, index):
@@ -128,20 +137,21 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_indiff.insertRow(nprof)
         self.table_veto.insertRow(nprof)
         for table in [self.table_pref, self.table_indiff]:
-            try:
-                thresholds = self.get_row_as_str(table, index-1)
-            except:
+            if index == 0:
                 thresholds = [0] * table.columnCount()
+            else:
+                thresholds = self.get_row_as_str(table, index-1)
             self.set_row(table, index, thresholds)
             if self.samethresholds == 1:
                 table.setRowHidden(index, 1)
 
         # V thresholds table
-        try:
+        if index == 0:
+            thresholds = [""] * table.columnCount()
+        else:
             thresholds = self.get_row_as_str(self.table_veto, index-1)
-        except:
-            thresholds = [x['diff'] for x in self.criterions]
         self.set_row(self.table_veto, index, thresholds)
+
         if self.samethresholds == 1:
             self.table_veto.setRowHidden(index, 1)
 
@@ -263,13 +273,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             else:
                 p = self.get_active_row(self.table_pref, index)
 
-            # FIXME
-            if self.noveto == 1:
-                v = dict( (crit.get('id'), crit.get('diff')) for crit in self.criterions )
-            else:
-                v = self.get_active_row(self.table_veto, index)
 
-            profile = { 'refs':r, 'q': q, 'p': p, 'v': v }
+            if self.noveto <> 1:
+                v = self.get_active_row(self.table_veto, index)
+            else:
+                v = {}
+
+            profile = { 'refs':r, 'q': q, 'p': p, 'v': v}
+
             profiles.append(profile)
 
         return profiles
@@ -277,6 +288,18 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def check_is_float(self, table, row, column):
         item = table.item(row, column)
         val = item.text()
+        try:
+            round(float(val), 2)
+        except:
+            item.setBackgroundColor(QtCore.Qt.red)
+            return
+
+    def check_is_float_or_empty(self, table, row, column):
+        item = table.item(row, column)
+        val = item.text()
+        if len(val) == 0:
+            return
+
         try:
             round(float(val), 2)
         except:
@@ -350,7 +373,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.goto_next_cell(self.table_pref, row, column)
 
     def on_table_veto_cellChanged(self, row, column):
-        self.check_is_float(self.table_veto, row, column)
+        self.check_is_float_or_empty(self.table_veto, row, column)
         self.goto_next_cell(self.table_veto, row, column)
 
     def on_cbox_samethresholds_stateChanged(self, state):
