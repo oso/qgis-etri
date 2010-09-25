@@ -1,7 +1,6 @@
 from PyQt4 import QtCore, QtGui
 from Ui_etrimain import Ui_EtriMainWindow
 from qgis_utils import *
-from ui_utils import *
 from etri import *
 
 COL_CRITERIONS = 2
