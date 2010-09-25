@@ -1,11 +1,5 @@
 #!/usr/bin/python
 
-# Result should be:
-# ELECTRE TRI - Pessimist
-# [2, 1, 2, 3, 1, 2, 2]
-# ELECTRE TRI - Optimist
-# [2, 3, 2, 3, 2, 2, 2]
-
 import sys
 sys.path.append("..")
 from etri import *
