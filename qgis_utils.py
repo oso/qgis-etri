@@ -43,7 +43,7 @@ def layer_get_minmax(layer):
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
         for (k, attr) in attrs.iteritems():
-            value = attr.toFloat()[0]
+            value = attr.toDouble()[0]
             if first == True:
                 mins[k] = value
                 maxs[k] = value
@@ -76,7 +76,7 @@ def layer_get_attributes(layer):
         attrs = feat.attributeMap()
         attributes = {}
         for (k, attr) in attrs.iteritems():
-            attributes[k] = attr.toFloat()[0]
+            attributes[k] = attr.toDouble()[0]
 
         actions[feat.id()] = attributes
 
