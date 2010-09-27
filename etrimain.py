@@ -412,15 +412,15 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if file is None or encoding is None:
             return # FIXME
 
-        print "Generate Decision Map"
+        #print "Generate Decision Map"
         weights = self.get_criterions_weights()
-        print "Weights:", weights
+        #print "Weights:", weights
         profiles = self.get_profiles()
-        print "Profiles:", profiles
+        #print "Profiles:", profiles
         actions = self.get_actions()
-        print "Actions:", actions
+        #print "Actions:", actions
         cutlevel = self.spinbox_cutlevel.value()
-        print "Cutting level:", cutlevel
+        #print "Cutting level:", cutlevel
 
         tri = electre_tri(actions, profiles, weights, cutlevel)
 
@@ -429,7 +429,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         else:
             affectations = tri.pessimist()
 
-        print "Affectations:", affectations
+        #print "Affectations:", affectations
 
         generate_decision_map(self.crit_layer, affectations, file, encoding)
 

@@ -18,7 +18,6 @@ def layer_get_criterions(layer):
     for (id, field) in fields.iteritems():
         #FIXME: Check the type to only include numbers
         criteria = {}
-        print "type=", field.type()
         str = '%s' % field.name().trimmed()
         criteria['name'] = str
         criteria['id'] = id
@@ -28,7 +27,6 @@ def layer_get_criterions(layer):
         criteria['diff'] = maxs[id]-mins[id]
         criterions.append(criteria)
 
-    print 'Criterions', criterions
     return criterions
 
 def layer_get_minmax(layer):
@@ -83,7 +81,6 @@ def layer_get_attributes(layer):
     return actions
 
 def generate_decision_map(layer_in, affectations, out, out_encoding):
-    print "Generate Decision Map"
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
