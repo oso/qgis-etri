@@ -7,7 +7,7 @@ def description():
     return "A simple Electre Tri plugin"
 
 def version():
-    return "0.1"
+    return "0.1.1"
 
 def qgisMinimumVersion():
     return "1.4"
