@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Sat Sep 18 20:55:34 2010
+# Created: Mon Oct  4 18:52:07 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -182,7 +182,7 @@ class Ui_EtriMainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(EtriMainWindow)
 
     def retranslateUi(self, EtriMainWindow):
-        EtriMainWindow.setWindowTitle(QtGui.QApplication.translate("EtriMainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        EtriMainWindow.setWindowTitle(QtGui.QApplication.translate("EtriMainWindow", "Electre Tri", None, QtGui.QApplication.UnicodeUTF8))
         self.group_input.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Input Layer", None, QtGui.QApplication.UnicodeUTF8))
         self.Bloadlayer.setText(QtGui.QApplication.translate("EtriMainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
         self.group_profiles.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
