@@ -293,10 +293,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             item.setBackgroundColor(QtCore.Qt.red)
             return
 
+        item.setBackgroundColor(QtCore.Qt.white)
+
     def check_is_float_or_empty(self, table, row, column):
         item = table.item(row, column)
         val = item.text()
         if len(val) == 0:
+            item.setBackgroundColor(QtCore.Qt.white)
             return
 
         try:
