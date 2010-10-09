@@ -157,12 +157,12 @@
             <widget class="QComboBox" name="combo_procedure">
              <item>
               <property name="text">
-               <string>Pessimist</string>
+               <string>Pessimistic</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Optimist</string>
+               <string>Optimistic</string>
               </property>
              </item>
             </widget>
@@ -186,9 +186,9 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab_criterions">
+      <widget class="QWidget" name="tab_criteria">
        <attribute name="title">
-        <string>Criterions</string>
+        <string>Criteria</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -246,7 +246,7 @@
           </attribute>
           <column>
            <property name="text">
-            <string>Criteria</string>
+            <string>Criterion</string>
            </property>
           </column>
           <column>

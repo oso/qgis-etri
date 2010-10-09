@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Mon Oct  4 18:52:07 2010
+# Created: Fri Oct  8 22:55:22 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -94,11 +94,11 @@ class Ui_EtriMainWindow(object):
         self.gridLayout.addLayout(self.right_layout, 0, 1, 1, 1)
         self.Tab_params = QtGui.QTabWidget(self.centralwidget)
         self.Tab_params.setObjectName("Tab_params")
-        self.tab_criterions = QtGui.QWidget()
-        self.tab_criterions.setObjectName("tab_criterions")
-        self.gridLayout_2 = QtGui.QGridLayout(self.tab_criterions)
+        self.tab_criteria = QtGui.QWidget()
+        self.tab_criteria.setObjectName("tab_criteria")
+        self.gridLayout_2 = QtGui.QGridLayout(self.tab_criteria)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.table_crit = QtGui.QTableWidget(self.tab_criterions)
+        self.table_crit = QtGui.QTableWidget(self.tab_criteria)
         self.table_crit.setDragEnabled(False)
         self.table_crit.setAlternatingRowColors(False)
         self.table_crit.setShowGrid(False)
@@ -120,7 +120,7 @@ class Ui_EtriMainWindow(object):
         self.table_crit.verticalHeader().setHighlightSections(False)
         self.table_crit.verticalHeader().setSortIndicatorShown(False)
         self.gridLayout_2.addWidget(self.table_crit, 0, 0, 1, 1)
-        self.Tab_params.addTab(self.tab_criterions, "")
+        self.Tab_params.addTab(self.tab_criteria, "")
         self.tab_profiles = QtGui.QWidget()
         self.tab_profiles.setObjectName("tab_profiles")
         self.gridLayout_5 = QtGui.QGridLayout(self.tab_profiles)
@@ -195,12 +195,12 @@ class Ui_EtriMainWindow(object):
         self.group_affectation.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Affectation", None, QtGui.QApplication.UnicodeUTF8))
         self.label_cutlevel.setText(QtGui.QApplication.translate("EtriMainWindow", "Cutting level:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_procedure.setText(QtGui.QApplication.translate("EtriMainWindow", "Procedure:", None, QtGui.QApplication.UnicodeUTF8))
-        self.combo_procedure.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Pessimist", None, QtGui.QApplication.UnicodeUTF8))
-        self.combo_procedure.setItemText(1, QtGui.QApplication.translate("EtriMainWindow", "Optimist", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_procedure.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Pessimistic", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_procedure.setItemText(1, QtGui.QApplication.translate("EtriMainWindow", "Optimistic", None, QtGui.QApplication.UnicodeUTF8))
         self.Bgenerate.setText(QtGui.QApplication.translate("EtriMainWindow", "Generate Decision Map", None, QtGui.QApplication.UnicodeUTF8))
-        self.table_crit.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("EtriMainWindow", "Criteria", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_crit.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("EtriMainWindow", "Criterion", None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("EtriMainWindow", "Weight", None, QtGui.QApplication.UnicodeUTF8))
-        self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_criterions), QtGui.QApplication.translate("EtriMainWindow", "Criterions", None, QtGui.QApplication.UnicodeUTF8))
+        self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_criteria), QtGui.QApplication.translate("EtriMainWindow", "Criteria", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_indiff), QtGui.QApplication.translate("EtriMainWindow", "Indifference", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_pref), QtGui.QApplication.translate("EtriMainWindow", "Preference", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_veto), QtGui.QApplication.translate("EtriMainWindow", "Veto", None, QtGui.QApplication.UnicodeUTF8))
