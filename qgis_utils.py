@@ -6,7 +6,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-def layer_get_criterions(layer):
+def layer_get_criteria(layer):
     minmax = layer_get_minmax(layer)
     mins = minmax['mins']
     maxs = minmax['maxs']
@@ -14,20 +14,20 @@ def layer_get_criterions(layer):
     provider = layer.dataProvider()
     fields = provider.fields()
     i = 0
-    criterions = []
+    criteria = []
     for (id, field) in fields.iteritems():
         #FIXME: Check the type to only include numbers
-        criteria = {}
+        criterion = {}
         str = '%s' % field.name().trimmed()
-        criteria['name'] = str
-        criteria['id'] = id
-        criteria['min'] = mins[id]
-        criteria['max'] = maxs[id]
-        criteria['mean'] = (maxs[id]+mins[id])/2
-        criteria['diff'] = maxs[id]-mins[id]
-        criterions.append(criteria)
+        criterion['name'] = str
+        criterion['id'] = id
+        criterion['min'] = mins[id]
+        criterion['max'] = maxs[id]
+        criterion['mean'] = (maxs[id]+mins[id])/2
+        criterion['diff'] = maxs[id]-mins[id]
+        criteria.append(criterion)
 
-    return criterions
+    return criteria
 
 def layer_get_minmax(layer):
     provider = layer.dataProvider()

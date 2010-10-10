@@ -15,8 +15,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_crit.setColumnWidth(1, 60)
         self.table_crit.setColumnWidth(2, 50)
 
-        self.criterions_activated = []
-        self.ncriterions = 0
+        self.criteria_activated = []
+        self.ncriteria = 0
         self.samethresholds = 0
         self.sameqp = 0
         self.noveto = 0
@@ -48,8 +48,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         table.setColumnCount(0)
 
     def set_crit_layer(self, layer):
-        self.criterions_activated = []
-        self.ncriterions = 0
+        self.criteria_activated = []
+        self.ncriteria = 0
         self.samethresholds = 0
         self.sameqp = 0
         self.noveto = 0
@@ -63,9 +63,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.crit_layer_load(layer)
 
     def crit_layer_load(self, layer):
-        self.criterions = layer_get_criterions(layer)
-        for crit in self.criterions:
-            self.add_criteria(crit)
+        self.criteria = layer_get_criteria(layer)
+        for crit in self.criteria:
+            self.add_criterion(crit)
 
         self.actions = layer_get_attributes(layer)
 
@@ -78,11 +78,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def get_active_row(self, table, index):
         ncols = table.columnCount()
         values = {}
-        for j in self.criterions_activated:
-            criteria = self.criterions[j]['id']
+        for j in self.criteria_activated:
+            criterion = self.criteria[j]['id']
             item = table.item(index, j)
             if item <> None and len(item.text()) > 0:
-                values[criteria] = round(float(item.text()), 2)
+                values[criterion] = round(float(item.text()), 2)
         return values
 
     def get_row(self, table, index):
@@ -125,7 +125,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_prof.insertRow(index)
 
         if nprof == 0:
-            val = [x['mean'] for x in self.criterions]
+            val = [x['mean'] for x in self.criteria]
         else:
             val = self.get_row_as_str(self.table_prof, index-1)
 
@@ -164,7 +164,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_indiff.removeRow(index)
         self.table_veto.removeRow(index)
 
-    def add_criteria(self, crit):
+    def add_criterion(self, crit):
         # Add row in criteria table
         nrow = self.table_crit.rowCount()
         self.table_crit.insertRow(nrow)
@@ -190,7 +190,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         signalMapper = QtCore.QSignalMapper(self)
         QtCore.QObject.connect(checkBox, QtCore.SIGNAL("stateChanged(int)"), signalMapper, QtCore.SLOT("map()"))
         signalMapper.setMapping(checkBox, nrow)
-        QtCore.QObject.connect(signalMapper, QtCore.SIGNAL("mapped(int)"), self.on_criteria_stateChanged)
+        QtCore.QObject.connect(signalMapper, QtCore.SIGNAL("mapped(int)"), self.on_criterion_stateChanged)
 
         comboBox = QtGui.QComboBox(self)
         comboBox.addItem("Max")
@@ -204,19 +204,19 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             table.setHorizontalHeaderItem(nrow, item)
             table.horizontalHeaderItem(nrow).setText(crit['name'])
 
-        self.ncriterions += 1
-        self.criterions_activated.append(nrow)
-        self.criterions_activated.sort()
+        self.ncriteria += 1
+        self.criteria_activated.append(nrow)
+        self.criteria_activated.sort()
 
-    def get_criterions_index(self):
+    def get_criteria_index(self):
         index = []
-        for i in self.criterions_activated:
-            index.append(self.criterions[i]['id'])
+        for i in self.criteria_activated:
+            index.append(self.criteria[i]['id'])
         return index
 
     def get_actions(self):
-        index = self.get_criterions_index()
-        directions = self.get_criterions_directions()
+        index = self.get_criteria_index()
+        directions = self.get_criteria_directions()
 
         actions = {}
         for action, attrs in self.actions.iteritems():
@@ -228,32 +228,32 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         return actions
 
-    def get_criterions_weights(self):
+    def get_criteria_weights(self):
         W = {}
-        for i in self.criterions_activated:
-            criteria = self.criterions[i]['id']
+        for i in self.criteria_activated:
+            criterion = self.criteria[i]['id']
             w = self.table_crit.item(i,2) 
-            W[criteria] = round(float(w.text()), 2)
+            W[criterion] = round(float(w.text()), 2)
 
         return W
 
-    def get_criterions_directions(self):
+    def get_criteria_directions(self):
         directions = {}
-        for i in self.criterions_activated:
-            criteria = self.criterions[i]['id']
+        for i in self.criteria_activated:
+            criterion = self.criteria[i]['id']
             item = self.table_crit.cellWidget(i, COL_DIRECTION)
             index = item.currentIndex()
             if index == 0:
-                directions[criteria] = 1 
+                directions[criterion] = 1 
             else:
-                directions[criteria] = -1 
+                directions[criterion] = -1 
 
         return directions
 
     def get_profiles(self):
         nrows = self.table_prof.rowCount()
         ncols = self.table_prof.columnCount()
-        directions = self.get_criterions_directions()
+        directions = self.get_criteria_directions()
 
         profiles = []
         for row in range(nrows):
@@ -319,7 +319,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             item.setBackgroundColor(QtCore.Qt.red)
             return False
 
-        if val < self.criterions[column]['min'] or val > self.criterions[column]['max']:
+        if val < self.criteria[column]['min'] or val > self.criteria[column]['max']:
             item.setBackgroundColor(QtCore.Qt.red)
             return False
 
@@ -335,21 +335,21 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         self.table_crit.setCurrentCell(row+1,column)
 
-    def on_criteria_stateChanged(self, row):
+    def on_criterion_stateChanged(self, row):
         item = self.table_crit.cellWidget(row, 0)
         if item.isChecked() == False:
             self.table_prof.setColumnHidden(row, 1)
             self.table_indiff.setColumnHidden(row, 1)
             self.table_pref.setColumnHidden(row, 1)
             self.table_veto.setColumnHidden(row, 1)
-            self.criterions_activated.remove(row)
+            self.criteria_activated.remove(row)
         else:
             self.table_prof.setColumnHidden(row, 0)
             self.table_indiff.setColumnHidden(row, 0)
             self.table_pref.setColumnHidden(row, 0)
             self.table_veto.setColumnHidden(row, 0)
-            self.criterions_activated.append(row)
-            self.criterions_activated.sort()
+            self.criteria_activated.append(row)
+            self.criteria_activated.sort()
 
     def on_Bloadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
@@ -381,13 +381,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def on_cbox_samethresholds_stateChanged(self, state):
         if state == 0:
             self.samethresholds = 0
-            for i in range(1, self.ncriterions):
+            for i in range(1, self.ncriteria):
                 self.table_indiff.setRowHidden(i, 0)
                 self.table_pref.setRowHidden(i, 0)
                 self.table_veto.setRowHidden(i, 0)
         else:
             self.samethresholds = 1
-            for i in range(1, self.ncriterions):
+            for i in range(1, self.ncriteria):
                 self.table_indiff.setRowHidden(i, 1)
                 self.table_pref.setRowHidden(i, 1)
                 self.table_veto.setRowHidden(i, 1)
@@ -416,7 +416,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             return # FIXME
 
         #print "Generate Decision Map"
-        weights = self.get_criterions_weights()
+        weights = self.get_criteria_weights()
         #print "Weights:", weights
         profiles = self.get_profiles()
         #print "Profiles:", profiles
