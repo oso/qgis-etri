@@ -68,7 +68,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for crit in self.criteria:
             self.add_criterion(crit)
 
-        self.actions = layer_get_attributes(layer) #FIXME: remove
+        self.actions = layer_get_attributes(layer)
 
         self.add_profile(0)
 
