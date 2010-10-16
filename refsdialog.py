@@ -4,9 +4,10 @@ from qgis_utils import *
 
 class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
 
-    def __init__(self, parent, layer, refs_actions):
+    def __init__(self, parent, iface, layer, refs_actions):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.iface = iface
         self.table_refs.setColumnWidth(0, 30)
         self.setWindowFlags(QtCore.Qt.Window)
 
@@ -87,4 +88,16 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
 
     def accept(self):
         self.parent.set_reference_actions(self.refs_actions)
+        self.layer.setSelectedFeatures(self.refs_actions)
         QDialog.accept(self)
+
+    def on_table_refs_itemDoubleClicked(self, item):
+        row = item.row()
+        featids = []
+        featids.append(self.row_ids[row])
+        self.layer.setSelectedFeatures(featids)
+        mc = self.iface.mapCanvas()
+#        rect = self.layer.boundingBoxOfSelected()
+#        rect.scale(2)
+#        mc.setExtent(rect)
+        mc.refresh()

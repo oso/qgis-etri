@@ -9,7 +9,9 @@ COL_DIRECTION = 1
 
 class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
-    def __init__(self, parent = None):
+    def __init__(self, iface):
+        self.iface = iface
+        parent = self.iface.mainWindow()
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.table_crit.setColumnWidth(0, 235)
@@ -452,7 +454,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def on_Bchooserefs_pressed(self):
         if hasattr(self, 'crit_layer'):
-            refs_dialog = RefsDialog(self, self.crit_layer, self.refs_ids[:])
+            refs_dialog = RefsDialog(self, self.iface, self.crit_layer, self.refs_ids[:])
             refs_dialog.show()
 
     def set_reference_actions(self, feat_ids):
