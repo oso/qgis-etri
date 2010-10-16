@@ -63,6 +63,19 @@ def layer_load(path, name):
 
     return layer
 
+def layer_get_feature_attribute(layer, featid):
+    provider = layer.dataProvider()
+    feat = QgsFeature()
+    allAttrs = provider.attributeIndexes()
+    provider.featureAtId(featid, feat, False, allAttrs)
+    attrs = feat.attributeMap()
+
+    attributes = {}
+    for (k, attr) in attrs.iteritems():
+        attributes[k] = attr.toString().trimmed()
+
+    return attributes
+
 def layer_get_attributes(layer):
     provider = layer.dataProvider()
     allAttrs = provider.attributeIndexes()

@@ -4,15 +4,17 @@ from qgis_utils import *
 
 class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
 
-    def __init__(self, parent, layer):
+    def __init__(self, parent, layer, refs_actions):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.table_refs.setColumnWidth(0, 30)
         self.setWindowFlags(QtCore.Qt.Window)
 
+        self.parent = parent
+
         self.layer = layer 
         self.row_ids = {}
-        self.refs_actions = []
+        self.refs_actions = refs_actions
         self.load_attributes()
 
     def load_attributes(self):
@@ -42,7 +44,14 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
             self.table_refs.setItem(j, 0, item)
 
             checkBox = QtGui.QCheckBox(self)
-            checkBox.setCheckState(QtCore.Qt.Unchecked)
+            if feat.id() in self.refs_actions:
+                checkBox.setCheckState(QtCore.Qt.Checked)
+                item = self.table_refs.item(j, 0)
+                item.setBackgroundColor(QtCore.Qt.green)
+                activated = True
+            else:
+                checkBox.setCheckState(QtCore.Qt.Unchecked)
+                activated = False
             self.table_refs.setCellWidget(j, 0, checkBox)
 
             signalMapper = QtCore.QSignalMapper(self)
@@ -55,19 +64,27 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
             for (i, attr) in attrMap.iteritems():
                 item = QtGui.QTableWidgetItem()
                 item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+                if activated == True:
+                    item.setBackgroundColor(QtCore.Qt.green)
                 item.setText(attr.toString().trimmed())
                 self.table_refs.setItem(j, i+1, item)
 
             j += 1
 
+    def set_row_background(self, row, color):
+        for i in range(self.table_refs.columnCount()):
+            item = self.table_refs.item(row, i)
+            item.setBackgroundColor(color)
+        
     def on_astate_changed(self, row):
         item = self.table_refs.cellWidget(row, 0)
         if item.isChecked() == False:
             self.refs_actions.remove(self.row_ids[row])
+            self.set_row_background(row, QtCore.Qt.white)
         else:
-            self.refs_actions.append(self.row_ids[row])    
+            self.refs_actions.append(self.row_ids[row])
+            self.set_row_background(row, QtCore.Qt.green)
 
     def accept(self):
-        print self.refs_actions
-
+        self.parent.set_reference_actions(self.refs_actions)
         QDialog.accept(self)

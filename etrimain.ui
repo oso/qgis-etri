@@ -162,7 +162,16 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QTableWidget" name="table_refs"/>
+            <widget class="QTableWidget" name="table_refs">
+             <column>
+              <property name="text">
+               <string>Category</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+              </property>
+             </column>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="Bchooserefs">

@@ -22,6 +22,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.sameqp = 0
         self.noveto = 0
         self.crit_layers = []
+        self.refs_ids = []
 
         self.table_prof.resizeColumnsToContents()
         self.table_indiff.resizeColumnsToContents()
@@ -59,6 +60,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.clear_table(self.table_indiff)
         self.clear_table(self.table_pref)
         self.clear_table(self.table_veto)
+        self.table_refs.setColumnCount(1)
+        self.table_refs.setRowCount(0)
 
         self.crit_layer = layer
         self.crit_layer_load(layer)
@@ -205,6 +208,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             table.setHorizontalHeaderItem(nrow, item)
             table.horizontalHeaderItem(nrow).setText(crit['name'])
 
+        # Add column in assignment table
+        self.table_refs.insertColumn(nrow+1)
+        item = QtGui.QTableWidgetItem()
+        self.table_refs.setHorizontalHeaderItem(nrow+1, item)
+        self.table_refs.horizontalHeaderItem(nrow+1).setText(crit['name'])
+
         self.ncriteria += 1
         self.criteria_activated.append(nrow)
         self.criteria_activated.sort()
@@ -343,12 +352,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.table_indiff.setColumnHidden(row, 1)
             self.table_pref.setColumnHidden(row, 1)
             self.table_veto.setColumnHidden(row, 1)
+            self.table_refs.setColumnHidden(row+1, 1)
             self.criteria_activated.remove(row)
         else:
             self.table_prof.setColumnHidden(row, 0)
             self.table_indiff.setColumnHidden(row, 0)
             self.table_pref.setColumnHidden(row, 0)
             self.table_veto.setColumnHidden(row, 0)
+            self.table_refs.setColumnHidden(row+1, 0)
             self.criteria_activated.append(row)
             self.criteria_activated.sort()
 
@@ -441,5 +452,32 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def on_Bchooserefs_pressed(self):
         if hasattr(self, 'crit_layer'):
-            refs_dialog = RefsDialog(self, self.crit_layer)
+            refs_dialog = RefsDialog(self, self.crit_layer, self.refs_ids[:])
             refs_dialog.show()
+
+    def set_reference_actions(self, feat_ids):
+        # Remove old reference actions
+        for i, featid in enumerate(self.refs_ids):
+            if featid not in list(feat_ids):
+                self.table_refs.removeRow(i)
+
+        # Add new reference actions
+        for i, featid in enumerate(feat_ids):
+            if featid not in self.refs_ids:
+                attr = layer_get_feature_attribute(self.crit_layer, featid)
+                self.table_refs_add_row(attr)
+
+        self.refs_ids = feat_ids[:]
+
+    def table_refs_add_row(self, attr):
+        nrow = self.table_refs.rowCount()
+        self.table_refs.insertRow(nrow)
+        for crit in self.criteria:
+            crit_id = crit['id']
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(QtCore.Qt.ItemIsTristate)
+            item.setText(attr[crit_id])
+            self.table_refs.setItem(nrow, crit_id+1, item)
+
+    def on_table_refs_cellChanged(self, row, column):
+        self.table_refs.setCurrentCell(row+1,column)

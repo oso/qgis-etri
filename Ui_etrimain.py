@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Thu Oct 14 22:14:21 2010
+# Created: Sat Oct 16 18:13:43 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -106,8 +106,10 @@ class Ui_EtriMainWindow(object):
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.table_refs = QtGui.QTableWidget(self.group_refs)
         self.table_refs.setObjectName(_fromUtf8("table_refs"))
-        self.table_refs.setColumnCount(0)
+        self.table_refs.setColumnCount(1)
         self.table_refs.setRowCount(0)
+        item = QtGui.QTableWidgetItem()
+        self.table_refs.setHorizontalHeaderItem(0, item)
         self.verticalLayout_3.addWidget(self.table_refs)
         self.Bchooserefs = QtGui.QPushButton(self.group_refs)
         self.Bchooserefs.setObjectName(_fromUtf8("Bchooserefs"))
@@ -239,6 +241,7 @@ class Ui_EtriMainWindow(object):
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_veto), QtGui.QApplication.translate("EtriMainWindow", "Veto", None, QtGui.QApplication.UnicodeUTF8))
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_profiles), QtGui.QApplication.translate("EtriMainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.group_refs.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Reference actions", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_refs.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("EtriMainWindow", "Category", None, QtGui.QApplication.UnicodeUTF8))
         self.Bchooserefs.setText(QtGui.QApplication.translate("EtriMainWindow", "Choose reference actions", None, QtGui.QApplication.UnicodeUTF8))
         self.group_infparams.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.label_combo.setText(QtGui.QApplication.translate("EtriMainWindow", "Electre Tri model:", None, QtGui.QApplication.UnicodeUTF8))
