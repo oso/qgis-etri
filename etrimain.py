@@ -481,3 +481,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def on_table_refs_cellChanged(self, row, column):
         self.table_refs.setCurrentCell(row+1,column)
+
+    def on_Binfer_pressed(self):
+        # Not yet implemented
+        print 'Not yet implemented!'

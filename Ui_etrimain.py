@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Sat Oct 16 18:13:43 2010
+# Created: Sat Oct 16 20:08:43 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -111,9 +111,15 @@ class Ui_EtriMainWindow(object):
         item = QtGui.QTableWidgetItem()
         self.table_refs.setHorizontalHeaderItem(0, item)
         self.verticalLayout_3.addWidget(self.table_refs)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.Bchooserefs = QtGui.QPushButton(self.group_refs)
         self.Bchooserefs.setObjectName(_fromUtf8("Bchooserefs"))
-        self.verticalLayout_3.addWidget(self.Bchooserefs)
+        self.horizontalLayout.addWidget(self.Bchooserefs)
+        self.Binfer = QtGui.QPushButton(self.group_refs)
+        self.Binfer.setObjectName(_fromUtf8("Binfer"))
+        self.horizontalLayout.addWidget(self.Binfer)
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
         self.gridLayout_6.addWidget(self.group_refs, 1, 0, 1, 1)
         self.group_infparams = QtGui.QGroupBox(self.tab_inference)
         self.group_infparams.setObjectName(_fromUtf8("group_infparams"))
@@ -243,6 +249,7 @@ class Ui_EtriMainWindow(object):
         self.group_refs.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Reference actions", None, QtGui.QApplication.UnicodeUTF8))
         self.table_refs.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("EtriMainWindow", "Category", None, QtGui.QApplication.UnicodeUTF8))
         self.Bchooserefs.setText(QtGui.QApplication.translate("EtriMainWindow", "Choose reference actions", None, QtGui.QApplication.UnicodeUTF8))
+        self.Binfer.setText(QtGui.QApplication.translate("EtriMainWindow", "Infer parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.group_infparams.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.label_combo.setText(QtGui.QApplication.translate("EtriMainWindow", "Electre Tri model:", None, QtGui.QApplication.UnicodeUTF8))
         self.combo_model.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Bouyssou-Marchant", None, QtGui.QApplication.UnicodeUTF8))
