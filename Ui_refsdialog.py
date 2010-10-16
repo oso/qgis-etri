@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'refsdialog.ui'
 #
-# Created: Thu Oct 14 22:34:08 2010
+# Created: Sat Oct 16 15:28:47 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,15 +17,20 @@ except AttributeError:
 class Ui_RefsDialog(object):
     def setupUi(self, RefsDialog):
         RefsDialog.setObjectName(_fromUtf8("RefsDialog"))
-        RefsDialog.resize(600, 300)
+        RefsDialog.resize(800, 300)
         self.gridLayout = QtGui.QGridLayout(RefsDialog)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.table_refs = QtGui.QTableWidget(RefsDialog)
         self.table_refs.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.table_refs.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.table_refs.setCornerButtonEnabled(False)
         self.table_refs.setObjectName(_fromUtf8("table_refs"))
-        self.table_refs.setColumnCount(0)
+        self.table_refs.setColumnCount(1)
         self.table_refs.setRowCount(0)
+        item = QtGui.QTableWidgetItem()
+        self.table_refs.setHorizontalHeaderItem(0, item)
+        self.table_refs.horizontalHeader().setHighlightSections(False)
+        self.table_refs.verticalHeader().setHighlightSections(False)
         self.gridLayout.addWidget(self.table_refs, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(RefsDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
