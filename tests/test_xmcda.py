@@ -3,7 +3,7 @@ import sys
 sys.path.append("..")
 import xmcda
 
-# Criterions
+# Criteria
 criteria = ['prix', 'transport', 'envir', 'residents', 'competition']
 
 # Weights

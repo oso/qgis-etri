@@ -10,8 +10,8 @@ import sys
 sys.path.append("..")
 from etri import *
 
-# Criterions
-criterions = ['prix', 'transport', 'envir', 'residents', 'competition']
+# Criteria
+criteria = ['prix', 'transport', 'envir', 'residents', 'competition']
 
 # Weights
 w = {'prix': 25, 'transport': 45, 'envir': 10, 'residents': 12, 'competition': 8}
@@ -36,12 +36,14 @@ q = {'prix': 15,  'transport':  80, 'envir': 1, 'residents': 0.5, 'competition':
 p = {'prix': 40,  'transport': 350, 'envir': 3, 'residents': 3.5, 'competition': 5}
 v = {'prix': 100, 'transport': 850, 'envir': 5, 'residents': 4.5, 'competition': 8}
 
-affect_p = {'a1': 2, 'a2': 1, 'a3': 2, 'a4': 3, 'a5': 1, 'a6': 2, 'a7':2 }
-affect_o = {'a1': 2, 'a2': 3, 'a3': 2, 'a4': 3, 'a5': 2, 'a6': 2, 'a7':2 }
-
+# Profiles
 prof1 = { 'refs': b1, 'q': q, 'p': p, 'v': v }
 prof2 = { 'refs': b2, 'q': q, 'p': p, 'v': v }
 profiles = [ prof1, prof2 ]
+
+# Affecations
+affect_p = {'a1': 2, 'a2': 1, 'a3': 2, 'a4': 3, 'a5': 1, 'a6': 2, 'a7':2 }
+affect_o = {'a1': 2, 'a2': 3, 'a3': 2, 'a4': 3, 'a5': 2, 'a6': 2, 'a7':2 }
 
 # Lambda
 lbda = 0.75
