@@ -460,8 +460,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def set_reference_actions(self, feat_ids):
         # Remove old reference actions
+        to_del = []
         for i, featid in enumerate(self.refs_ids):
             if featid not in list(feat_ids):
+                to_del.append(i)
+
+        to_del.sort()
+        to_del.reverse()
+        for i in to_del:
                 self.table_refs.removeRow(i)
 
         # Add new reference actions
