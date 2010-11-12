@@ -35,7 +35,7 @@ def format_categories(categories):
     for i, category in enumerate(categories):
         output += "\t<category id=\"%s\">\n" % category
         output += "\t\t<active>true</active>\n"
-        output += "\t\t<rank><integer>%d</integer></rank>\n" % i
+        output += "\t\t<rank><integer>%d</integer></rank>\n" % (i+1)
         output += "\t</category>\n"
     output += "</categories>\n"
     return output
