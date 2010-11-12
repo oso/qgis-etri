@@ -3,6 +3,7 @@ from Ui_etrimain import Ui_EtriMainWindow
 from qgis_utils import *
 from etri import *
 from refsdialog import *
+import xmcda
 
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
@@ -485,5 +486,51 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_refs.setCurrentCell(row+1,column)
 
     def on_Binfer_pressed(self):
-        # Not yet implemented
-        print 'Not yet implemented!'
+        nalts = self.table_refs.rowCount()
+
+        alts = []
+        for i in range(nalts):
+            alts.append("a%d" % (i+1))
+        xmcda_alts = xmcda.format_alternatives(alts)
+
+        crit = []
+        for i in self.criteria_activated:
+            crit.append("g%d" % i)
+        xmcda_crit = xmcda.format_criteria(crit)
+
+        alts_perfs = {}
+        affect = {}
+        catmax = 2
+        for i in range(nalts):
+            cat = self.table_refs.item(i,0).text()
+            cat = int(cat)
+            catmax = max(catmax, cat) 
+            affect["a%d" % (i+1)] = "cat%d" % cat
+            alt_perfs = {}
+            for j in self.criteria_activated:
+                evaluation = self.table_refs.item(i,j+1).text()
+                alt_perfs["g%d" % j] = evaluation
+            alts_perfs["a%d" % (i+1)] = alt_perfs
+        xmcda_pt = xmcda.format_performances_table(alts_perfs)
+        xmcda_affect = xmcda.format_affectations(affect)
+
+        cats = []
+        for i in range(catmax):
+            cats.append("cat%d" % (i+1))
+        xmcda_cats = xmcda.format_categories(cats) 
+
+        print xmcda_alts
+        print xmcda_crit
+        print xmcda_cats
+        print xmcda_pt
+        print xmcda_affect
+
+        xmcda_data = {}
+        xmcda_data['alternatives'] = xmcda.add_xmcda_tags(xmcda_alts)
+        xmcda_data['criteria'] = xmcda.add_xmcda_tags(xmcda_crit)
+        xmcda_data['categories'] = xmcda.add_xmcda_tags(xmcda_cats)
+        xmcda_data['perfs_table'] = xmcda.add_xmcda_tags(xmcda_pt)
+        xmcda_data['assign'] = xmcda.add_xmcda_tags(xmcda_affect)
+
+        ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, xmcda_data)
+        xmcda.request_solution(xmcda.ETRI_BM_URL, ticket)
