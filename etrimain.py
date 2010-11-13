@@ -3,7 +3,10 @@ from Ui_etrimain import Ui_EtriMainWindow
 from qgis_utils import *
 from etri import *
 from refsdialog import *
+from inference import *
+from xml.etree import ElementTree as ET
 import xmcda
+import PyXMCDA
 
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
@@ -491,7 +494,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def on_table_refs_cellChanged(self, row, column):
         self.table_refs.setCurrentCell(row+1,column)
 
-    def on_Binfer_pressed(self):
+    def create_xmcda_input(self):
         nalts = self.table_refs.rowCount()
 
         alts = []
@@ -506,11 +509,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         alts_perfs = {}
         affect = {}
-        catmax = 2
+        ncat = 2
         for i in range(nalts):
             cat = self.table_refs.item(i,0).text()
             cat = int(cat)
-            catmax = max(catmax, cat) 
+            ncat = max(ncat, cat) 
             affect["a%d" % (i+1)] = "cat%d" % cat
             alt_perfs = {}
             for j in self.criteria_activated:
@@ -521,15 +524,15 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         xmcda_affect = xmcda.format_affectations(affect)
 
         cats = []
-        for i in range(catmax):
+        for i in range(ncat):
             cats.append("cat%d" % (i+1))
         xmcda_cats = xmcda.format_categories(cats) 
-
-        print xmcda_alts
-        print xmcda_crit
-        print xmcda_cats
-        print xmcda_pt
-        print xmcda_affect
+        
+        #print xmcda_alts
+        #print xmcda_crit
+        #print xmcda_cats
+        #print xmcda_pt
+        #print xmcda_affect
 
         xmcda_data = {}
         xmcda_data['alternatives'] = xmcda.add_xmcda_tags(xmcda_alts)
@@ -538,5 +541,45 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         xmcda_data['perfs_table'] = xmcda.add_xmcda_tags(xmcda_pt)
         xmcda_data['assign'] = xmcda.add_xmcda_tags(xmcda_affect)
 
+        return xmcda_data
+
+    def parse_xmcda_output(self, solution):
+        xmcda_msg = ET.ElementTree(ET.fromstring(solution['messages']))
+        xmcda_cat_prof = ET.ElementTree(ET.fromstring(solution['cat_profiles']))
+        xmcda_refalts_pt = ET.ElementTree(ET.fromstring(solution['reference_alts']))
+        xmcda_crit_weights = ET.ElementTree(ET.fromstring(solution['crit_weights']))
+        xmcda_compat_alts = ET.ElementTree(ET.fromstring(solution['compatible_alts']))
+        xmcda_lambda = ET.ElementTree(ET.fromstring(solution['lambda']))
+
+        # FIXME: avoid that code...
+        ncat = 2
+        nalts = self.table_refs.rowCount()
+        for i in range(nalts):
+            cat = self.table_refs.item(i,0).text()
+            cat = int(cat)
+            ncat = max(ncat, cat) 
+
+        ref_alts = []
+        for i in range(ncat-1):
+            ref_alts.append("b%d" % (i+1))
+
+        crit = []
+        for i in self.criteria_activated:
+            crit.append("g%d" % i)
+        # FIXME
+
+        refalts_pt = PyXMCDA.getPerformanceTable(xmcda_refalts_pt, ref_alts, crit) 
+        crit_weights = PyXMCDA.getCriterionValue(xmcda_crit_weights, crit)
+        compat_alts = PyXMCDA.getAlternativesID(xmcda_compat_alts)
+        lbda = xmcda.get_lambda(xmcda_lambda) 
+
+        return (refalts_pt, crit_weights, lbda, compat_alts)
+
+    def on_Binfer_pressed(self):
+        xmcda_data = self.create_xmcda_input()
         ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, xmcda_data)
-        xmcda.request_solution(xmcda.ETRI_BM_URL, ticket)
+        solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket)
+        (refalts_pt, crit_weights, lbda, compat_alts) = self.parse_xmcda_output(solution)
+
+        inference_dialog = InferenceDialog(self, self.iface)
+        inference_dialog.show()
