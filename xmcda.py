@@ -99,4 +99,4 @@ def request_solution(url, ticket_id, timeout=0):
 
 def get_lambda(xmltree):
     xml_lbda = xmltree.find(".//methodParameters/parameter/value/real")
-    return xml_lbda.text
+    return float(xml_lbda.text)

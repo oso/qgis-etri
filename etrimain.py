@@ -575,11 +575,51 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         return (refalts_pt, crit_weights, lbda, compat_alts)
 
+    def display_inference_results(self, solution):
+        (refalts_pt, crit_weights, lbda, compat_alts) = self.parse_xmcda_output(solution)
+        inference_dialog = InferenceDialog(self, self.iface)
+        inference_dialog.show()
+        inference_dialog.add_text("Inference Procedure results")
+        inference_dialog.add_text("===========================\n")
+        inference_dialog.add_text("Lambda = %f\n" % lbda)
+
+        inference_dialog.add_text("Weights =")
+        str = ""
+        for i in self.criteria_activated:
+            crit_name = self.criteria[i]['name']
+            str += "%s\t" % crit_name
+        inference_dialog.add_text(str)
+        str = ""
+        for i in self.criteria_activated:
+            #crit_id = self.criteria[i]['id']
+            str += "%.2f\t" % crit_weights["g%d" % i]
+        str += "\n"
+        inference_dialog.add_text(str)
+            
+        inference_dialog.add_text("Profiles =")
+        str = ""
+        for i in self.criteria_activated:
+            crit_name = self.criteria[i]['name']
+            str += "%s\t" % crit_name
+        inference_dialog.add_text(str)
+        str = ""
+        profiles = ["b%d" % (i+1) for i in range(len(refalts_pt))]
+        for j in profiles:
+            for i in self.criteria_activated:
+                str += "%.2f\t" % refalts_pt[j]["g%d" % i]
+            str += "\n"
+        inference_dialog.add_text(str)
+
+        str = "Compatible alternatives = "
+        for i, alt in enumerate(compat_alts):
+            str += "%d" % (i+1)
+            if i != len(compat_alts)-1:
+                str += ", "
+        str += "\n"
+        inference_dialog.add_text(str)
+
     def on_Binfer_pressed(self):
         xmcda_data = self.create_xmcda_input()
         ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, xmcda_data)
         solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket)
-        (refalts_pt, crit_weights, lbda, compat_alts) = self.parse_xmcda_output(solution)
-
-        inference_dialog = InferenceDialog(self, self.iface)
-        inference_dialog.show()
+        self.display_inference_results(solution)
