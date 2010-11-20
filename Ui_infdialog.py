@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'inference.ui'
+# Form implementation generated from reading ui file 'infdialog.ui'
 #
-# Created: Sun Nov 14 22:10:11 2010
+# Created: Sat Nov 20 17:33:24 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!

@@ -3,7 +3,7 @@ from Ui_etrimain import Ui_EtriMainWindow
 from qgis_utils import *
 from etri import *
 from refsdialog import *
-from inference import *
+from infdialog import *
 from xml.etree import ElementTree as ET
 import xmcda
 import PyXMCDA
