@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'inference.ui'
 #
-# Created: Sun Nov 14 15:13:43 2010
+# Created: Sun Nov 14 22:10:11 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,7 @@ class Ui_InferenceDialog(object):
         self.textBrowser = QtGui.QTextBrowser(self.groupBox)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier New"))
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.textBrowser.setFont(font)
         self.textBrowser.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
