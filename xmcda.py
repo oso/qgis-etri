@@ -100,3 +100,15 @@ def request_solution(url, ticket_id, timeout=0):
 def get_lambda(xmltree):
     xml_lbda = xmltree.find(".//methodParameters/parameter/value/real")
     return float(xml_lbda.text)
+
+def get_method_messages(xmltree):
+    messages = []
+    for xmlmsg in xmltree.findall(".//methodMessages/logMessage/text"):
+        messages.append(xmlmsg.text)
+    return messages
+
+def get_method_errors(xmltree):
+    errors = []
+    for xmlmsg in xmltree.findall(".//methodMessages/errorMessage/text"):
+        errors.append(xmlmsg.text)
+    return errors
