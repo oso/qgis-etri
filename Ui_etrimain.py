@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Sat Oct 16 20:08:43 2010
+# Created: Sun Nov 21 21:43:51 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -165,14 +165,31 @@ class Ui_EtriMainWindow(object):
         self.right_layout.addWidget(self.group_input)
         self.group_profiles = QtGui.QGroupBox(self.centralwidget)
         self.group_profiles.setObjectName(_fromUtf8("group_profiles"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.group_profiles)
-        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.Badd_profile = QtGui.QCommandLinkButton(self.group_profiles)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.group_profiles)
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.Badd_profile = QtGui.QPushButton(self.group_profiles)
+        self.Badd_profile.setText(_fromUtf8(""))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/plus.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.Badd_profile.setIcon(icon)
         self.Badd_profile.setObjectName(_fromUtf8("Badd_profile"))
-        self.verticalLayout_2.addWidget(self.Badd_profile)
-        self.Bdel_profile = QtGui.QCommandLinkButton(self.group_profiles)
+        self.horizontalLayout_2.addWidget(self.Badd_profile)
+        self.label_ncategories = QtGui.QLabel(self.group_profiles)
+        self.label_ncategories.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_ncategories.setText(_fromUtf8("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">-</span></p></body></html>"))
+        self.label_ncategories.setObjectName(_fromUtf8("label_ncategories"))
+        self.horizontalLayout_2.addWidget(self.label_ncategories)
+        self.Bdel_profile = QtGui.QPushButton(self.group_profiles)
+        self.Bdel_profile.setText(_fromUtf8(""))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/min.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.Bdel_profile.setIcon(icon1)
         self.Bdel_profile.setObjectName(_fromUtf8("Bdel_profile"))
-        self.verticalLayout_2.addWidget(self.Bdel_profile)
+        self.horizontalLayout_2.addWidget(self.Bdel_profile)
         self.right_layout.addWidget(self.group_profiles)
         self.group_thresholds = QtGui.QGroupBox(self.centralwidget)
         self.group_thresholds.setMaximumSize(QtCore.QSize(388, 16777215))
@@ -219,7 +236,10 @@ class Ui_EtriMainWindow(object):
         self.procedure_layout.addWidget(self.combo_procedure)
         self.gridLayout_8.addLayout(self.procedure_layout, 1, 0, 1, 1)
         self.right_layout.addWidget(self.group_affectation)
-        self.Bgenerate = QtGui.QCommandLinkButton(self.centralwidget)
+        self.Bgenerate = QtGui.QPushButton(self.centralwidget)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/etri.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.Bgenerate.setIcon(icon2)
         self.Bgenerate.setObjectName(_fromUtf8("Bgenerate"))
         self.right_layout.addWidget(self.Bgenerate)
         self.gridLayout.addLayout(self.right_layout, 0, 1, 1, 1)
@@ -258,9 +278,7 @@ class Ui_EtriMainWindow(object):
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_inference), QtGui.QApplication.translate("EtriMainWindow", "Inference", None, QtGui.QApplication.UnicodeUTF8))
         self.group_input.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Input Layer", None, QtGui.QApplication.UnicodeUTF8))
         self.Bloadlayer.setText(QtGui.QApplication.translate("EtriMainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
-        self.group_profiles.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
-        self.Badd_profile.setText(QtGui.QApplication.translate("EtriMainWindow", "Add Profile", None, QtGui.QApplication.UnicodeUTF8))
-        self.Bdel_profile.setText(QtGui.QApplication.translate("EtriMainWindow", "Del Profile", None, QtGui.QApplication.UnicodeUTF8))
+        self.group_profiles.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Categories", None, QtGui.QApplication.UnicodeUTF8))
         self.group_thresholds.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Thresholds", None, QtGui.QApplication.UnicodeUTF8))
         self.cbox_samethresholds.setText(QtGui.QApplication.translate("EtriMainWindow", "Use same for all profiles", None, QtGui.QApplication.UnicodeUTF8))
         self.cbox_noveto.setText(QtGui.QApplication.translate("EtriMainWindow", "No Veto", None, QtGui.QApplication.UnicodeUTF8))
@@ -272,3 +290,4 @@ class Ui_EtriMainWindow(object):
         self.combo_procedure.setItemText(1, QtGui.QApplication.translate("EtriMainWindow", "Optimistic", None, QtGui.QApplication.UnicodeUTF8))
         self.Bgenerate.setText(QtGui.QApplication.translate("EtriMainWindow", "Generate Decision Map", None, QtGui.QApplication.UnicodeUTF8))
 
+import resources_rc

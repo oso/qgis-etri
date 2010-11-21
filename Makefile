@@ -1,9 +1,9 @@
-TARGETS := resources.py Ui_etrimain.py Ui_refsdialog.py Ui_infdialog.py Ui_pwdialog.py
+TARGETS := resources_rc.py Ui_etrimain.py Ui_refsdialog.py Ui_infdialog.py Ui_pwdialog.py
 
 all: $(TARGETS) 
 
-resources.py: resources.qrc
-	pyrcc4 -o resources.py resources.qrc
+resources_rc.py: resources.qrc
+	pyrcc4 -o resources_rc.py resources.qrc
 
 Ui_pwdialog.py: pwdialog.ui
 	pyuic4 -o $@ $<

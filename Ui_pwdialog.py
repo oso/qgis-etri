@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'pwdialog.ui'
 #
-# Created: Sat Nov 20 17:56:25 2010
+# Created: Sun Nov 21 18:06:15 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,6 +18,7 @@ class Ui_PleaseWaitDialog(object):
     def setupUi(self, PleaseWaitDialog):
         PleaseWaitDialog.setObjectName(_fromUtf8("PleaseWaitDialog"))
         PleaseWaitDialog.resize(223, 45)
+        PleaseWaitDialog.setModal(True)
         self.horizontalLayout = QtGui.QHBoxLayout(PleaseWaitDialog)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.label = QtGui.QLabel(PleaseWaitDialog)
@@ -28,6 +29,7 @@ class Ui_PleaseWaitDialog(object):
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
         self.buttonBox = QtGui.QDialogButtonBox(PleaseWaitDialog)
+        self.buttonBox.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))

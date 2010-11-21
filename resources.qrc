@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/plugins/etri" >
-    <file>etri.png</file>
+    <file>images/plus.svg</file>
+    <file>images/min.svg</file>
+    <file>images/etri.svg</file>
+    <file>images/etri.png</file>
   </qresource>
 </RCC>

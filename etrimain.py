@@ -168,6 +168,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if self.samethresholds == 1:
             self.table_veto.setRowHidden(index, 1)
 
+        # update label
+        self.label_ncategories.setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">%s</span></p></body></html>" % (nprof+2))
+
     def del_profile(self, index):
         nprof = self.table_prof.rowCount()
         if index > nprof or index < 1:
@@ -177,6 +184,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_pref.removeRow(index)
         self.table_indiff.removeRow(index)
         self.table_veto.removeRow(index)
+
+        # update label
+        self.label_ncategories.setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">%s</span></p></body></html>" % (nprof))
 
     def add_criterion(self, crit):
         # Add row in criteria table
