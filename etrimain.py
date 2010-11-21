@@ -6,6 +6,8 @@ from refsdialog import *
 from infdialog import *
 from pwdialog import *
 from xml.etree import ElementTree as ET
+import time
+import threading
 import xmcda
 import PyXMCDA
 from Ui_pwdialog import *
@@ -635,24 +637,51 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         inference_dialog.add_text(str)
 
     def on_inference_cancel(self):
-        self.canceled = 1
+        self.inf_canceled = 1
+
+    def on_inference_found(self, solution):
+        if self.inf_canceled == 0:
+            self.inf_solution = solution
 
     def on_Binfer_pressed(self):
         pw_dialog = PwDialog(self, self.on_inference_cancel)
         pw_dialog.show()
-        QApplication.processEvents()
-        time.sleep(0.5)
-        QApplication.processEvents()
 
         xmcda_data = self.create_xmcda_input()
-        ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, xmcda_data)
-        self.canceled = 0
-        solution = None
-        while solution is None and self.canceled <> 1:
+        self.inf_solution = None
+        self.inf_canceled = 0
+        inf_task = inference_task(self.on_inference_found, xmcda_data)
+        inf_task.start()
+
+        while self.inf_canceled == 0 and self.inf_solution == None:
             QApplication.processEvents()
-            solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket, 0)
 
         pw_dialog.destroy()
+        inf_task.stop()
 
-        if solution and self.canceled == 0:
-            self.display_inference_results(solution)
+        if self.inf_solution and self.inf_canceled == 0:
+            self.display_inference_results(self.inf_solution)
+
+class inference_task(threading.Thread):
+
+    def __init__(self, on_found, xmcda_input):
+        self.xmcda_input = xmcda_input 
+        self.on_found = on_found
+        self.terminated = False
+        self._stopevent = threading.Event( )
+        threading.Thread.__init__( self )
+
+    def run(self):
+        ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, self.xmcda_input)
+        while True: 
+            solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket, 0)
+            if self._stopevent.isSet() == True:
+                return
+            if solution:
+                break
+            time.sleep(0.5)
+
+        self.on_found(solution)
+
+    def stop(self):
+        self._stopevent.set()
