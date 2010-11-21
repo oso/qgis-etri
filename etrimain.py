@@ -10,8 +10,6 @@ import xmcda
 import PyXMCDA
 from Ui_pwdialog import *
 
-import time
-
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
 
@@ -651,8 +649,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.canceled = 0
         solution = None
         while solution is None and self.canceled <> 1:
-            solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket, -1)
             QApplication.processEvents()
+            solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket, 0)
 
         pw_dialog.destroy()
 
