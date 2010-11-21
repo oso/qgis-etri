@@ -87,15 +87,30 @@ def request_solution(url, ticket_id, timeout=0):
         answer = service.requestSolution(ticket=ticket_id)
         if answer['service-status'] != 1: # NOT AVAILABLE
             break;
+
+        if timeout == 0:
+            return None
+
         time.sleep(0.5)
-        if timeout and time.time()>start+timeout:
+        if timeout >= 0 and time.time()>start+timeout:
             print('timeout: solution not available after %i seconds: exiting'%timeout)
             return None
 
-    for k,v in answer.items():
-        print "%s: %s" % (k,v)
-
     return answer
+
+#def request_solution(url, ticket_id):
+#    host=url.split('/')[2]
+#
+#    service = NamedParamBinding(host=host,
+#                                port=80,
+#                                url=url,
+#                                tracefile=sys.stderr)
+#
+#    answer = service.requestSolution(ticket=ticket_id)
+#    if answer['service-status'] == 1: # NOT AVAILABLE
+#        return None
+#
+#    return answer
 
 def get_lambda(xmltree):
     xml_lbda = xmltree.find(".//methodParameters/parameter/value/real")

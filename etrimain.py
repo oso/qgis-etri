@@ -4,9 +4,13 @@ from qgis_utils import *
 from etri import *
 from refsdialog import *
 from infdialog import *
+from pwdialog import *
 from xml.etree import ElementTree as ET
 import xmcda
 import PyXMCDA
+from Ui_pwdialog import *
+
+import time
 
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
@@ -618,8 +622,25 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         str += "\n"
         inference_dialog.add_text(str)
 
+    def on_inference_cancel(self):
+        self.canceled = 1
+
     def on_Binfer_pressed(self):
+        pw_dialog = PwDialog(self, self.on_inference_cancel)
+        pw_dialog.show()
+        QApplication.processEvents()
+        time.sleep(0.5)
+        QApplication.processEvents()
+
         xmcda_data = self.create_xmcda_input()
         ticket = xmcda.submit_problem(xmcda.ETRI_BM_URL, xmcda_data)
-        solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket)
-        self.display_inference_results(solution)
+        self.canceled = 0
+        solution = None
+        while solution is None and self.canceled <> 1:
+            solution = xmcda.request_solution(xmcda.ETRI_BM_URL, ticket, -1)
+            QApplication.processEvents()
+
+        pw_dialog.destroy()
+
+        if solution and self.canceled == 0:
+            self.display_inference_results(solution)
