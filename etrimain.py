@@ -175,6 +175,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 "</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">%s</span></p></body></html>" % (nprof+2))
 
+        # update reference comboboxes
+        for i in range(self.table_refs.rowCount()):
+            combobox = self.table_refs.cellWidget(i, 0)
+            if combobox.count() < (nprof+2):
+                combobox.addItem(str(nprof+2))
+
     def del_profile(self, index):
         nprof = self.table_prof.rowCount()
         if index > nprof or index < 1:
@@ -191,6 +197,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">%s</span></p></body></html>" % (nprof))
+
+        # update reference comboboxes
+        for i in range(self.table_refs.rowCount()):
+            combobox = self.table_refs.cellWidget(i, 0)
+            combobox.removeItem(nprof)
 
     def add_criterion(self, crit):
         # Add row in criteria table
@@ -509,8 +520,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             item.setText(attr[crit_id])
             self.table_refs.setItem(nrow, crit_id+1, item)
 
-    def on_table_refs_cellChanged(self, row, column):
-        self.table_refs.setCurrentCell(row+1,column)
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(QtCore.Qt.ItemIsTristate)
+            self.table_refs.setItem(nrow, 0, item)
+            comboBox = QtGui.QComboBox(self)
+            for i in range(self.table_prof.rowCount()+1):
+                comboBox.addItem(str(i+1))
+            self.table_refs.setCellWidget(nrow, 0, comboBox)
 
     def create_xmcda_input(self):
         nalts = self.table_refs.rowCount()
@@ -527,11 +543,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         alts_perfs = {}
         affect = {}
-        ncat = 2
+        ncat = self.table_prof.rowCount()+1 
         for i in range(nalts):
-            cat = self.table_refs.item(i,0).text()
-            cat = int(cat)
-            ncat = max(ncat, cat) 
+            item = self.table_refs.cellWidget(i, 0)
+            cat = item.currentIndex()+1
             affect["%d" % (i+1)] = "%d" % cat
             alt_perfs = {}
             for j in self.criteria_activated:
@@ -569,22 +584,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         xmcda_compat_alts = ET.ElementTree(ET.fromstring(solution['compatible_alts']))
         xmcda_lambda = ET.ElementTree(ET.fromstring(solution['lambda']))
 
-        # FIXME: avoid that code...
-        ncat = 2
-        nalts = self.table_refs.rowCount()
-        for i in range(nalts):
-            cat = self.table_refs.item(i,0).text()
-            cat = int(cat)
-            ncat = max(ncat, cat) 
-
-        ref_alts = []
-        for i in range(ncat-1):
-            ref_alts.append("b%d" % (i+1))
+        nprofiles = self.table_prof.rowCount()
+        ref_alts = [ "b%d" % (i+1) for i in range(nprofiles)]
 
         crit = []
         for i in self.criteria_activated:
             crit.append("%d" % i)
-        # FIXME
 
         message = xmcda.get_method_messages(xmcda_msg)
         if message == None:
