@@ -590,60 +590,40 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if message == None:
             message = xmcda.get_method_errors(xmcda_msg)
 
-        refalts_pt = PyXMCDA.getPerformanceTable(xmcda_refalts_pt, ref_alts, crit) 
-        crit_weights = PyXMCDA.getCriterionValue(xmcda_crit_weights, crit)
+        profiles = PyXMCDA.getPerformanceTable(xmcda_refalts_pt, ref_alts, crit) 
+        weights = PyXMCDA.getCriterionValue(xmcda_crit_weights, crit)
         compat_alts = PyXMCDA.getAlternativesID(xmcda_compat_alts)
         lbda = xmcda.get_lambda(xmcda_lambda) 
 
-        return (message, refalts_pt, crit_weights, lbda, compat_alts)
+        return (message, profiles, weights, lbda, compat_alts)
 
     def display_inference_results(self, solution):
         self.inference_out = self.parse_xmcda_output(solution)
         messages = self.inference_out[0]
-        refalts_pt = self.inference_out[1]
-        crit_weights = self.inference_out[2]
+        profiles = self.inference_out[1]
+        weights = self.inference_out[2]
         lbda = self.inference_out[3]
         compat_alts = self.inference_out[4]
 
         inference_dialog = InferenceDialog(self, self.on_inference_accept)
         inference_dialog.show()
-        inference_dialog.add_text("Inference Procedure results")
-        inference_dialog.add_text("===========================\n")
-        inference_dialog.add_text("Result =")
+        inference_dialog.set_xmcda_text("Inference Procedure results")
+        inference_dialog.set_xmcda_text("===========================\n")
         for msg in messages:
-            inference_dialog.add_text(msg)
+            inference_dialog.set_xmcda_text(msg)
 
         if messages[0] <> "Execution ok":
             return
 
-        inference_dialog.add_text("\nLambda = %f\n" % lbda)
+        inference_dialog.set_xmcda_text("\nLambda = %f\n" % lbda)
 
-        inference_dialog.add_text("Weights =")
-        str = ""
+
+        criterion_names = {}
         for i in self.criteria_activated:
-            crit_name = self.criteria[i]['name']
-            str += "%s\t" % crit_name
-        inference_dialog.add_text(str)
-        str = ""
-        for i in self.criteria_activated:
-            #crit_id = self.criteria[i]['id']
-            str += "%.2f\t" % crit_weights["%d" % i]
-        str += "\n"
-        inference_dialog.add_text(str)
-            
-        inference_dialog.add_text("Profiles =")
-        str = ""
-        for i in self.criteria_activated:
-            crit_name = self.criteria[i]['name']
-            str += "%s\t" % crit_name
-        inference_dialog.add_text(str)
-        str = ""
-        profiles = ["b%d" % (i+1) for i in range(len(refalts_pt))]
-        for j in profiles:
-            for i in self.criteria_activated:
-                str += "%.2f\t" % refalts_pt[j]["%d" % i]
-            str += "\n"
-        inference_dialog.add_text(str)
+            criterion_names["%d" % i] = self.criteria[i]['name'] 
+        
+        inference_dialog.set_weights(criterion_names, weights)
+        inference_dialog.set_profiles(criterion_names, profiles)
 
         str = "Compatible alternatives = "
         for i, alt in enumerate(compat_alts):
@@ -651,7 +631,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             if i != len(compat_alts)-1:
                 str += ", "
         str += "\n"
-        inference_dialog.add_text(str)
+        inference_dialog.set_xmcda_text(str)
 
     def on_inference_accept(self):
         messages = self.inference_out[0]
