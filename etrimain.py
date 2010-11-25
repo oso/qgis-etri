@@ -76,6 +76,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.crit_layer = layer
         self.crit_layer_load(layer)
 
+        self.Badd_profile.setEnabled(True)
+        self.Bdel_profile.setEnabled(True)
+        self.Bgenerate.setEnabled(True)
+        self.Bchooserefs.setEnabled(True)
+
     def crit_layer_load(self, layer):
         self.criteria = layer_get_criteria(layer)
         for crit in self.criteria:
@@ -509,6 +514,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
                 self.table_refs_add_row(attr)
 
         self.refs_ids = feat_ids[:]
+        if len(self.refs_ids) > 0:
+            self.Binfer.setEnabled(True)
+        else:
+            self.Binfer.setEnabled(False)
 
     def table_refs_add_row(self, attr):
         nrow = self.table_refs.rowCount()

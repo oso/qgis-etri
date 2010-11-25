@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Sun Nov 21 21:43:51 2010
+# Created: Thu Nov 25 20:29:27 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -114,9 +114,11 @@ class Ui_EtriMainWindow(object):
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.Bchooserefs = QtGui.QPushButton(self.group_refs)
+        self.Bchooserefs.setEnabled(False)
         self.Bchooserefs.setObjectName(_fromUtf8("Bchooserefs"))
         self.horizontalLayout.addWidget(self.Bchooserefs)
         self.Binfer = QtGui.QPushButton(self.group_refs)
+        self.Binfer.setEnabled(False)
         self.Binfer.setObjectName(_fromUtf8("Binfer"))
         self.horizontalLayout.addWidget(self.Binfer)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
@@ -168,6 +170,7 @@ class Ui_EtriMainWindow(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.group_profiles)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.Badd_profile = QtGui.QPushButton(self.group_profiles)
+        self.Badd_profile.setEnabled(False)
         self.Badd_profile.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/plus.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -184,6 +187,7 @@ class Ui_EtriMainWindow(object):
         self.label_ncategories.setObjectName(_fromUtf8("label_ncategories"))
         self.horizontalLayout_2.addWidget(self.label_ncategories)
         self.Bdel_profile = QtGui.QPushButton(self.group_profiles)
+        self.Bdel_profile.setEnabled(False)
         self.Bdel_profile.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/min.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -237,6 +241,7 @@ class Ui_EtriMainWindow(object):
         self.gridLayout_8.addLayout(self.procedure_layout, 1, 0, 1, 1)
         self.right_layout.addWidget(self.group_affectation)
         self.Bgenerate = QtGui.QPushButton(self.centralwidget)
+        self.Bgenerate.setEnabled(False)
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/etri/images/etri.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.Bgenerate.setIcon(icon2)

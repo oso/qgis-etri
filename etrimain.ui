@@ -177,6 +177,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QPushButton" name="Bchooserefs">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>Choose reference actions</string>
                </property>
@@ -184,6 +187,9 @@
              </item>
              <item>
               <widget class="QPushButton" name="Binfer">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>Infer parameters</string>
                </property>
@@ -289,6 +295,9 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QPushButton" name="Badd_profile">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -314,6 +323,9 @@ p, li { white-space: pre-wrap; }
          </item>
          <item>
           <widget class="QPushButton" name="Bdel_profile">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -428,6 +440,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QPushButton" name="Bgenerate">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Generate Decision Map</string>
         </property>
