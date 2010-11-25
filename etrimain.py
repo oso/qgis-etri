@@ -9,6 +9,7 @@ from xml.etree import ElementTree as ET
 import time
 import threading
 import xmcda
+import ui_utils
 import PyXMCDA
 from Ui_pwdialog import *
 
@@ -80,6 +81,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.Bdel_profile.setEnabled(True)
         self.Bgenerate.setEnabled(True)
         self.Bchooserefs.setEnabled(True)
+        self.Bloadxmcda.setEnabled(True)
+        self.Bsavexmcda.setEnabled(True)
 
     def crit_layer_load(self, layer):
         self.criteria = layer_get_criteria(layer)
@@ -636,6 +639,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for i in self.criteria_activated:
             criterion_names["%d" % i] = self.criteria[i]['name'] 
         
+        weights = [(weight*100) for weight in weights]
         inference_dialog.set_weights(criterion_names, weights)
         inference_dialog.set_profiles(criterion_names, profiles)
 
@@ -663,16 +667,17 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def set_weights(self, weights):
         for crit_id, val in weights.iteritems():
-            value = "%.2f" % (val*100)
+            value = "%.2f" % val
             id = int(crit_id)
             self.table_crit.item(id,2).setText(value)
 
     def set_profiles(self, profiles):
+        nprofiles = len(profiles)
         self.clear_rows(self.table_prof)
         self.clear_rows(self.table_indiff)
         self.clear_rows(self.table_pref)
         self.clear_rows(self.table_veto)
-        for i in range(len(profiles)):
+        for i in range(nprofiles):
             profile_name = "b%d" % (i+1)
             values = []
             for j in range(len(self.criteria)):
@@ -711,6 +716,52 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         if self.inf_solution and self.inf_canceled == 0:
             self.display_inference_results(self.inf_solution)
+
+    def on_Bloadxmcda_pressed(self):
+        (file, encoding) = ui_utils.xmcda_load_dialog(self)
+        if file is None:
+            return
+
+        xmcda_file = PyXMCDA.parseValidate(file) 
+        criteria = PyXMCDA.getCriteriaID(xmcda_file)
+        # FIXME: use ID of criterion
+        for i, crit in enumerate(self.criteria):
+            item = self.table_crit.cellWidget(i, 0)
+            if str(i) not in criteria:
+                item.setChecked(False)
+            else:
+                item.setChecked(True)
+
+        profile_names = PyXMCDA.getAlternativesID(xmcda_file)
+        profiles = PyXMCDA.getPerformanceTable(xmcda_file, profile_names, criteria) 
+        weights = PyXMCDA.getCriterionValue(xmcda_file, criteria)
+        compat_alts = PyXMCDA.getAlternativesID(xmcda_file)
+        lbda = xmcda.get_lambda(xmcda_file) 
+
+        self.set_weights(weights)
+        self.set_profiles(profiles)
+        self.set_lambda(lbda)
+
+    def on_Bsavexmcda_pressed(self):
+        weights = self.get_criteria_weights()
+        criteria = weights.keys()
+        nprofiles = self.table_prof.rowCount()
+        profile_names = [ "b%d" % (i+1) for i in range(nprofiles)]
+        profiles = self.get_profiles()
+        cutlevel = self.spinbox_cutlevel.value()
+
+        xmcda_criteria = xmcda.format_criteria(criteria)
+        xmcda_profiles = xmcda.format_pt_reference_alternatives(profiles, profile_names, criteria)
+        xmcda_profile_names = xmcda.format_alternatives(profile_names)
+        xmcda_weights = xmcda.format_criteria_weights(weights)
+        xmcda_cutlevel = xmcda.format_lambda(cutlevel)
+
+        (file, encoding) = ui_utils.xmcda_save_dialog(self)
+        if file is None:
+            return
+
+        # FIXME: encoding
+        xmcda.save_file(file, xmcda_criteria+xmcda_profile_names+xmcda_profiles+xmcda_weights+xmcda_cutlevel) 
 
 class inference_task(threading.Thread):
 

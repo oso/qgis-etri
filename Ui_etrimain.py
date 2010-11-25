@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Thu Nov 25 20:29:27 2010
+# Created: Thu Nov 25 20:59:28 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -154,6 +154,19 @@ class Ui_EtriMainWindow(object):
         self.right_layout.setObjectName(_fromUtf8("right_layout"))
         spacerItem = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.right_layout.addItem(spacerItem)
+        self.group_options = QtGui.QGroupBox(self.centralwidget)
+        self.group_options.setObjectName(_fromUtf8("group_options"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.group_options)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.Bloadxmcda = QtGui.QPushButton(self.group_options)
+        self.Bloadxmcda.setEnabled(False)
+        self.Bloadxmcda.setObjectName(_fromUtf8("Bloadxmcda"))
+        self.verticalLayout_2.addWidget(self.Bloadxmcda)
+        self.Bsavexmcda = QtGui.QPushButton(self.group_options)
+        self.Bsavexmcda.setEnabled(False)
+        self.Bsavexmcda.setObjectName(_fromUtf8("Bsavexmcda"))
+        self.verticalLayout_2.addWidget(self.Bsavexmcda)
+        self.right_layout.addWidget(self.group_options)
         self.group_input = QtGui.QGroupBox(self.centralwidget)
         self.group_input.setObjectName(_fromUtf8("group_input"))
         self.gridLayout_9 = QtGui.QGridLayout(self.group_input)
@@ -281,6 +294,9 @@ class Ui_EtriMainWindow(object):
         self.label_inference.setText(QtGui.QApplication.translate("EtriMainWindow", "Inference:", None, QtGui.QApplication.UnicodeUTF8))
         self.combo_inference.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Global inference", None, QtGui.QApplication.UnicodeUTF8))
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_inference), QtGui.QApplication.translate("EtriMainWindow", "Inference", None, QtGui.QApplication.UnicodeUTF8))
+        self.group_options.setTitle(QtGui.QApplication.translate("EtriMainWindow", "XMCDA", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bloadxmcda.setText(QtGui.QApplication.translate("EtriMainWindow", "Load parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bsavexmcda.setText(QtGui.QApplication.translate("EtriMainWindow", "Save parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.group_input.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Input Layer", None, QtGui.QApplication.UnicodeUTF8))
         self.Bloadlayer.setText(QtGui.QApplication.translate("EtriMainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
         self.group_profiles.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Categories", None, QtGui.QApplication.UnicodeUTF8))
