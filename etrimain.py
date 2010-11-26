@@ -635,6 +635,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         lbda = self.inference_out[3]
         compat_alts = self.inference_out[4]
 
+        for crit, val in weights.iteritems():
+            weights[crit] = val*100
+
         inference_dialog = InferenceDialog(self, self.on_inference_accept)
         inference_dialog.show()
         inference_dialog.set_xmcda_text("Inference Procedure results")
@@ -651,8 +654,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         criterion_names = {}
         for i in self.criteria_activated:
             criterion_names["%d" % i] = self.criteria[i]['name'] 
-        
-        weights = [(weight*100) for weight in weights]
+
         inference_dialog.set_weights(criterion_names, weights)
         inference_dialog.set_profiles(criterion_names, profiles)
 
