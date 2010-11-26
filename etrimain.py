@@ -330,12 +330,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             else:
                 index = row
 
-            q = self.get_active_row(self.table_indiff, index)
+            p = self.get_active_row(self.table_pref, index)
 
             if self.sameqp == 1:
-                p = q
+                q = p
             else:
-                p = self.get_active_row(self.table_pref, index)
+                q = self.get_active_row(self.table_pref, index)
 
 
             if self.noveto <> 1:
@@ -471,10 +471,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def on_cbox_sameqp_stateChanged(self, state):
         if state == 0:
             self.sameqp = 0
-            self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
+            self.tab_thresholds.insertTab(0, self.tab_indiff, "Indifference")
         else:
             self.sameqp = 1
-            index = self.tab_thresholds.indexOf(self.tab_pref)
+            index = self.tab_thresholds.indexOf(self.tab_indiff)
             self.tab_thresholds.removeTab(index)
 
     def on_Bgenerate_pressed(self):
