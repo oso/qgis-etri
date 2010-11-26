@@ -18,6 +18,12 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
         self.refs_actions = refs_actions
         self.load_attributes()
 
+        self.parent.hide()
+
+    def closeEvent(self, event):
+        self.hide()
+        self.parent.show()
+
     def load_attributes(self):
         provider = self.layer.dataProvider()
         fields = provider.fields()
@@ -89,7 +95,14 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
     def accept(self):
         self.parent.set_reference_actions(self.refs_actions)
         self.layer.setSelectedFeatures(self.refs_actions)
+        self.hide()
+        self.parent.show()
         QDialog.accept(self)
+
+    def reject(self):
+        self.hide()
+        self.parent.show()
+        QDialog.reject(self)
 
     def on_table_refs_itemDoubleClicked(self, item):
         row = item.row()

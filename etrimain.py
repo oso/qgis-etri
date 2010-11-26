@@ -41,6 +41,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_pref.resizeColumnsToContents()
         self.table_veto.resizeColumnsToContents()
 
+    def closeEvent(self, event):
+        if self.isEnabled() == False:
+            event.ignore();
+
     def add_crit_layer(self, layer):
         self.combo_layer.addItem(layer.name())
         self.crit_layers.append(layer)
