@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'refsdialog.ui'
 #
-# Created: Sat Oct 16 15:28:47 2010
+# Created: Fri Nov 26 18:45:03 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,11 +32,30 @@ class Ui_RefsDialog(object):
         self.table_refs.horizontalHeader().setHighlightSections(False)
         self.table_refs.verticalHeader().setHighlightSections(False)
         self.gridLayout.addWidget(self.table_refs, 0, 0, 1, 1)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.cbox_hide = QtGui.QCheckBox(RefsDialog)
+        self.cbox_hide.setObjectName(_fromUtf8("cbox_hide"))
+        self.horizontalLayout.addWidget(self.cbox_hide)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.Bzoom = QtGui.QPushButton(RefsDialog)
+        self.Bzoom.setObjectName(_fromUtf8("Bzoom"))
+        self.horizontalLayout.addWidget(self.Bzoom)
+        self.Bdisplay = QtGui.QPushButton(RefsDialog)
+        self.Bdisplay.setObjectName(_fromUtf8("Bdisplay"))
+        self.horizontalLayout.addWidget(self.Bdisplay)
         self.buttonBox = QtGui.QDialogButtonBox(RefsDialog)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.buttonBox.sizePolicy().hasHeightForWidth())
+        self.buttonBox.setSizePolicy(sizePolicy)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.buttonBox)
+        self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
 
         self.retranslateUi(RefsDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), RefsDialog.accept)
@@ -45,4 +64,7 @@ class Ui_RefsDialog(object):
 
     def retranslateUi(self, RefsDialog):
         RefsDialog.setWindowTitle(QtGui.QApplication.translate("RefsDialog", "Choose reference actions", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbox_hide.setText(QtGui.QApplication.translate("RefsDialog", "Hide non criteria columns", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bzoom.setText(QtGui.QApplication.translate("RefsDialog", "Zoom to selection", None, QtGui.QApplication.UnicodeUTF8))
+        self.Bdisplay.setText(QtGui.QApplication.translate("RefsDialog", "Display selection", None, QtGui.QApplication.UnicodeUTF8))
 

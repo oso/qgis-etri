@@ -96,8 +96,22 @@ class RefsDialog(QtGui.QDialog, Ui_RefsDialog):
         featids = []
         featids.append(self.row_ids[row])
         self.layer.setSelectedFeatures(featids)
+
+    def on_cbox_hide_stateChanged(self, state):
+        ncrit = len(self.parent.criteria)
+        for i in range(ncrit):
+            if (i not in self.parent.criteria_activated) and (state == 2):
+                self.table_refs.setColumnHidden(int(i+1), 1)
+            else:
+                self.table_refs.setColumnHidden(int(i+1), 0)
+
+    def on_Bdisplay_pressed(self):
+        self.layer.setSelectedFeatures(self.refs_actions)
+
+    def on_Bzoom_pressed(self):
+        self.layer.setSelectedFeatures(self.refs_actions)
         mc = self.iface.mapCanvas()
-#        rect = self.layer.boundingBoxOfSelected()
-#        rect.scale(2)
-#        mc.setExtent(rect)
+        rect = self.layer.boundingBoxOfSelected()
+        rect.scale(2)
+        mc.setExtent(rect)
         mc.refresh()
