@@ -6,6 +6,7 @@ from refsdialog import *
 from infdialog import *
 from pwdialog import *
 from xml.etree import ElementTree as ET
+import os
 import time
 import threading
 import xmcda
@@ -91,7 +92,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         self.actions = layer_get_attributes(layer)
 
-        self.add_profile(0)
+        xmcda_file = os.path.splitext(str(layer.source()))[0] + ".xmcda"
+        if os.path.exists(xmcda_file) == True:
+            try:
+                self.load_xmcda_data(xmcda_file)
+            except:
+                self.add_profile(0)
+        else:
+            self.add_profile(0)
 
     def check_row_float(self, row):
         for i in row:
@@ -490,6 +498,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         #print "Affectations:", affectations
 
         generate_decision_map(self.crit_layer, affectations, file, encoding)
+        self.save_xmcda_data(os.path.splitext(file)[0]+".xmcda")
 
         addtocDialog(self, file, self.table_prof.rowCount())
 
@@ -717,11 +726,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if self.inf_solution and self.inf_canceled == 0:
             self.display_inference_results(self.inf_solution)
 
-    def on_Bloadxmcda_pressed(self):
-        (file, encoding) = ui_utils.xmcda_load_dialog(self)
-        if file is None:
-            return
-
+    def load_xmcda_data(self, file):
         xmcda_file = PyXMCDA.parseValidate(file) 
         criteria = PyXMCDA.getCriteriaID(xmcda_file)
         # FIXME: use ID of criterion
@@ -742,7 +747,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.set_profiles(profiles)
         self.set_lambda(lbda)
 
-    def on_Bsavexmcda_pressed(self):
+    def on_Bloadxmcda_pressed(self):
+        (file, encoding) = ui_utils.xmcda_load_dialog(self)
+        if file is None:
+            return
+
+        self.load_xmcda_data(file)
+
+    def save_xmcda_data(self, file):
         weights = self.get_criteria_weights()
         criteria = weights.keys()
         nprofiles = self.table_prof.rowCount()
@@ -756,12 +768,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         xmcda_weights = xmcda.format_criteria_weights(weights)
         xmcda_cutlevel = xmcda.format_lambda(cutlevel)
 
+        xmcda.save_file(file, xmcda_criteria+xmcda_profile_names+xmcda_profiles+xmcda_weights+xmcda_cutlevel) 
+
+    def on_Bsavexmcda_pressed(self):
         (file, encoding) = ui_utils.xmcda_save_dialog(self)
         if file is None:
             return
 
-        # FIXME: encoding
-        xmcda.save_file(file, xmcda_criteria+xmcda_profile_names+xmcda_profiles+xmcda_weights+xmcda_cutlevel) 
+        self.save_xmcda_data(file)
 
 class inference_task(threading.Thread):
 
