@@ -754,6 +754,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def load_xmcda_data(self, file):
         xmcda_file = PyXMCDA.parseValidate(file) 
         criteria = PyXMCDA.getCriteriaID(xmcda_file)
+        self.cbox_samethresholds.setChecked(False)
+        self.cbox_sameqp.setChecked(False)
+        self.cbox_noveto.setChecked(False)
         # FIXME: use ID of criterion
         for i, crit in enumerate(self.criteria):
             item = self.table_crit.cellWidget(i, 0)
