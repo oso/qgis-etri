@@ -335,8 +335,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             if self.sameqp == 1:
                 q = p
             else:
-                q = self.get_active_row(self.table_pref, index)
-
+                q = self.get_active_row(self.table_indiff, index)
 
             if self.noveto <> 1:
                 v = self.get_active_row(self.table_veto, index)
@@ -686,7 +685,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             id = int(crit_id)
             self.table_crit.item(id,2).setText(value)
 
-    def set_profiles(self, profiles):
+    def set_profiles(self, profiles, thresholds=None):
         nprofiles = len(profiles)
         self.clear_rows(self.table_prof)
         self.clear_rows(self.table_indiff)
@@ -702,6 +701,26 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
                     values.append(0)
             self.add_profile(i)
             self.set_row(self.table_prof, i, values) 
+
+            if thresholds:
+                q_values = []
+                p_values = []
+                v_values = []
+                for j in range(len(self.criteria)):
+                    if j in self.criteria_activated:
+                        q_values.append(thresholds["%d" % j]["q%d" % (i+1)])
+                        p_values.append(thresholds["%d" % j]["p%d" % (i+1)])
+                        if thresholds["%d" % j].has_key("v%d" % (i+1)): 
+                            v_values.append(thresholds["%d" % j]["v%d" % (i+1)])
+                        else:
+                            v_values.append("")
+                    else:
+                        q_values.append(0)
+                        p_values.append(0)
+                        v_values.append("")
+                self.set_row(self.table_indiff, i, q_values)
+                self.set_row(self.table_pref, i, p_values)
+                self.set_row(self.table_veto, i, v_values)
 
     def set_lambda(self, lbda):
         self.spinbox_cutlevel.setValue(lbda)
@@ -745,12 +764,13 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         profile_names = PyXMCDA.getAlternativesID(xmcda_file)
         profiles = PyXMCDA.getPerformanceTable(xmcda_file, profile_names, criteria) 
+        thresholds = xmcda.get_thresholds(xmcda_file, criteria)
         weights = PyXMCDA.getCriterionValue(xmcda_file, criteria)
         compat_alts = PyXMCDA.getAlternativesID(xmcda_file)
         lbda = xmcda.get_lambda(xmcda_file) 
 
         self.set_weights(weights)
-        self.set_profiles(profiles)
+        self.set_profiles(profiles, thresholds)
         self.set_lambda(lbda)
 
     def on_Bloadxmcda_pressed(self):
@@ -767,8 +787,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         profile_names = [ "b%d" % (i+1) for i in range(nprofiles)]
         profiles = self.get_profiles()
         cutlevel = self.spinbox_cutlevel.value()
+        q_thresholds = [ profile['q'] for profile in profiles ]
+        p_thresholds = [ profile['p'] for profile in profiles ]
+        v_thresholds = [ profile['v'] for profile in profiles ]
 
-        xmcda_criteria = xmcda.format_criteria(criteria)
+        xmcda_criteria = xmcda.format_criteria(criteria, q_thresholds, p_thresholds, v_thresholds)
         xmcda_profiles = xmcda.format_pt_reference_alternatives(profiles, profile_names, criteria)
         xmcda_profile_names = xmcda.format_alternatives(profile_names)
         xmcda_weights = xmcda.format_criteria_weights(weights)

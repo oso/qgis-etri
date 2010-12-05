@@ -23,10 +23,30 @@ def format_affectations(affectations):
     output += "</alternativesAffectations>\n"
     return output
 
-def format_criteria(criteria):
+def format_criteria(criteria, q_thresholds=None, p_thresholds=None, v_thresholds=None):
     output = "<criteria>\n"
     for criterion in criteria:
-        output += "\t<criterion id=\"%s\"></criterion>\n" % criterion
+        output += "\t<criterion id=\"%s\">\n" % criterion
+        if q_thresholds or p_thresholds or v_thresholds:
+            output += "\t\t<thresholds>\n"
+            if q_thresholds:
+                for i, q in enumerate(q_thresholds):
+                    output += "\t\t\t<threshold id=\"q%d\" name=\"indifference\" mcdaConcept=\"indifference\">\n" % (i+1)
+                    output += "\t\t\t\t<constant><real>%d</real></constant>\n" % q[criterion]
+                    output += "\t\t\t</threshold>\n"
+            if p_thresholds:
+                for i, p in enumerate(p_thresholds):
+                    output += "\t\t\t<threshold id=\"p%d\" name=\"preference\" mcdaConcept=\"preference\">\n" % (i+1)
+                    output += "\t\t\t\t<constant><real>%d</real></constant>\n" % p[criterion]
+                    output += "\t\t\t</threshold>\n"
+            if v_thresholds:
+                for i, v in enumerate(v_thresholds):
+                    if v.has_key(criterion):
+                        output += "\t\t\t<threshold id=\"v%d\" name=\"veto\" mcdaConcept=\"veto\">\n" % (i+1)
+                        output += "\t\t\t\t<constant><real>%d</real></constant>\n" % v[criterion]
+                        output += "\t\t\t</threshold>\n"
+            output += "\t\t</thresholds>\n"
+        output += "\t</criterion>\n"
     output += "</criteria>\n"
     return output
 
@@ -167,3 +187,27 @@ def save_file(filename, xmcda_data):
     file = open(filename, "w")
     file.write(add_xmcda_tags(xmcda_data))
     file.close()
+
+# FIXME: PyXMCDA variant of getConstantThresholds
+def get_thresholds(xmltree, critId):
+    thresholds = {}
+    try:
+        for criterion in xmltree.findall(".//criterion") :
+            criterionID = criterion.get("id")
+            xmlthresholds = criterion.find("thresholds")
+            if xmlthresholds != None :
+                tempThresholds = {}
+                for xmlthreshold in xmlthresholds.findall("threshold") :
+                    xmlVal = xmlthreshold.find("constant/real")
+                    if xmlVal == None :
+                        xmlVal = xmlthreshold.find("constant/integer")
+                    if xmlVal != None :
+                        if xmlthreshold.get("id") != None :
+                            tempThresholds[xmlthreshold.get("id")] = float(xmlVal.text)
+                thresholds[criterionID] = tempThresholds
+            else :
+                thresholds[criterionID] = {}
+    except :
+        return None
+     
+    return thresholds
