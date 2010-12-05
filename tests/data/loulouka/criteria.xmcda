@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xmcdaXSL.xsl"?>
+<xmcda:XMCDA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2009/XMCDA-2.0.0 file:../XMCDA-2.0.0.xsd" xmlns:xmcda="http://www.decision-deck.org/2009/XMCDA-2.0.0" instanceID="void">
+<criteria>
+	<criterion id="5">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="6">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="7">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="8">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="9">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="10">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="11">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="12">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="13">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="14">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>2</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>2</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>2</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+	<criterion id="15">
+		<thresholds>
+			<threshold id="q1" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q2" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="q3" name="indifference" mcdaConcept="indifference">
+				<constant><real>0</real></constant>
+			</threshold>
+			<threshold id="p1" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p2" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="p3" name="preference" mcdaConcept="preference">
+				<constant><real>1</real></constant>
+			</threshold>
+			<threshold id="v1" name="veto" mcdaConcept="veto">
+				<constant><real>4</real></constant>
+			</threshold>
+			<threshold id="v2" name="veto" mcdaConcept="veto">
+				<constant><real>4</real></constant>
+			</threshold>
+			<threshold id="v3" name="veto" mcdaConcept="veto">
+				<constant><real>4</real></constant>
+			</threshold>
+		</thresholds>
+	</criterion>
+</criteria>
+<alternatives>
+	<alternative id="b1">
+		<active>true</active>
+	</alternative>
+	<alternative id="b2">
+		<active>true</active>
+	</alternative>
+	<alternative id="b3">
+		<active>true</active>
+	</alternative>
+</alternatives>
+<performanceTable>
+	<description>
+		<title>Performance table of reference alternatives</title>
+	</description>
+	<alternativePerformances>
+		<alternativeID>b1</alternativeID>
+		<performance>
+			<criterionID>5</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>6</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>7</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>8</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>9</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>10</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>11</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>12</criterionID>
+			<value><real>4.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>13</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>14</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>15</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b2</alternativeID>
+		<performance>
+			<criterionID>5</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>6</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>7</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>8</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>9</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>10</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>11</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>12</criterionID>
+			<value><real>4.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>13</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>14</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>15</criterionID>
+			<value><real>4.0</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b3</alternativeID>
+		<performance>
+			<criterionID>5</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>6</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>7</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>8</criterionID>
+			<value><real>2.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>9</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>10</criterionID>
+			<value><real>1.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>11</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>12</criterionID>
+			<value><real>5.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>13</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>14</criterionID>
+			<value><real>3.0</real></value>
+		</performance>
+		<performance>
+			<criterionID>15</criterionID>
+			<value><real>5.0</real></value>
+		</performance>
+	</alternativePerformances>
+</performanceTable>
+<criteriaValues>
+	<criterionValue>
+		<criterionID>5</criterionID>
+		<value><real>2.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>6</criterionID>
+		<value><real>5.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>7</criterionID>
+		<value><real>6.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>8</criterionID>
+		<value><real>6.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>9</criterionID>
+		<value><real>7.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>10</criterionID>
+		<value><real>9.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>11</criterionID>
+		<value><real>9.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>12</criterionID>
+		<value><real>11.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>13</criterionID>
+		<value><real>13.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>14</criterionID>
+		<value><real>15.0</real></value>
+	</criterionValue>
+	<criterionValue>
+		<criterionID>15</criterionID>
+		<value><real>17.0</real></value>
+	</criterionValue>
+</criteriaValues>
+<methodParameters>
+	<parameter name="lambda">
+		<value><real>0.76</real></value>
+	</parameter>
+</methodParameters>
+</xmcda:XMCDA>
