@@ -148,7 +148,7 @@ def render_decision_map(layer, nprofils):
 
     for i in range(1, nprofils+2):
         s = QgsSymbol(layer.geometryType())
-        r, g, b = colorsys.hls_to_rgb(0+float(i)/(nprofils+1), 0.5, 0.5)
+        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
         s.setBrush(QBrush(QColor(r*255, g*255, b*255)))
         label = 'Category %d' % i
         s.setLabel(label)
