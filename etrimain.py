@@ -116,7 +116,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             criterion = self.criteria[j]['id']
             item = table.item(index, j)
             if item <> None and len(item.text()) > 0:
-                values[criterion] = round(float(item.text()), 2)
+                values["%s" % criterion] = round(float(item.text()), 2)
         return values
 
     def get_row(self, table, index):
@@ -286,7 +286,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for action, attrs in self.actions.iteritems():
             attributes = {}
             for id in index:
-                attributes[id] = attrs[id]
+                attributes["%s" % id] = attrs[id]
             actions[action] = attributes
 
         return actions
@@ -296,7 +296,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for i in self.criteria_activated:
             criterion = self.criteria[i]['id']
             w = self.table_crit.item(i,2) 
-            W[criterion] = round(float(w.text()), 2)
+            W["%s" % criterion] = round(float(w.text()), 2)
 
         return W
 
@@ -307,9 +307,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             item = self.table_crit.cellWidget(i, COL_DIRECTION)
             index = item.currentIndex()
             if index == 0:
-                directions[criterion] = 1 
+                directions["%s" % criterion] = 1 
             else:
-                directions[criterion] = -1 
+                directions["%s" % criterion] = -1 
 
         return directions
 
@@ -560,10 +560,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         crit = []
         for i in self.criteria_activated:
-            crit.append("%d" % i)
+            crit.append("%s" % self.criteria[i]['id'])
 
         directions = self.get_criteria_directions()
-        xmcda_crit = xmcda.format_criteria(crit)
+        xmcda_crit = xmcda.format_criteria(crit, directions)
 
         alts_perfs = {}
         affect = {}
@@ -575,7 +575,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             alt_perfs = {}
             for j in self.criteria_activated:
                 evaluation = self.table_refs.item(i,j+1).text()
-                alt_perfs["%d" % j] = evaluation
+                critid = self.criteria[j]['id']
+                alt_perfs["%s" % critid] = evaluation
             alts_perfs["%d" % (i+1)] = alt_perfs
         xmcda_pt = xmcda.format_performances_table(alts_perfs)
         xmcda_affect = xmcda.format_affectations(affect)
@@ -613,7 +614,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         crit = []
         for i in self.criteria_activated:
-            crit.append("%d" % i)
+            crit.append("%s" % self.criteria[i]['id'])
 
         message = xmcda.get_method_messages(xmcda_msg)
         if message == None:
