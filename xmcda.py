@@ -23,27 +23,37 @@ def format_affectations(affectations):
     output += "</alternativesAffectations>\n"
     return output
 
-def format_criteria(criteria, q_thresholds=None, p_thresholds=None, v_thresholds=None):
+def format_criteria(criteria, directions=None, q_thresholds=None, p_thresholds=None, v_thresholds=None):
     output = "<criteria>\n"
     for criterion in criteria:
         output += "\t<criterion id=\"%s\">\n" % criterion
+        if directions:
+            if directions[criterion] == -1:
+                direction = 'min'
+            else:
+                direction = 'max'
+            output += "\t\t<scale>\n"
+            output += "\t\t\t<quantitative>\n"
+            output += "\t\t\t\t<preferenceDirection>%s</preferenceDirection>\n" % direction
+            output += "\t\t\t</quantitative>\n"
+            output += "\t\t</scale>\n"
         if q_thresholds or p_thresholds or v_thresholds:
             output += "\t\t<thresholds>\n"
             if q_thresholds:
                 for i, q in enumerate(q_thresholds):
                     output += "\t\t\t<threshold id=\"q%d\" name=\"indifference\" mcdaConcept=\"indifference\">\n" % (i+1)
-                    output += "\t\t\t\t<constant><real>%d</real></constant>\n" % q[criterion]
+                    output += "\t\t\t\t<constant><real>%f</real></constant>\n" % q[criterion]
                     output += "\t\t\t</threshold>\n"
             if p_thresholds:
                 for i, p in enumerate(p_thresholds):
                     output += "\t\t\t<threshold id=\"p%d\" name=\"preference\" mcdaConcept=\"preference\">\n" % (i+1)
-                    output += "\t\t\t\t<constant><real>%d</real></constant>\n" % p[criterion]
+                    output += "\t\t\t\t<constant><real>%f</real></constant>\n" % p[criterion]
                     output += "\t\t\t</threshold>\n"
             if v_thresholds:
                 for i, v in enumerate(v_thresholds):
                     if v.has_key(criterion):
                         output += "\t\t\t<threshold id=\"v%d\" name=\"veto\" mcdaConcept=\"veto\">\n" % (i+1)
-                        output += "\t\t\t\t<constant><real>%d</real></constant>\n" % v[criterion]
+                        output += "\t\t\t\t<constant><real>%f</real></constant>\n" % v[criterion]
                         output += "\t\t\t</threshold>\n"
             output += "\t\t</thresholds>\n"
         output += "\t</criterion>\n"

@@ -281,14 +281,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def get_actions(self):
         index = self.get_criteria_index()
-        directions = self.get_criteria_directions()
 
         actions = {}
         for action, attrs in self.actions.iteritems():
             attributes = {}
             for id in index:
                 attributes[id] = attrs[id]
-            attributes = d_multiply(attributes, directions)
             actions[action] = attributes
 
         return actions
@@ -318,12 +316,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
     def get_profiles(self):
         nrows = self.table_prof.rowCount()
         ncols = self.table_prof.columnCount()
-        directions = self.get_criteria_directions()
 
         profiles = []
         for row in range(nrows):
             prof = self.get_active_row(self.table_prof, row)
-            r = d_multiply(prof, directions) 
 
             if row == 0 or self.samethresholds == 1: 
                 index = 0
@@ -342,7 +338,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             else:
                 v = {}
 
-            profile = { 'refs':r, 'q': q, 'p': p, 'v': v}
+            profile = { 'refs':prof, 'q': q, 'p': p, 'v': v}
 
             profiles.append(profile)
 
@@ -484,6 +480,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         #print "Generate Decision Map"
         weights = self.get_criteria_weights()
         #print "Weights:", weights
+        directions = self.get_criteria_directions()
+        #print "Directions:", directions
         profiles = self.get_profiles()
         #print "Profiles:", profiles
         actions = self.get_actions()
@@ -491,7 +489,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         cutlevel = self.spinbox_cutlevel.value()
         #print "Cutting level:", cutlevel
 
-        tri = electre_tri(actions, profiles, weights, cutlevel)
+        tri = electre_tri(actions, profiles, weights, cutlevel, directions)
 
         if self.combo_procedure.currentIndex() == 1:
             affectations = tri.optimist()
@@ -563,6 +561,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         crit = []
         for i in self.criteria_activated:
             crit.append("%d" % i)
+
+        directions = self.get_criteria_directions()
         xmcda_crit = xmcda.format_criteria(crit)
 
         alts_perfs = {}
@@ -685,6 +685,15 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             id = int(crit_id)
             self.table_crit.item(id,2).setText(value)
 
+    def set_directions(self, directions):
+        for crit_id, dir in directions.iteritems():
+            id = int(crit_id)
+            item = self.table_crit.cellWidget(id, 1)
+            if dir == 'min':
+                item.setCurrentIndex(1)
+            else:
+                item.setCurrentIndex(0)
+
     def set_profiles(self, profiles, thresholds=None):
         nprofiles = len(profiles)
         self.clear_rows(self.table_prof)
@@ -769,9 +778,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         profiles = PyXMCDA.getPerformanceTable(xmcda_file, profile_names, criteria) 
         thresholds = xmcda.get_thresholds(xmcda_file, criteria)
         weights = PyXMCDA.getCriterionValue(xmcda_file, criteria)
+        directions = PyXMCDA.getCriteriaPreferenceDirections(xmcda_file, criteria)
         compat_alts = PyXMCDA.getAlternativesID(xmcda_file)
         lbda = xmcda.get_lambda(xmcda_file) 
 
+        self.set_directions(directions)
         self.set_weights(weights)
         self.set_profiles(profiles, thresholds)
         self.set_lambda(lbda)
@@ -788,13 +799,14 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         criteria = weights.keys()
         nprofiles = self.table_prof.rowCount()
         profile_names = [ "b%d" % (i+1) for i in range(nprofiles)]
+        directions = self.get_criteria_directions()
         profiles = self.get_profiles()
         cutlevel = self.spinbox_cutlevel.value()
         q_thresholds = [ profile['q'] for profile in profiles ]
         p_thresholds = [ profile['p'] for profile in profiles ]
         v_thresholds = [ profile['v'] for profile in profiles ]
 
-        xmcda_criteria = xmcda.format_criteria(criteria, q_thresholds, p_thresholds, v_thresholds)
+        xmcda_criteria = xmcda.format_criteria(criteria, directions, q_thresholds, p_thresholds, v_thresholds)
         xmcda_profiles = xmcda.format_pt_reference_alternatives(profiles, profile_names, criteria)
         xmcda_profile_names = xmcda.format_alternatives(profile_names)
         xmcda_weights = xmcda.format_criteria_weights(weights)
