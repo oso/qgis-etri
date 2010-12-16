@@ -9,11 +9,26 @@ def d_multiply(a, b):
 
 class electre_tri:
 
-    def __init__(self, actions, profiles, weights, lbda):
-        self.actions = actions
-        self.profiles = profiles
+    def __init__(self, actions, profiles, weights, lbda, directions=None):
         self.weights = weights
         self.lbda = lbda
+        if directions <> None:
+            self.actions = self.update_actions(actions, directions)
+            self.profiles = self.update_profiles(profiles, directions)
+        else:
+            self.actions = actions
+            self.profiles = profiles
+
+    def update_actions(self, actions, directions):
+        a = {}
+        for action, evals in actions.iteritems():
+            a[action] = d_multiply(evals, directions)
+        return a
+
+    def update_profiles(self, profiles, directions):
+        for profile in profiles:
+            profile['refs'] = d_multiply(profile['refs'], directions)
+        return profiles
 
     def partial_concordance(self, x, y, q, p):
         # compute g_j(b) - g_j(a)
