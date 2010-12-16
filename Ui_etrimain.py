@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Thu Nov 25 20:59:28 2010
+# Created: Thu Dec 16 22:02:35 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_EtriMainWindow(object):
     def setupUi(self, EtriMainWindow):
         EtriMainWindow.setObjectName(_fromUtf8("EtriMainWindow"))
-        EtriMainWindow.resize(800, 600)
+        EtriMainWindow.resize(800, 606)
         self.centralwidget = QtGui.QWidget(EtriMainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -105,6 +105,7 @@ class Ui_EtriMainWindow(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.group_refs)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.table_refs = QtGui.QTableWidget(self.group_refs)
+        self.table_refs.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.table_refs.setObjectName(_fromUtf8("table_refs"))
         self.table_refs.setColumnCount(1)
         self.table_refs.setRowCount(0)

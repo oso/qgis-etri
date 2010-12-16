@@ -538,12 +538,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         for crit in self.criteria:
             crit_id = crit['id']
             item = QtGui.QTableWidgetItem()
-            item.setFlags(QtCore.Qt.ItemIsTristate)
+            item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
             item.setText(attr[crit_id])
             self.table_refs.setItem(nrow, crit_id+1, item)
 
             item = QtGui.QTableWidgetItem()
-            item.setFlags(QtCore.Qt.ItemIsTristate)
             self.table_refs.setItem(nrow, 0, item)
             comboBox = QtGui.QComboBox(self)
             for i in range(self.table_prof.rowCount()+1):
