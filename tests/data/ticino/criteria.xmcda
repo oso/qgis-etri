@@ -3,112 +3,137 @@
 <xmcda:XMCDA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2009/XMCDA-2.0.0 file:../XMCDA-2.0.0.xsd" xmlns:xmcda="http://www.decision-deck.org/2009/XMCDA-2.0.0" instanceID="void">
 <criteria>
 	<criterion id="0">
+		<scale>
+			<quantitative>
+				<preferenceDirection>min</preferenceDirection>
+			</quantitative>
+		</scale>
 		<thresholds>
 			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>15</real></constant>
+				<constant><real>15.000000</real></constant>
 			</threshold>
 			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>15</real></constant>
+				<constant><real>15.000000</real></constant>
 			</threshold>
 			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>40</real></constant>
+				<constant><real>40.000000</real></constant>
 			</threshold>
 			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>40</real></constant>
+				<constant><real>40.000000</real></constant>
 			</threshold>
 			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>100</real></constant>
+				<constant><real>100.000000</real></constant>
 			</threshold>
 			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>100</real></constant>
+				<constant><real>100.000000</real></constant>
 			</threshold>
 		</thresholds>
 	</criterion>
 	<criterion id="1">
+		<scale>
+			<quantitative>
+				<preferenceDirection>min</preferenceDirection>
+			</quantitative>
+		</scale>
 		<thresholds>
 			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>80</real></constant>
+				<constant><real>80.000000</real></constant>
 			</threshold>
 			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>80</real></constant>
+				<constant><real>80.000000</real></constant>
 			</threshold>
 			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>350</real></constant>
+				<constant><real>350.000000</real></constant>
 			</threshold>
 			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>350</real></constant>
+				<constant><real>350.000000</real></constant>
 			</threshold>
 			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>850</real></constant>
+				<constant><real>850.000000</real></constant>
 			</threshold>
 			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>850</real></constant>
+				<constant><real>850.000000</real></constant>
 			</threshold>
 		</thresholds>
 	</criterion>
 	<criterion id="2">
+		<scale>
+			<quantitative>
+				<preferenceDirection>max</preferenceDirection>
+			</quantitative>
+		</scale>
 		<thresholds>
 			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>1</real></constant>
+				<constant><real>1.000000</real></constant>
 			</threshold>
 			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>1</real></constant>
+				<constant><real>1.000000</real></constant>
 			</threshold>
 			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>3</real></constant>
+				<constant><real>3.000000</real></constant>
 			</threshold>
 			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>3</real></constant>
+				<constant><real>3.000000</real></constant>
 			</threshold>
 			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>5</real></constant>
+				<constant><real>5.000000</real></constant>
 			</threshold>
 			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>5</real></constant>
+				<constant><real>5.000000</real></constant>
 			</threshold>
 		</thresholds>
 	</criterion>
 	<criterion id="3">
+		<scale>
+			<quantitative>
+				<preferenceDirection>max</preferenceDirection>
+			</quantitative>
+		</scale>
 		<thresholds>
 			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
+				<constant><real>0.500000</real></constant>
 			</threshold>
 			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
+				<constant><real>0.500000</real></constant>
 			</threshold>
 			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>3</real></constant>
+				<constant><real>3.500000</real></constant>
 			</threshold>
 			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>3</real></constant>
+				<constant><real>3.500000</real></constant>
 			</threshold>
 			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>4</real></constant>
+				<constant><real>4.500000</real></constant>
 			</threshold>
 			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>4</real></constant>
+				<constant><real>4.500000</real></constant>
 			</threshold>
 		</thresholds>
 	</criterion>
 	<criterion id="4">
+		<scale>
+			<quantitative>
+				<preferenceDirection>max</preferenceDirection>
+			</quantitative>
+		</scale>
 		<thresholds>
 			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>1</real></constant>
+				<constant><real>1.000000</real></constant>
 			</threshold>
 			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>1</real></constant>
+				<constant><real>1.000000</real></constant>
 			</threshold>
 			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>5</real></constant>
+				<constant><real>5.000000</real></constant>
 			</threshold>
 			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>5</real></constant>
+				<constant><real>5.000000</real></constant>
 			</threshold>
 			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>8</real></constant>
+				<constant><real>8.000000</real></constant>
 			</threshold>
 			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>8</real></constant>
+				<constant><real>8.000000</real></constant>
 			</threshold>
 		</thresholds>
 	</criterion>
@@ -129,11 +154,11 @@
 		<alternativeID>b1</alternativeID>
 		<performance>
 			<criterionID>0</criterionID>
-			<value><real>-100.0</real></value>
+			<value><real>100.0</real></value>
 		</performance>
 		<performance>
 			<criterionID>1</criterionID>
-			<value><real>-1000.0</real></value>
+			<value><real>1000.0</real></value>
 		</performance>
 		<performance>
 			<criterionID>2</criterionID>
@@ -152,11 +177,11 @@
 		<alternativeID>b2</alternativeID>
 		<performance>
 			<criterionID>0</criterionID>
-			<value><real>-50.0</real></value>
+			<value><real>50.0</real></value>
 		</performance>
 		<performance>
 			<criterionID>1</criterionID>
-			<value><real>-500.0</real></value>
+			<value><real>500.0</real></value>
 		</performance>
 		<performance>
 			<criterionID>2</criterionID>
