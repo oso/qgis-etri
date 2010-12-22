@@ -761,7 +761,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.display_inference_results(self.inf_solution)
 
     def load_xmcda_data(self, file):
-        xmcda_file = PyXMCDA.parseValidate(file) 
+        xmcda_file = ET.parse(open(file, 'r'))
         criteria = PyXMCDA.getCriteriaID(xmcda_file)
         self.cbox_samethresholds.setChecked(False)
         self.cbox_sameqp.setChecked(False)
