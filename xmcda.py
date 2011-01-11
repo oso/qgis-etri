@@ -199,6 +199,31 @@ def save_file(filename, xmcda_data):
     file.close()
 
 # FIXME: PyXMCDA variant of getConstantThresholds
+# FIXME: camelcase of all the functions below
+def get_value (xmltree) :
+    try :
+        xmlvalue = xmltree.find("value")
+        if xmlvalue.find("integer") != None:
+            val = int(xmlvalue.find("integer").text)
+        elif xmlvalue.find("real") != None:
+            val = float(xmlvalue.find("real").text)
+        elif xmlvalue.find("rational") != None:
+            val = float(xmlvalue.find("rational/numerator").text)/float(xmlvalue.find("rational/denominator").text)
+        elif xmlvalue.find("label") != None:
+            val = xmlvalue.find("label").text
+        elif xmlvalue.find("rankedLabel") != None:
+            val = float(xmlvalue.find("rankedLabel/rank").text)
+        elif xmlvalue.find("boolean") != None:
+            val = xmlvalue.find("boolean").text
+        elif xmlvalue.find("NA") != None:
+            val = "NA"
+        else:
+            val = None
+    except:
+        val = None
+
+    return val
+
 def get_thresholds(xmltree, critId):
     thresholds = {}
     try:
@@ -221,3 +246,67 @@ def get_thresholds(xmltree, critId):
         return None
      
     return thresholds
+
+def get_performance_table(xmltree, alternativesId, criteriaId):
+    perfTable = xmltree.find(".//performanceTable")
+    Table = {}
+    if perfTable != None :
+        allAltPerf = perfTable.findall("alternativePerformances")
+        for altPerf in allAltPerf :
+            alt = altPerf.find("alternativeID").text
+            Table[alt]={}
+            allCritPerf = altPerf.findall("performance")
+            for critPerf in allCritPerf :
+                crit = critPerf.find("criterionID").text
+                val = get_value(critPerf)
+                Table[alt][crit] = val
+                        
+    return Table
+
+def get_criterion_value(xmltree, criteriaId) :
+    values = {}
+    for criterionValue in xmltree.findall("criteriaValues/criterionValue") :
+        crit = criterionValue.find("criterionID").text
+        if criteriaId.count(crit) > 0 :
+            values[crit] = get_value(criterionValue)
+
+    return values
+
+def get_alternatives_id (xmltree, condition="ACTIVE"):
+    alternativesID = []
+    for listAlternatives in xmltree.findall('alternatives'):
+        for alternative in listAlternatives.findall('alternative'):
+            active = alternative.find('active')
+            if condition == "ACTIVE" and (active == None or active.text == "true"):
+                alternativesID.append(str(alternative.get('id')))
+            elif condition == "INACTIVE" and (active != None and active.text == "false"):
+                alternativesID.append(str(alternative.get('id')))
+            elif condition == "ALL" :
+                alternativesID.append(str(alternative.get('id')))
+
+    return alternativesID
+
+def get_criteria_id(xmltree, condition="ACTIVE"):
+    criteriaID = []
+    for listCriteria in xmltree.findall('criteria'):
+        for criterion in listCriteria.findall('criterion'):
+            active = criterion.find('active')
+
+            if condition == "ACTIVE" and (active == None or active.text == "true"):
+                criteriaID.append(str(criterion.get('id')))
+            elif condition == "INACTIVE" and (active != None and active.text == "false"):
+                criteriaID.append(str(criterion.get('id')))
+            elif condition == "ALL":
+                criteriaID.append(str(criterion.get('id')))
+
+    return criteriaID
+
+def get_criteria_directions(xmltree, critId):
+    prefDir = {}
+    for crit in critId:
+        try:
+            xml_dir = xmltree.xpath(".//criterion[@id='"+crit+"']/scale/*/preferenceDirection")[0]
+            prefDir[crit] = xml_dir.text
+        except:
+            prefDir[crit] = "max"
+    return prefDir

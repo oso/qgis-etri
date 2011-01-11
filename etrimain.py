@@ -11,7 +11,6 @@ import time
 import threading
 import xmcda
 import ui_utils
-import PyXMCDA
 from Ui_pwdialog import *
 
 COL_CRITERIONS = 2
@@ -619,9 +618,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if message == None:
             message = xmcda.get_method_errors(xmcda_msg)
 
-        profiles = PyXMCDA.getPerformanceTable(xmcda_refalts_pt, ref_alts, crit) 
-        weights = PyXMCDA.getCriterionValue(xmcda_crit_weights, crit)
-        compat_alts = PyXMCDA.getAlternativesID(xmcda_compat_alts)
+        profiles = xmcda.get_performance_table(xmcda_refalts_pt, ref_alts, crit) 
+        weights = xmcda.get_criterion_value(xmcda_crit_weights, crit)
+        compat_alts = xmcda.get_alternatives_id(xmcda_compat_alts)
         lbda = xmcda.get_lambda(xmcda_lambda) 
 
         return (message, profiles, weights, lbda, compat_alts)
@@ -762,7 +761,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def load_xmcda_data(self, file):
         xmcda_file = ET.parse(open(file, 'r'))
-        criteria = PyXMCDA.getCriteriaID(xmcda_file)
+        criteria = xmcda.get_criteria_id(xmcda_file)
         self.cbox_samethresholds.setChecked(False)
         self.cbox_sameqp.setChecked(False)
         self.cbox_noveto.setChecked(False)
@@ -774,12 +773,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             else:
                 item.setChecked(True)
 
-        profile_names = PyXMCDA.getAlternativesID(xmcda_file)
-        profiles = PyXMCDA.getPerformanceTable(xmcda_file, profile_names, criteria) 
+        profile_names = xmcda.get_alternatives_id(xmcda_file)
+        profiles = xmcda.get_performance_table(xmcda_file, profile_names, criteria) 
         thresholds = xmcda.get_thresholds(xmcda_file, criteria)
-        weights = PyXMCDA.getCriterionValue(xmcda_file, criteria)
-        directions = PyXMCDA.getCriteriaPreferenceDirections(xmcda_file, criteria)
-        compat_alts = PyXMCDA.getAlternativesID(xmcda_file)
+        weights = xmcda.get_criterion_value(xmcda_file, criteria)
+        directions = xmcda.get_criteria_directions(xmcda_file, criteria)
+        compat_alts = xmcda.get_alternatives_id(xmcda_file)
         lbda = xmcda.get_lambda(xmcda_file) 
 
         self.set_directions(directions)
