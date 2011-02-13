@@ -303,10 +303,12 @@ def get_criteria_id(xmltree, condition="ACTIVE"):
 
 def get_criteria_directions(xmltree, critId):
     prefDir = {}
-    for crit in critId:
+    for criterion in xmltree.findall(".//criterion") :
+        criterionID = criterion.get("id")
         try:
-            xml_dir = xmltree.xpath(".//criterion[@id='"+crit+"']/scale/*/preferenceDirection")[0]
-            prefDir[crit] = xml_dir.text
+            xmlprefdir = criterion.find(".//preferenceDirection")
+            prefDir[criterionID] = xmlprefdir.text 
         except:
-            prefDir[crit] = "max"
+            prefDir[criterionID] = 'max'
+
     return prefDir

@@ -685,10 +685,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.table_crit.item(id,2).setText(value)
 
     def set_directions(self, directions):
-        for crit_id, dir in directions.iteritems():
+        for crit_id, direction in directions.iteritems():
             id = int(crit_id)
             item = self.table_crit.cellWidget(id, 1)
-            if dir == 'min':
+            if direction == 'min':
                 item.setCurrentIndex(1)
             else:
                 item.setCurrentIndex(0)
