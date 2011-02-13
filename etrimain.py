@@ -777,7 +777,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         profiles = xmcda.get_performance_table(xmcda_file, profile_names, criteria) 
         thresholds = xmcda.get_thresholds(xmcda_file, criteria)
         weights = xmcda.get_criterion_value(xmcda_file, criteria)
-        directions = xmcda.get_criteria_directions(xmcda_file, criteria)
+        directions = xmcda.get_criteria_directions(xmcda_file)
         compat_alts = xmcda.get_alternatives_id(xmcda_file)
         lbda = xmcda.get_lambda(xmcda_file) 
 

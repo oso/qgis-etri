@@ -301,7 +301,7 @@ def get_criteria_id(xmltree, condition="ACTIVE"):
 
     return criteriaID
 
-def get_criteria_directions(xmltree, critId):
+def get_criteria_directions(xmltree):
     prefDir = {}
     for criterion in xmltree.findall(".//criterion") :
         criterionID = criterion.get("id")
