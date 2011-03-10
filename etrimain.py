@@ -626,7 +626,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         return (message, profiles, weights, lbda, compat_alts)
 
     def display_inference_results(self, solution):
-        self.inference_out = self.parse_xmcda_output(solution)
+        try:
+            self.inference_out = self.parse_xmcda_output(solution)
+        except:
+            QMessageBox.information(None, "Warning", "Cannot parse XMCDA output")
+            return
+
         messages = self.inference_out[0]
         profiles = self.inference_out[1]
         weights = self.inference_out[2]
