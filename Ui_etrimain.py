@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Thu Dec 16 22:02:35 2010
-#      by: PyQt4 UI code generator 4.7.7
+# Created: Fri Mar 11 22:22:30 2011
+#      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -146,6 +146,8 @@ class Ui_EtriMainWindow(object):
         self.combo_inference = QtGui.QComboBox(self.group_infparams)
         self.combo_inference.setObjectName(_fromUtf8("combo_inference"))
         self.combo_inference.addItem(_fromUtf8(""))
+        self.combo_inference.addItem(_fromUtf8(""))
+        self.combo_inference.addItem(_fromUtf8(""))
         self.inference_layout.addWidget(self.combo_inference)
         self.verticalLayout.addLayout(self.inference_layout)
         self.gridLayout_6.addWidget(self.group_infparams, 0, 0, 1, 1)
@@ -264,7 +266,7 @@ class Ui_EtriMainWindow(object):
         self.gridLayout.addLayout(self.right_layout, 0, 1, 1, 1)
         EtriMainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(EtriMainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         EtriMainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(EtriMainWindow)
@@ -291,9 +293,11 @@ class Ui_EtriMainWindow(object):
         self.Binfer.setText(QtGui.QApplication.translate("EtriMainWindow", "Infer parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.group_infparams.setTitle(QtGui.QApplication.translate("EtriMainWindow", "Parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.label_combo.setText(QtGui.QApplication.translate("EtriMainWindow", "Electre Tri model:", None, QtGui.QApplication.UnicodeUTF8))
-        self.combo_model.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Bouyssou-Marchant", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_model.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Bouyssou-Marchant (Pessimistic)", None, QtGui.QApplication.UnicodeUTF8))
         self.label_inference.setText(QtGui.QApplication.translate("EtriMainWindow", "Inference:", None, QtGui.QApplication.UnicodeUTF8))
-        self.combo_inference.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Global inference", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_inference.setItemText(0, QtGui.QApplication.translate("EtriMainWindow", "Global", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_inference.setItemText(1, QtGui.QApplication.translate("EtriMainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
+        self.combo_inference.setItemText(2, QtGui.QApplication.translate("EtriMainWindow", "Weights and lambda", None, QtGui.QApplication.UnicodeUTF8))
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_inference), QtGui.QApplication.translate("EtriMainWindow", "Inference", None, QtGui.QApplication.UnicodeUTF8))
         self.group_options.setTitle(QtGui.QApplication.translate("EtriMainWindow", "XMCDA", None, QtGui.QApplication.UnicodeUTF8))
         self.Bloadxmcda.setText(QtGui.QApplication.translate("EtriMainWindow", "Load parameters", None, QtGui.QApplication.UnicodeUTF8))

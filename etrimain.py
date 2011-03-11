@@ -584,18 +584,44 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             cats.append("%d" % (i+1))
         xmcda_cats = xmcda.format_categories(cats) 
         
-        #print xmcda_alts
-        #print xmcda_crit
-        #print xmcda_cats
-        #print xmcda_pt
-        #print xmcda_affect
-
         xmcda_data = {}
         xmcda_data['alternatives'] = xmcda.add_xmcda_tags(xmcda_alts)
         xmcda_data['criteria'] = xmcda.add_xmcda_tags(xmcda_crit)
         xmcda_data['categories'] = xmcda.add_xmcda_tags(xmcda_cats)
         xmcda_data['perfs_table'] = xmcda.add_xmcda_tags(xmcda_pt)
         xmcda_data['assign'] = xmcda.add_xmcda_tags(xmcda_affect)
+
+        #print xmcda_alts
+        #print xmcda_crit
+        #print xmcda_cats
+        #print xmcda_pt
+        #print xmcda_affect
+
+        if self.combo_inference.currentIndex() == 1:
+            weights = self.get_criteria_weights()
+            xmcda_weights = xmcda.format_criteria_weights(weights)
+            cutlevel = self.spinbox_cutlevel.value()
+            xmcda_cutlevel = xmcda.format_lambda(cutlevel)
+
+            #print xmcda_weights
+            #print xmcda_cutlevel
+
+            xmcda_data['crit_weights'] = xmcda.add_xmcda_tags(xmcda_weights)
+            xmcda_data['lambda'] = xmcda.add_xmcda_tags(xmcda_cutlevel)
+        elif self.combo_inference.currentIndex() == 2:
+            profiles = self.get_profiles()
+            refs = [ profile['refs'] for profile in profiles ]
+            ref_alts = [ "b%d" % (i+1) for i in range(len(refs))]
+            xmcda_catprof = xmcda.format_category_profiles(refs, ref_alts, cats)
+            xmcda_refalts = xmcda.format_pt_reference_alternatives(profiles, ref_alts, crit)
+
+            #print xmcda_catprof
+            #print xmcda_refalts
+
+            xmcda_data['cat_profiles'] = xmcda.add_xmcda_tags(xmcda_catprof)
+            xmcda_data['reference_alts'] = xmcda.add_xmcda_tags(xmcda_refalts)
+        else:
+            pass
 
         return xmcda_data
 
