@@ -137,7 +137,9 @@ def saveDialog(parent):
 def addtocDialog(parent, filename, nprofils):
     addToTOC = QMessageBox.question(parent, "Decision MAP layer created", "Would you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
     if addToTOC == QMessageBox.Yes:
-        vlayer = QgsVectorLayer(filename, "decision", "ogr")
+        basename = os.path.basename(filename)
+        name = os.path.splitext(basename)[0]
+        vlayer = QgsVectorLayer(filename, name, "ogr")
         render_decision_map(vlayer, nprofils)
 
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
