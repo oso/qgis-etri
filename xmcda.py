@@ -1,8 +1,16 @@
-from ZSI.client import NamedParamBinding
 import sys #FIXME: useless
 import time
 
+try:
+    from ZSI.client import NamedParamBinding
+    zsi_loaded = 1
+except:
+    zsi_loaded = 0
+
 ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA-test.py'
+
+def has_zsi():
+    return zsi_loaded
 
 def format_alternatives(alts):
     output = "<alternatives>\n"

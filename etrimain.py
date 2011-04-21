@@ -665,7 +665,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         compat_alts = self.inference_out[4]
 
         for crit, val in weights.iteritems():
-            weights[crit] = val*100
+            weights[crit] = val*1000
 
         inference_dialog = InferenceDialog(self, self.on_inference_accept)
         inference_dialog.show()
@@ -772,6 +772,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.inf_solution = solution
 
     def on_Binfer_pressed(self):
+        if xmcda.has_zsi() == 0:
+            QMessageBox.information(None, "Warning", "ZSI library not installed! Please install it to use inference module. http://pywebsvcs.sourceforge.net/zsi.html")
+            return
+
         pw_dialog = PwDialog(self, self.on_inference_cancel)
         pw_dialog.show()
 
