@@ -44,6 +44,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if self.isEnabled() == False:
             event.ignore();
 
+    def on_Tab_params_currentChanged(self, index):
+        if index == 2 and xmcda.has_zsi() == 0:
+            QMessageBox.information(None, "Warning", "ZSI library not installed! Please install it to use inference module. http://pywebsvcs.sourceforge.net/zsi.html")
+
     def add_crit_layer(self, layer):
         self.combo_layer.addItem(layer.name())
         self.crit_layers.append(layer)
