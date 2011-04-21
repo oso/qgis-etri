@@ -414,7 +414,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def on_Bloadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
-        self.set_crit_layer(self.crit_layers[index])
+        try:
+            self.set_crit_layer(self.crit_layers[index])
+        except:
+            QMessageBox.information(None, "Warning", "Cannot load specified layer!")
 
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
