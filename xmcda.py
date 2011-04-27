@@ -156,9 +156,9 @@ def submit_problem(url, params):
                                 port=80,
                                 url=url,
                                 tracefile=None)
-    print service.hello()['message'].encode('UTF-8')
+    #print service.hello()['message'].encode('UTF-8')
     sp = service.submitProblem(**params)
-    print "Return Ticket: " + sp['ticket']
+    #print "Return Ticket: " + sp['ticket']
     return sp['ticket']
 
 def request_solution(url, ticket_id, timeout=0):
@@ -180,7 +180,7 @@ def request_solution(url, ticket_id, timeout=0):
 
         time.sleep(0.5)
         if timeout >= 0 and time.time()>start+timeout:
-            print('timeout: solution not available after %i seconds: exiting'%timeout)
+            #print('timeout: solution not available after %i seconds: exiting'%timeout)
             return None
 
     return answer
