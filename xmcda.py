@@ -7,7 +7,7 @@ try:
 except:
     zsi_loaded = 0
 
-ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA-test.py'
+ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 
 def has_zsi():
     return zsi_loaded
