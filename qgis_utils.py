@@ -144,7 +144,7 @@ def addtocDialog(parent, filename, nprofils):
 
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
 
-def render_decision_map(layer, nprofils):
+def render_decision_map_old(layer, nprofils):
     sr = QgsUniqueValueRenderer(layer.geometryType())
     sr.setClassificationField(0)
 
@@ -159,3 +159,21 @@ def render_decision_map(layer, nprofils):
         sr.insertValue(str(i), s)
 
     layer.setRenderer(sr)
+
+def render_decision_map_new(layer, nprofils):
+    cat_list = []
+    for i in range(1, nprofils+2):
+        s = QgsSymbolV2.defaultSymbol(layer.geometryType())
+        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
+        s.setColor(QColor(r*255, g*255, b*255))
+        cat_list.append(QgsRendererCategoryV2(i, s, 'Category %d' % i))
+
+    sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
+    sr.setClassAttribute("category")
+    layer.setRendererV2(sr)
+
+def render_decision_map(layer, nprofils):
+    if layer.isUsingRendererV2():
+        render_decision_map_new(layer, nprofils)
+    else:
+        render_decision_map_old(layer, nprofils)
