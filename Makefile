@@ -1,4 +1,8 @@
-TARGETS := resources_rc.py Ui_etrimain.py Ui_refsdialog.py Ui_infdialog.py Ui_pwdialog.py
+TARGETS :=	resources_rc.py
+TARGETS +=	Ui_etrimain.py
+TARGETS +=	Ui_refsdialog.py
+TARGETS +=	Ui_infdialog.py
+TARGETS +=	Ui_pwdialog.py
 
 PKG_FILES :=	etrimain.py
 PKG_FILES +=	__init__.py
@@ -46,4 +50,4 @@ zip:
 	zip -9v qgis_etri.zip $(PKG_FILES:%=qgis_etri/%)
 	@rm qgis_etri
 
-.PHONY: all clean mrproper
+.PHONY: all clean mrproper zip
