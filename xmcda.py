@@ -1,16 +1,9 @@
 import sys #FIXME: useless
 import time
-
-try:
-    from ZSI.client import NamedParamBinding
-    zsi_loaded = 1
-except:
-    zsi_loaded = 0
+from pysimplesoap.client import SoapClient
+from pysimplesoap.simplexml import SimpleXMLElement, TYPE_MAP
 
 ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
-
-def has_zsi():
-    return zsi_loaded
 
 def format_alternatives(alts):
     output = "<alternatives>\n"
@@ -150,40 +143,43 @@ def add_xmcda_tags(xml_data):
     return output
 
 def submit_problem(url, params):
-    host=url.split('/')[2]
+    p = SimpleXMLElement("<submitProblem></submitProblem>")
+    for k, v in params.items():
+        child = p.add_child(k, v)
+        child.add_attribute("xsi:type", "xsd:string")
 
-    service = NamedParamBinding(host=host,
-                                port=80,
-                                url=url,
-                                tracefile=None)
-    #print service.hello()['message'].encode('UTF-8')
-    sp = service.submitProblem(**params)
-    #print "Return Ticket: " + sp['ticket']
-    return sp['ticket']
+    client = SoapClient(
+        location = url,
+        action = '',
+        soap_ns = 'soapenv',
+        namespace = 'http://www.decision-deck.org/2009/XMCDA-2.0.0',
+        trace = False)
+
+    sp = client.call('submitProblem', p)
+    reply = sp.submitProblemResponse
+    return str(reply.ticket)
 
 def request_solution(url, ticket_id, timeout=0):
-    host=url.split('/')[2]
-
-    service = NamedParamBinding(host=host,
-                                port=80,
-                                url=url,
-                                tracefile=sys.stderr)
+    client = SoapClient(
+        location = url,
+        action = '',
+        soap_ns = 'soapenv',
+        namespace = 'http://www.decision-deck.org/2009/XMCDA-2.0.0',
+        trace = False)
 
     start = time.time()
     while True:
-        answer = service.requestSolution(ticket=ticket_id)
-        if answer['service-status'] != 1:
-            break;
+        rs = client.call('requestSolution', ticket=ticket_id)
+        reply = rs.requestSolutionResponse
 
-        if timeout == 0:
-            return None
+        if getattr(reply,'service-status') != 1:
+            break
 
         time.sleep(0.5)
-        if timeout >= 0 and time.time()>start+timeout:
-            #print('timeout: solution not available after %i seconds: exiting'%timeout)
+        if timeout and time.time()>start+timeout:
             return None
 
-    return answer
+    return reply
 
 def get_lambda(xmltree):
     xml_lbda = xmltree.find(".//methodParameters/parameter/value/real")

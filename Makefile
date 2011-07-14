@@ -19,6 +19,8 @@ PKG_FILES +=	xmcda.py
 PKG_FILES +=	infdialog.py
 PKG_FILES +=	refsdialog.py
 PKG_FILES +=	Ui_pwdialog.py
+PKG_FILES +=	pysimplesoap/client.py
+PKG_FILES +=	pysimplesoap/simplexml.py
 PKG_FILES +=	COPYING
 PKG_FILES +=	README
 

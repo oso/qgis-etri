@@ -44,10 +44,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if self.isEnabled() == False:
             event.ignore();
 
-    def on_Tab_params_currentChanged(self, index):
-        if index == 2 and xmcda.has_zsi() == 0:
-            QMessageBox.information(None, "Warning", "ZSI library not installed! Please install it to use inference module. http://pywebsvcs.sourceforge.net/zsi.html")
-
     def add_crit_layer(self, layer):
         self.combo_layer.addItem(layer.name())
         self.crit_layers.append(layer)
@@ -633,12 +629,12 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         return xmcda_data
 
     def parse_xmcda_output(self, solution):
-        xmcda_msg = ET.ElementTree(ET.fromstring(solution['messages']))
-        xmcda_cat_prof = ET.ElementTree(ET.fromstring(solution['cat_profiles']))
-        xmcda_refalts_pt = ET.ElementTree(ET.fromstring(solution['reference_alts']))
-        xmcda_crit_weights = ET.ElementTree(ET.fromstring(solution['crit_weights']))
-        xmcda_compat_alts = ET.ElementTree(ET.fromstring(solution['compatible_alts']))
-        xmcda_lambda = ET.ElementTree(ET.fromstring(solution['lambda']))
+        xmcda_msg = ET.ElementTree(ET.fromstring(str(solution.messages)))
+        xmcda_cat_prof = ET.ElementTree(ET.fromstring(str(solution.cat_profiles)))
+        xmcda_refalts_pt = ET.ElementTree(ET.fromstring(str(getattr(solution, 'reference_alts'))))
+        xmcda_crit_weights = ET.ElementTree(ET.fromstring(str(solution.crit_weights)))
+        xmcda_compat_alts = ET.ElementTree(ET.fromstring(str(getattr(solution, 'compatible_alts'))))
+        xmcda_lambda = ET.ElementTree(ET.fromstring(str(getattr(solution, 'lambda'))))
 
         nprofiles = self.table_prof.rowCount()
         ref_alts = [ "b%d" % (i+1) for i in range(nprofiles)]
@@ -779,10 +775,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.inf_solution = solution
 
     def on_Binfer_pressed(self):
-        if xmcda.has_zsi() == 0:
-            QMessageBox.information(None, "Warning", "ZSI library not installed! Please install it to use inference module. http://pywebsvcs.sourceforge.net/zsi.html")
-            return
-
         pw_dialog = PwDialog(self, self.on_inference_cancel)
         pw_dialog.show()
 
