@@ -104,10 +104,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         else:
             self.add_profile(0)
 
-    def check_row_float(self, row):
-        for i in row:
-            round(float(i), 2)
-
     def get_active_row(self, table, index):
         ncols = table.columnCount()
         values = {}
