@@ -28,7 +28,7 @@ PKG_FILES +=	README
 all: $(TARGETS) 
 
 resources_rc.py: resources.qrc
-	pyrcc4 -o resources_rc.py resources.qrc
+	pyrcc4 -o $@ $<
 
 Ui_pwdialog.py: pwdialog.ui
 	pyuic4 -o $@ $<
@@ -48,7 +48,7 @@ clean:
 mrproper: clean
 	rm -f $(TARGETS)
 
-zip:
+zip: $(TARGETS)
 	@ln -sf . qgis_etri
 	zip -9v qgis_etri.zip $(PKG_FILES:%=qgis_etri/%)
 	@rm qgis_etri
