@@ -1,3 +1,4 @@
+#FIXME: put these 4 functions in another place
 def d_add(a, b):
     return dict( (n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b) )
 
@@ -7,8 +8,12 @@ def d_substract(a, b):
 def d_multiply(a, b):
     return dict( (n, a.get(n, 0)*b.get(n, 0)) for n in set(a)|set(b) )
 
+def d_divide(a, b):
+    return dict( (n, a.get(n, 0)/b.get(n, 0)) for n in set(a)|set(b) )
+
 class electre_tri:
 
+    #FIXME: Parameters should be optional and set_xxx functions should be added
     def __init__(self, actions, profiles, weights, lbda, directions=None):
         self.weights = weights
         self.lbda = lbda
