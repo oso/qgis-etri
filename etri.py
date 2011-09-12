@@ -13,27 +13,33 @@ def d_divide(a, b):
 
 class electre_tri:
 
-    #FIXME: Parameters should be optional and set_xxx functions should be added
-    def __init__(self, actions, profiles, weights, lbda, directions=None):
+    def __init__(self, actions = None, profiles = None, weights = None,
+            lbda = None, directions=None):
+        self.actions = actions
+        self.profiles = profiles
         self.weights = weights
         self.lbda = lbda
-        if directions <> None:
-            self.actions = self.update_actions(actions, directions)
-            self.profiles = self.update_profiles(profiles, directions)
-        else:
-            self.actions = actions
-            self.profiles = profiles
+        self.directions = directions
 
     def update_actions(self, actions, directions):
+        if directions == None:
+            return actions.copy()
+
         a = {}
         for action, evals in actions.iteritems():
             a[action] = d_multiply(evals, directions)
+
         return a
 
     def update_profiles(self, profiles, directions):
-        for profile in profiles:
-            profile['refs'] = d_multiply(profile['refs'], directions)
-        return profiles
+        if directions == None:
+            return profiles[:]
+
+        p = profiles[:]
+        for profile in p:
+            p['refs'] = d_multiply(profile['refs'], directions)
+
+        return p
 
     def partial_concordance(self, x, y, q, p):
         # compute g_j(b) - g_j(a)
@@ -109,13 +115,14 @@ class electre_tri:
                 return "R"
     
     def pessimist(self):
-        profils = self.profiles[:]
-        profils.reverse()
-        nprofils = len(profils)+1
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
+        profiles.reverse()
+        nprofils = len(profiles)+1
         affectations = {}
-        for action, evals in self.actions.iteritems():
+        for action, evals in actions.iteritems():
             category = nprofils 
-            for profil in profils:
+            for profil in profiles:
                 outr = self.outrank(evals, profil, self.weights, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
@@ -125,11 +132,12 @@ class electre_tri:
         return affectations
     
     def optimist(self):
-        profils = self.profiles
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
         affectations = {}
-        for action, evals in self.actions.iteritems():
+        for action, evals in actions.iteritems():
             category = 1
-            for profil in profils:
+            for profil in profiles:
                 outr = self.outrank(evals, profil, self.weights, self.lbda)
                 if outr != "-":
                     category += 1
@@ -139,12 +147,13 @@ class electre_tri:
         return affectations
 
     def print_concordance_table(self):
-        profils = self.profiles
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
 
         print 'Concordance Table'
         print '================='
         prtstr = 'ACTION' + ' ' * (16-len('ACTION'))
-        for i in range(1, len(profils)+1):
+        for i in range(1, len(profiles)+1):
             prtstr2 = 'ai,b%d' % i
             prtstr +=  prtstr2
             prtstr += ' ' * (16-len(prtstr2))
@@ -155,9 +164,9 @@ class electre_tri:
         print prtstr
         print '-' * len(prtstr)
 
-        for action, evals in self.actions.iteritems():
+        for action, evals in actions.iteritems():
             print '%s\t\t' % action,
-            for profil in profils:
+            for profil in profiles:
                 concordance = self.concordance(evals, profil['refs'], profil['q'], profil['p'], self.weights)
                 print '%.2f\t\t' % concordance, 
                 concordance = self.concordance(profil['refs'], evals, profil['q'], profil['p'], self.weights)
@@ -165,12 +174,13 @@ class electre_tri:
             print ''
 
     def print_credibility_table(self):
-        profils = self.profiles
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
 
         print 'Credibility Table'
         print '================='
         prtstr = 'ACTION' + ' ' * (16-len('ACTION'))
-        for i in range(1, len(profils)+1):
+        for i in range(1, len(profiles)+1):
             prtstr2 = 'ai,b%d' % i
             prtstr +=  prtstr2
             prtstr += ' ' * (16-len(prtstr2))
@@ -180,9 +190,9 @@ class electre_tri:
         print prtstr
         print '-' * len(prtstr)
 
-        for action, evals in self.actions.iteritems():
+        for action, evals in actions.iteritems():
             print '%s\t\t' % action,
-            for profil in profils:
+            for profil in profiles:
                 credibility = self.credibility(evals, profil['refs'], profil['q'], profil['p'], profil['v'], self.weights)
                 print '%.2f\t\t' % credibility,
                 credibility = self.credibility(profil['refs'], evals, profil['q'], profil['p'], profil['v'], self.weights)
