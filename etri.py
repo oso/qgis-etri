@@ -21,6 +21,42 @@ class electre_tri:
         self.lbda = lbda
         self.directions = directions
 
+    def get_model_min(self):
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
+
+        minima = {}
+        for action, evals in actions.iteritems():
+            for crit, value in evals.iteritems():
+                if minima.has_key(crit) == False:
+                    minima[crit] = value
+
+                if minima[crit] > value:
+                    minima[crit] = value
+
+        if self.directions <> None:
+            minima = d_multiply(minima, self.directions)
+
+        return minima
+
+    def get_model_max(self):
+        actions = self.update_actions(self.actions, self.directions)
+        profiles = self.update_profiles(self.profiles, self.directions)
+
+        maxima = {}
+        for action, evals in actions.iteritems():
+            for crit, value in evals.iteritems():
+                if maxima.has_key(crit) == False:
+                    maxima[crit] = value
+
+                if maxima[crit] < value:
+                    maxima[crit] = value
+
+        if self.directions <> None:
+            maxima = d_multiply(maxima, self.directions)
+
+        return maxima
+
     def update_actions(self, actions, directions):
         if directions == None:
             return actions.copy()
@@ -35,9 +71,10 @@ class electre_tri:
         if directions == None:
             return profiles[:]
 
-        p = profiles[:]
+        p = [ profile.copy() for profile in profiles ]
+
         for profile in p:
-            p['refs'] = d_multiply(profile['refs'], directions)
+            profile['refs'] = d_multiply(profile['refs'], directions)
 
         return p
 
@@ -99,9 +136,9 @@ class electre_tri:
 
         return sigma
     
-    def outrank(self, action, profil, weights, lbda):
-        s_ab = self.credibility(action, profil['refs'], profil['q'], profil['p'], profil['v'], weights)
-        s_ba = self.credibility(profil['refs'], action, profil['q'], profil['p'], profil['v'], weights)
+    def outrank(self, action, profile, weights, lbda):
+        s_ab = self.credibility(action, profile['refs'], profile['q'], profile['p'], profile['v'], weights)
+        s_ba = self.credibility(profile['refs'], action, profile['q'], profile['p'], profile['v'], weights)
 
         if s_ab >= lbda:
             if s_ba >= lbda:
@@ -118,12 +155,12 @@ class electre_tri:
         actions = self.update_actions(self.actions, self.directions)
         profiles = self.update_profiles(self.profiles, self.directions)
         profiles.reverse()
-        nprofils = len(profiles)+1
+        nprofiles = len(profiles)+1
         affectations = {}
         for action, evals in actions.iteritems():
-            category = nprofils 
-            for profil in profiles:
-                outr = self.outrank(evals, profil, self.weights, self.lbda)
+            category = nprofiles
+            for profile in profiles:
+                outr = self.outrank(evals, profile, self.weights, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
     
@@ -137,8 +174,8 @@ class electre_tri:
         affectations = {}
         for action, evals in actions.iteritems():
             category = 1
-            for profil in profiles:
-                outr = self.outrank(evals, profil, self.weights, self.lbda)
+            for profile in profiles:
+                outr = self.outrank(evals, profile, self.weights, self.lbda)
                 if outr != "-":
                     category += 1
 
@@ -166,10 +203,10 @@ class electre_tri:
 
         for action, evals in actions.iteritems():
             print '%s\t\t' % action,
-            for profil in profiles:
-                concordance = self.concordance(evals, profil['refs'], profil['q'], profil['p'], self.weights)
+            for profile in profiles:
+                concordance = self.concordance(evals, profile['refs'], profile['q'], profile['p'], self.weights)
                 print '%.2f\t\t' % concordance, 
-                concordance = self.concordance(profil['refs'], evals, profil['q'], profil['p'], self.weights)
+                concordance = self.concordance(profile['refs'], evals, profile['q'], profile['p'], self.weights)
                 print '%.2f\t\t' % concordance, 
             print ''
 
@@ -192,9 +229,9 @@ class electre_tri:
 
         for action, evals in actions.iteritems():
             print '%s\t\t' % action,
-            for profil in profiles:
-                credibility = self.credibility(evals, profil['refs'], profil['q'], profil['p'], profil['v'], self.weights)
+            for profile in profiles:
+                credibility = self.credibility(evals, profile['refs'], profile['q'], profile['p'], profile['v'], self.weights)
                 print '%.2f\t\t' % credibility,
-                credibility = self.credibility(profil['refs'], evals, profil['q'], profil['p'], profil['v'], self.weights)
+                credibility = self.credibility(profile['refs'], evals, profile['q'], profile['p'], profile['v'], self.weights)
                 print '%.2f\t\t' % credibility,
             print ''
