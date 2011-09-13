@@ -13,13 +13,16 @@ def d_divide(a, b):
 
 class electre_tri:
 
-    def __init__(self, actions = None, profiles = None, weights = None,
-            lbda = None, directions=None):
+    def __init__(self, actions, profiles, weights, lbda, directions=None, criteria=None):
         self.actions = actions
         self.profiles = profiles
         self.weights = weights
         self.lbda = lbda
         self.directions = directions
+        if criteria == None:
+            self.criteria = weights.keys()
+        else:
+            self.criteria = criteria
 
     def get_model_min(self):
         actions = self.update_actions(self.actions, self.directions)
@@ -31,6 +34,12 @@ class electre_tri:
                 if minima.has_key(crit) == False:
                     minima[crit] = value
 
+                if minima[crit] > value:
+                    minima[crit] = value
+
+        for profile in profiles:
+            prof = profile['refs']
+            for crit, value in profile['refs'].iteritems():
                 if minima[crit] > value:
                     minima[crit] = value
 
@@ -49,6 +58,12 @@ class electre_tri:
                 if maxima.has_key(crit) == False:
                     maxima[crit] = value
 
+                if maxima[crit] < value:
+                    maxima[crit] = value
+
+        for profile in profiles:
+            prof = profile['refs']
+            for crit, value in profile['refs'].iteritems():
                 if maxima[crit] < value:
                     maxima[crit] = value
 
