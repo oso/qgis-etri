@@ -3,23 +3,6 @@ from PyQt4 import QtGui
 from etri import electre_tri
 import colorsys
 
-#class model_area(QtGui.QGraphicsItem):
-#
-#    def __init__(self, polygon, brush, parent=None):
-#        super(QtGui.QGraphicsItem, self).__init__(parent)
-#        self.path = QtGui.QPainterPath()
-#        self.path.addPolygon(polygon)
-#        self.brush = brush
-#
-#    def boundingRect(self):
-#        return self.path.boundingRect()
-#
-#    def paint(self, painter, option, widget=None):
-#        painter.setBrush(self.brush)
-#        painter.drawPath(self.path)
-##        painter.setCompositionMode(QtGui.QPainter.CompositionMode_Overlay)
-#        painter.setCompositionMode(QtGui.QPainter.RasterOp_SourceXorDestination)
-
 class graph_etri(QtGui.QGraphicsScene):
 
     def __init__(self, model, size, parent=None):
