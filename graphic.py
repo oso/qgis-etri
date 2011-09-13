@@ -3,6 +3,23 @@ from PyQt4 import QtGui
 from etri import electre_tri
 import colorsys
 
+#class model_area(QtGui.QGraphicsItem):
+#
+#    def __init__(self, polygon, brush, parent=None):
+#        super(QtGui.QGraphicsItem, self).__init__(parent)
+#        self.path = QtGui.QPainterPath()
+#        self.path.addPolygon(polygon)
+#        self.brush = brush
+#
+#    def boundingRect(self):
+#        return self.path.boundingRect()
+#
+#    def paint(self, painter, option, widget=None):
+#        painter.setBrush(self.brush)
+#        painter.drawPath(self.path)
+##        painter.setCompositionMode(QtGui.QPainter.CompositionMode_Overlay)
+#        painter.setCompositionMode(QtGui.QPainter.RasterOp_SourceXorDestination)
+
 class graph_etri(QtGui.QGraphicsScene):
 
     def __init__(self, model, size, parent=None):
@@ -66,6 +83,7 @@ class graph_etri(QtGui.QGraphicsScene):
         return points
 
     def __get_category_brush(self, category):
+        print category
         h = 1-float(category)/(len(self.model.profiles)+1)
         r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
@@ -75,12 +93,14 @@ class graph_etri(QtGui.QGraphicsScene):
         minima = self.model.get_model_min()
         maxima = self.model.get_model_max()
 
+        polygon_list = []
         below = self.__profile_get_points(minima)
         for i, profile in enumerate(profiles):
             below.reverse()
             above = self.__profile_get_points(profile['refs'])
             ppoints = below + above
             polygon = QtGui.QPolygonF(ppoints)
+            polygon_list.append(polygon)
             brush = self.__get_category_brush(i)
             self.addPolygon(polygon, QtGui.QPen(), brush)
             below = above[:]
@@ -89,5 +109,17 @@ class graph_etri(QtGui.QGraphicsScene):
         below.reverse()
         ppoints = below + above
         polygon = QtGui.QPolygonF(ppoints)
+        polygon_list.append(polygon)
         brush = self.__get_category_brush(i+1)
         self.addPolygon(polygon, QtGui.QPen(), brush)
+
+        for i, p in enumerate(polygon_list):
+            for j, q in enumerate(polygon_list):
+                if j >= i:
+                    continue
+
+                u = p.intersected(q)
+                if u == None:
+                    continue
+
+                self.addPolygon(u, QtGui.QPen(), QtGui.QBrush(QtGui.QColor("yellow")))
