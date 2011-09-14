@@ -18,11 +18,14 @@ class electre_tri:
         self.profiles = profiles
         self.weights = weights
         self.lbda = lbda
-        self.directions = directions
         if criteria == None:
             self.criteria = weights.keys()
         else:
             self.criteria = criteria
+        if directions == None:
+            self.directions = { crit: 1 for crit in self.criteria }
+        else:
+            self.directions = directions
 
     def get_model_min(self):
         actions = self.update_actions(self.actions, self.directions)
