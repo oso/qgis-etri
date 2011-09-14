@@ -1,5 +1,5 @@
 from PyQt4 import QtCore, QtGui
-from Ui_etrimain import Ui_EtriMainWindow
+from ui.etrimain import Ui_EtriMainWindow
 from qgis_utils import *
 from etri import *
 from refsdialog import *
@@ -12,7 +12,8 @@ import time
 import threading
 import xmcda
 import ui_utils
-from Ui_pwdialog import *
+from ui.pwdialog import * 
+#from ui.pwdialog import Ui_PleaseWaitDialog
 
 COL_CRITERIONS = 2
 COL_DIRECTION = 1

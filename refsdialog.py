@@ -1,5 +1,5 @@
 from PyQt4 import QtCore, QtGui
-from Ui_refsdialog import Ui_RefsDialog
+from ui.refsdialog import Ui_RefsDialog
 from qgis_utils import *
 
 class RefsDialog(QtGui.QDialog, Ui_RefsDialog):

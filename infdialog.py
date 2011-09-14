@@ -1,5 +1,5 @@
 from PyQt4 import QtCore, QtGui
-from Ui_infdialog import Ui_InferenceDialog
+from ui.infdialog import Ui_InferenceDialog
 from qgis_utils import *
 
 class InferenceDialog(QtGui.QDialog, Ui_InferenceDialog):

@@ -2,7 +2,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-import resources_rc
+import ui.resources_rc
 import sys, os
 
 from etrimain import EtriMainWindow

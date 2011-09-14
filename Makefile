@@ -1,48 +1,48 @@
-TARGETS :=	resources_rc.py
-TARGETS +=	Ui_etrimain.py
-TARGETS +=	Ui_refsdialog.py
-TARGETS +=	Ui_infdialog.py
-TARGETS +=	Ui_pwdialog.py
+RSFILES :=	ui/resources_rc.py
+
+UIFILES :=	ui/etrimain.ui
+UIFILES +=	ui/refsdialog.ui
+UIFILES +=	ui/infdialog.ui
+UIFILES +=	ui/pwdialog.ui
 
 PKG_FILES :=	etrimain.py
 PKG_FILES +=	__init__.py
 PKG_FILES +=	resources_rc.py
-PKG_FILES +=	Ui_refsdialog.py
 PKG_FILES +=	etri_plugin.py
 PKG_FILES +=	pwdialog.py
-PKG_FILES +=	Ui_etrimain.py
 PKG_FILES +=	ui_utils.py
 PKG_FILES +=	etri.py
 PKG_FILES +=	qgis_utils.py
-PKG_FILES +=	Ui_infdialog.py
 PKG_FILES +=	xmcda.py
 PKG_FILES +=	infdialog.py
 PKG_FILES +=	refsdialog.py
-PKG_FILES +=	Ui_pwdialog.py
+
+PKG_FILES +=	ui/__init__.py
+PKG_FILES +=	ui/etrimain.py
+PKG_FILES +=	ui/refsdialog.py
+PKG_FILES +=	ui/infdialog.py
+PKG_FILES +=	ui/pwdialog.py
+
 PKG_FILES +=	pysimplesoap/__init__.py
 PKG_FILES +=	pysimplesoap/client.py
 PKG_FILES +=	pysimplesoap/simplexml.py
+
 PKG_FILES +=	COPYING
 PKG_FILES +=	README
 
+TARGETS := $(UIFILES:%.ui=%.py) $(RSFILES)
+
 all: $(TARGETS) 
 
-resources_rc.py: resources.qrc
+ui/resources_rc.py: ui/resources.qrc
 	pyrcc4 -o $@ $<
 
-Ui_pwdialog.py: pwdialog.ui
-	pyuic4 -o $@ $<
-
-Ui_infdialog.py: infdialog.ui
-	pyuic4 -o $@ $<
-
-Ui_refsdialog.py: refsdialog.ui
-	pyuic4 -o $@ $<
-
-Ui_etrimain.py: etrimain.ui
+ui/%.py: ui/%.ui 
 	pyuic4 -o $@ $<
 
 clean: 
+	rm -f pysimplesoap/*.pyc
+	rm -f ui/*.pyc
 	rm -f *.pyc
 
 mrproper: clean

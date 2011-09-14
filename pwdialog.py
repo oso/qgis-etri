@@ -1,5 +1,5 @@
 from PyQt4 import QtCore, QtGui
-from Ui_pwdialog import Ui_PleaseWaitDialog
+from ui.pwdialog import Ui_PleaseWaitDialog
 
 class PwDialog(QtGui.QDialog, Ui_PleaseWaitDialog):
 
