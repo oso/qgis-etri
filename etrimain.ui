@@ -257,10 +257,10 @@
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
           <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
+           <enum>Qt::ScrollBarAsNeeded</enum>
           </property>
           <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>

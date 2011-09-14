@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'etrimain.ui'
 #
-# Created: Thu Sep  8 19:04:28 2011
+# Created: Wed Sep 14 21:11:26 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -172,8 +172,8 @@ class Ui_EtriMainWindow(object):
         self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
         self.graph_plot = QtGui.QGraphicsView(self.tab_plot)
         self.graph_plot.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.graph_plot.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.graph_plot.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.graph_plot.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.graph_plot.setAlignment(QtCore.Qt.AlignCenter)
         self.graph_plot.setObjectName(_fromUtf8("graph_plot"))
         self.gridLayout_10.addWidget(self.graph_plot, 0, 0, 1, 1)
         self.Tab_params.addTab(self.tab_plot, _fromUtf8(""))
