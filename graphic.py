@@ -3,6 +3,46 @@ from PyQt4 import QtGui
 from etri import electre_tri
 import colorsys
 
+class axis(QtGui.QGraphicsItem):
+
+    def __init__(self, x1, y1, x2, y2, direction, parent=None):
+        super(QtGui.QGraphicsItem, self).__init__(parent)
+
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+        self.path = QtGui.QPainterPath()
+        self.path.moveTo(x1, y1)
+        self.path.lineTo(x2, y2)
+        self.__set_arrow(direction)
+
+    def boundingRect(self):
+        return self.path.boundingRect()
+
+    def paint(self, painter, option, widget=None):
+        pen = QtGui.QPen()
+        pen.setWidth(2)
+        brush = QtGui.QBrush(QtGui.QColor("black"))
+        painter.setPen(pen)
+        painter.setBrush(brush)
+        painter.drawPath(self.path)
+
+    def __set_arrow(self, direction):
+        if direction == -1:
+            x = self.x1
+            y = self.y1
+        else:
+            x = self.x2
+            y = self.y2
+
+        self.path.moveTo(x, y)
+        self.path.lineTo(x-3, y+direction*6)
+        self.path.lineTo(x+3, y+direction*6)
+        self.path.closeSubpath()
+
+
 class graph_etri(QtGui.QGraphicsScene):
 
     def __init__(self, model, size, parent=None):
@@ -29,11 +69,9 @@ class graph_etri(QtGui.QGraphicsScene):
         for i, criterion in enumerate(self.model.criteria):
             x = i*self.hspacing
 
-            line = self.addLine(x, 0, x, -self.axis_height)
-            pen = QtGui.QPen()
-            pen.setWidth(2)
-            line.setPen(pen)
+            line = axis(x, 0, x, -self.axis_height, directions[criterion])
             line.setZValue(1)
+            self.addItem(line)
 
             text = self.addText(criterion)
             font = QtGui.QFont()
