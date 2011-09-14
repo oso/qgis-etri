@@ -10,9 +10,12 @@ class graph_etri(QtGui.QGraphicsScene):
         self.model = model
         self.size = size
 
-        self.hspacing = 100
         self.axis_height = self.size.height()-100
         self.model_height = self.axis_height-25
+
+        self.hspacing = size.width()/len(model.criteria)
+        if self.hspacing < 100:
+            self.hspacing = 100
 
         self.update()
 
@@ -27,9 +30,16 @@ class graph_etri(QtGui.QGraphicsScene):
             x = i*self.hspacing
 
             line = self.addLine(x, 0, x, -self.axis_height)
+            pen = QtGui.QPen()
+            pen.setWidth(2)
+            line.setPen(pen)
             line.setZValue(1)
 
             text = self.addText(criterion)
+            font = QtGui.QFont()
+            font.setBold(True)
+            text.setFont(font)
+            text.setZValue(1)
             text.setPos(x-text.boundingRect().width()/2, 0)
 
     def __d_substract(self, a, b):
@@ -41,8 +51,8 @@ class graph_etri(QtGui.QGraphicsScene):
         diff = self.__d_substract(maxima, minima) 
 
         axis_unused = self.axis_height-self.model_height
-        liminf = -self.axis_height+axis_unused/2
-        limsup = -axis_unused/2
+        limsup = -self.axis_height+axis_unused/2
+        liminf = -axis_unused/2
 
         points = []
         for i, criterion in enumerate(self.model.criteria):
@@ -53,20 +63,23 @@ class graph_etri(QtGui.QGraphicsScene):
             if den == 0:
                 p = QtCore.QPointF(x, liminf)
             elif num == 0:
-                p = QtCore.QPointF(x, limsup)
+                p = QtCore.QPointF(x, liminf)
             else:
-                p = QtCore.QPointF(x, liminf*num/den)
+                y = liminf+(limsup-liminf)*num/den
+                p = QtCore.QPointF(x, y)
 
-            text = self.addText("%s" % profile[criterion])
+            text = self.addText("%g" % profile[criterion])
+            font = QtGui.QFont()
+            font.setBold(True)
+            text.setFont(font)
             text.setPos(p)
-            text.moveBy(0, -text.boundingRect().height()/2)
             text.setZValue(1)
+
             points.append(p)
 
         return points
 
     def __get_category_brush(self, category):
-        print category
         h = 1-float(category)/(len(self.model.profiles)+1)
         r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
@@ -105,4 +118,7 @@ class graph_etri(QtGui.QGraphicsScene):
                 if u == None:
                     continue
 
-                self.addPolygon(u, QtGui.QPen(), QtGui.QBrush(QtGui.QColor("yellow")))
+                brush = QtGui.QBrush()
+                brush.setColor(QtGui.QColor("yellow"))
+                brush.setStyle(QtCore.Qt.SolidPattern)
+                self.addPolygon(u, QtGui.QPen(), brush)
