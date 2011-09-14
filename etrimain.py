@@ -6,6 +6,7 @@ from refsdialog import *
 from infdialog import *
 from pwdialog import *
 from xml.etree import ElementTree as ET
+from graphic import graph_etri
 import os
 import time
 import threading
@@ -871,76 +872,15 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.update_model_graph()
 
     def update_model_graph(self):
-        MAX_HEIGHT = self.graph_plot.height()
-        MAX_WIDTH = self.graph_plot.width()
-
-        scene = QtGui.QGraphicsScene()
-        nrows = self.table_prof.rowCount()
-        if nrows == 0:
-            scene.addText("No profile defined!")
-            self.graph_plot.setScene(scene)
-            return
-
-        ncrit = len(self.criteria_activated)
-        spacing = MAX_WIDTH/(ncrit-1)
-        crit_index = self.get_criteria_index()
-        crit_dir = self.get_criteria_directions()
-        prof_min = self.get_profile_min()
-        prof_max = self.get_profile_max()
+        weights = self.get_criteria_weights()
+        directions = self.get_criteria_directions()
         profiles = self.get_profiles()
+        actions = self.get_actions()
+        cutlevel = self.spinbox_cutlevel.value()
 
-        # Draw the polygons
-        polygon_list = []
-        polygon_bottom = [  QtCore.QPointF((ncrit-1)*spacing, 0),
-                            QtCore.QPointF(0, 0) ]
-        for i, profile in enumerate(profiles):
-            prof_val = profile['refs']
-            a = d_substract(prof_val, prof_min)
-            b = d_substract(prof_max, prof_min)
-            res = d_divide(a, b)
-            print res
-            res2 = d_add(crit_dir, res)
-            polygon_top = []
-            for j, crit in enumerate(crit_index):
-                polygon_top.append(QtCore.QPointF(j*spacing, -(abs(res2["%s" % crit]) % 1)*MAX_HEIGHT))
-
-            polygon = QtGui.QPolygonF(polygon_bottom + polygon_top)
-            polygon_list.append(polygon)
-
-            polygon_bottom = polygon_top[:]
-            polygon_bottom.reverse()
-
-            pen = QtGui.QPen()
-            h = 1-float(i)/(nrows+1)
-            r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-            brush = QtGui.QBrush(QColor(r*255, g*255, b*255))
-            scene.addPolygon(polygon, pen, brush)
-
-        polygon_top = [ QtCore.QPointF(0, -MAX_HEIGHT),
-                        QtCore.QPointF((ncrit-1)*spacing, -MAX_HEIGHT) ]
-        polygon = QtGui.QPolygonF(polygon_bottom + polygon_top)
-        polygon_list.append(polygon)
-
-        pen = QtGui.QPen()
-        h = 1-float(i+1)/(nrows+1)
-        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-        brush = QtGui.QBrush(QColor(r*255, g*255, b*255))
-        scene.addPolygon(polygon, pen, brush)
-
-        # Mixed color for the intersection
-        for i, p in enumerate(polygon_list):
-            for j, r in enumerate(polygon_list):
-
-                if p == r:
-                    continue
-
-                u = p.intersected(r)
-                h = (1-float(i+1)/(nrows+1) + 1-float(j+1)/(nrows+1))/2
-                r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-                brush = QtGui.QBrush(QColor(r*255, g*255, b*255))
-                scene.addPolygon(u, pen, brush)
-
-        self.graph_plot.setScene(scene)
+        etri = electre_tri(actions, profiles, weights, cutlevel, directions)
+        graph = graph_etri(etri, self.graph_plot.size()) 
+        self.graph_plot.setScene(graph)
 
 class inference_task(threading.Thread):
 
