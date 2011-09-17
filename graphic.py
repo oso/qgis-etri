@@ -52,7 +52,7 @@ class graph_etri(QtGui.QGraphicsScene):
 
     def update(self, size):
         self.size = size
-        self.axis_height = self.size.height()-100
+        self.axis_height = self.size.height()-45
         self.model_height = self.axis_height-25
 
         self.hspacing = size.width()/len(self.model.criteria)
