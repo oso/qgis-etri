@@ -48,20 +48,21 @@ class graph_etri(QtGui.QGraphicsScene):
     def __init__(self, model, size, parent=None):
         super(QtGui.QGraphicsScene, self).__init__(parent)
         self.model = model
-        self.size = size
+        self.update(size)
 
+    def update(self, size):
+        self.size = size
         self.axis_height = self.size.height()-100
         self.model_height = self.axis_height-25
 
-        self.hspacing = size.width()/len(model.criteria)
+        self.hspacing = size.width()/len(self.model.criteria)
         if self.hspacing < 100:
             self.hspacing = 100
 
-        self.update()
-
-    def update(self):
+        self.clear()
         self.__plot_axis()
         self.__plot_profiles()
+        self.setSceneRect(self.itemsBoundingRect())
 
     def __plot_axis(self):
         directions = self.model.directions
