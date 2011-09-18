@@ -871,8 +871,16 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         actions = self.get_actions()
         cutlevel = self.spinbox_cutlevel.value()
 
-        etri = electre_tri(actions, profiles, weights, cutlevel, directions)
+        criteria = []
+        criteria_name = {}
+        for i in self.criteria_activated:
+            criterion = str(self.criteria[i]['id'])
+            criteria.append(criterion)
+            criteria_name[criterion] = self.criteria[i]['name']
+
+        etri = electre_tri(actions, profiles, weights, cutlevel, directions, criteria)
         graph = graph_etri(etri, self.graph_plot.size()) 
+        graph.update_criteria_name(criteria_name)
         self.graph_plot.setScene(graph)
 
 class inference_task(threading.Thread):

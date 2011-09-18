@@ -45,9 +45,10 @@ class axis(QtGui.QGraphicsItem):
 
 class graph_etri(QtGui.QGraphicsScene):
 
-    def __init__(self, model, size, parent=None):
+    def __init__(self, model, size, criteria_name=None, parent=None):
         super(QtGui.QGraphicsScene, self).__init__(parent)
         self.model = model
+        self.criteria_name = None
         self.update(size)
 
     def update(self, size):
@@ -62,10 +63,28 @@ class graph_etri(QtGui.QGraphicsScene):
         self.clear()
         self.__plot_axis()
         self.__plot_profiles()
+        self.update_criteria_name(self.criteria_name)
         self.setSceneRect(self.itemsBoundingRect())
+
+    def update_criteria_name(self, criteria_name):
+        if criteria_name == None:
+            return
+
+        self.criteria_name = criteria_name
+
+        for criterion, text in self.criteria_text.iteritems():
+            if criteria_name.has_key(criterion) == False:
+                return
+
+            oldwidth = text.boundingRect().width()
+            text.setPlainText(criteria_name[criterion])
+            newwidth = text.boundingRect().width()
+            diffwidth = newwidth-oldwidth
+            text.moveBy(-diffwidth/2, 0)
 
     def __plot_axis(self):
         directions = self.model.directions
+        self.criteria_text = {}
 
         for i, criterion in enumerate(self.model.criteria):
             x = i*self.hspacing
@@ -80,6 +99,8 @@ class graph_etri(QtGui.QGraphicsScene):
             text.setFont(font)
             text.setZValue(1)
             text.setPos(x-text.boundingRect().width()/2, 0)
+
+            self.criteria_text[criterion] = text
 
     def __d_substract(self, a, b):
         return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
