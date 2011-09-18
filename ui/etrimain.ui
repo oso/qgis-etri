@@ -132,6 +132,29 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_plot">
+       <attribute name="title">
+        <string>Model plot</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="mygraphicsview" name="graph_plot">
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="renderHints">
+           <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_inference">
        <attribute name="title">
         <string>Inference</string>
@@ -242,29 +265,6 @@
             </layout>
            </item>
           </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_plot">
-       <attribute name="title">
-        <string>Model plot</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
-         <widget class="mygraphicsview" name="graph_plot">
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="renderHints">
-           <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
-          </property>
          </widget>
         </item>
        </layout>

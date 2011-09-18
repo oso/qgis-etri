@@ -861,7 +861,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.save_xmcda_data(file)
 
     def on_Tab_params_currentChanged(self, index):
-        if index == 3:
+        if index == 2:
             self.update_model_graph()
 
     def update_model_graph(self):

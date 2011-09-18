@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/etrimain.ui'
 #
-# Created: Sat Sep 17 17:02:55 2011
+# Created: Sun Sep 18 15:21:41 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -98,6 +98,18 @@ class Ui_EtriMainWindow(object):
         self.tab_thresholds.addTab(self.tab_veto, _fromUtf8(""))
         self.gridLayout_5.addWidget(self.tab_thresholds, 1, 0, 1, 1)
         self.Tab_params.addTab(self.tab_profiles, _fromUtf8(""))
+        self.tab_plot = QtGui.QWidget()
+        self.tab_plot.setObjectName(_fromUtf8("tab_plot"))
+        self.gridLayout_10 = QtGui.QGridLayout(self.tab_plot)
+        self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
+        self.graph_plot = mygraphicsview(self.tab_plot)
+        self.graph_plot.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.graph_plot.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.graph_plot.setAlignment(QtCore.Qt.AlignCenter)
+        self.graph_plot.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing)
+        self.graph_plot.setObjectName(_fromUtf8("graph_plot"))
+        self.gridLayout_10.addWidget(self.graph_plot, 0, 0, 1, 1)
+        self.Tab_params.addTab(self.tab_plot, _fromUtf8(""))
         self.tab_inference = QtGui.QWidget()
         self.tab_inference.setObjectName(_fromUtf8("tab_inference"))
         self.gridLayout_6 = QtGui.QGridLayout(self.tab_inference)
@@ -166,18 +178,6 @@ class Ui_EtriMainWindow(object):
         self.verticalLayout.addLayout(self.inference_layout)
         self.gridLayout_6.addWidget(self.group_infparams, 0, 0, 1, 1)
         self.Tab_params.addTab(self.tab_inference, _fromUtf8(""))
-        self.tab_plot = QtGui.QWidget()
-        self.tab_plot.setObjectName(_fromUtf8("tab_plot"))
-        self.gridLayout_10 = QtGui.QGridLayout(self.tab_plot)
-        self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
-        self.graph_plot = mygraphicsview(self.tab_plot)
-        self.graph_plot.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.graph_plot.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.graph_plot.setAlignment(QtCore.Qt.AlignCenter)
-        self.graph_plot.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing)
-        self.graph_plot.setObjectName(_fromUtf8("graph_plot"))
-        self.gridLayout_10.addWidget(self.graph_plot, 0, 0, 1, 1)
-        self.Tab_params.addTab(self.tab_plot, _fromUtf8(""))
         self.gridLayout.addWidget(self.Tab_params, 0, 0, 1, 1)
         self.right_layout = QtGui.QVBoxLayout()
         self.right_layout.setObjectName(_fromUtf8("right_layout"))
@@ -328,9 +328,9 @@ class Ui_EtriMainWindow(object):
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_pref), QtGui.QApplication.translate("EtriMainWindow", "Preference", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_veto), QtGui.QApplication.translate("EtriMainWindow", "Veto", None, QtGui.QApplication.UnicodeUTF8))
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_profiles), QtGui.QApplication.translate("EtriMainWindow", "Profiles", None, QtGui.QApplication.UnicodeUTF8))
+        self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_plot), QtGui.QApplication.translate("EtriMainWindow", "Model plot", None, QtGui.QApplication.UnicodeUTF8))
         item = self.table_refs.horizontalHeaderItem(0)
         self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_inference), QtGui.QApplication.translate("EtriMainWindow", "Inference", None, QtGui.QApplication.UnicodeUTF8))
-        self.Tab_params.setTabText(self.Tab_params.indexOf(self.tab_plot), QtGui.QApplication.translate("EtriMainWindow", "Model plot", None, QtGui.QApplication.UnicodeUTF8))
 
 from graphic import mygraphicsview
 import resources_rc
