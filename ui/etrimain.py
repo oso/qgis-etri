@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/etrimain.ui'
 #
-# Created: Sun Sep 18 15:21:41 2011
+# Created: Sun Sep 18 15:44:32 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,7 +45,7 @@ class Ui_EtriMainWindow(object):
         item = QtGui.QTableWidgetItem()
         item.setText(QtGui.QApplication.translate("EtriMainWindow", "Weight", None, QtGui.QApplication.UnicodeUTF8))
         self.table_crit.setHorizontalHeaderItem(2, item)
-        self.table_crit.horizontalHeader().setVisible(False)
+        self.table_crit.horizontalHeader().setVisible(True)
         self.table_crit.horizontalHeader().setDefaultSectionSize(100)
         self.table_crit.horizontalHeader().setHighlightSections(False)
         self.table_crit.verticalHeader().setVisible(False)
