@@ -116,14 +116,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
                 values["%s" % criterion] = round(float(item.text()), 2)
         return values
 
-    def get_row(self, table, index):
-        ncols = table.columnCount()
-        values = []
-        for j in range(ncols):
-            item = table.item(index, j)
-            values.append(round(float(item.text()), 2))
-        return values
-
     def get_row_as_str(self, table, index):
         ncols = table.columnCount()
         values = []
