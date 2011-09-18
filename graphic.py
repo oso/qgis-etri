@@ -93,6 +93,7 @@ class graph_etri(QtGui.QGraphicsScene):
         limsup = -self.axis_height+axis_unused/2
         liminf = -axis_unused/2
 
+        n = len(self.model.criteria)
         points = []
         for i, criterion in enumerate(self.model.criteria):
             x = i*self.hspacing
@@ -110,8 +111,11 @@ class graph_etri(QtGui.QGraphicsScene):
             text = self.addText("%g" % profile[criterion])
             font = QtGui.QFont()
             font.setBold(True)
+            font.setPointSize(6)
             text.setFont(font)
             text.setPos(p)
+            if i == n-1:
+                text.moveBy(-text.boundingRect().width(), 0)
             text.setZValue(1)
 
             points.append(p)
