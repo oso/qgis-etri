@@ -865,6 +865,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.update_model_graph()
 
     def update_model_graph(self):
+        if hasattr(self, 'crit_layer') == False:
+            return
+
         weights = self.get_criteria_weights()
         directions = self.get_criteria_directions()
         profiles = self.get_profiles()
