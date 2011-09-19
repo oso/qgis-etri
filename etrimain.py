@@ -80,8 +80,9 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_refs.setColumnCount(1)
         self.table_refs.setRowCount(0)
 
-        self.crit_layer = layer
         self.crit_layer_load(layer)
+        self.crit_layer = layer
+        self.update_model_graph()
 
         self.Badd_profile.setEnabled(True)
         self.Bdel_profile.setEnabled(True)
@@ -189,6 +190,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             combobox = self.table_refs.cellWidget(i, 0)
             if combobox.count() < (nprof+2):
                 combobox.addItem(str(nprof+2))
+
+        self.update_model_graph()
 
     def del_profile(self, index):
         nprof = self.table_prof.rowCount()
@@ -435,6 +438,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.check_profile_crit(row, column)
         if self.table_prof.currentRow() == row and self.table_prof.currentColumn() == column:
             self.table_prof.focusNextChild()
+
+        self.update_model_graph()
 
     def on_table_indiff_cellChanged(self, row, column):
         self.check_is_float(self.table_indiff, row, column)
@@ -860,10 +865,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         self.save_xmcda_data(file)
 
-    def on_Tab_params_currentChanged(self, index):
-        if index == 2:
-            self.update_model_graph()
-
     def update_model_graph(self):
         if hasattr(self, 'crit_layer') == False:
             return
@@ -885,6 +886,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         graph = graph_etri(etri, self.graph_plot.size()) 
         graph.update_criteria_name(criteria_name)
         self.graph_plot.setScene(graph)
+        self.graph_plot_2.setScene(graph)
 
 class inference_task(threading.Thread):
 

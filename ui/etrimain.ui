@@ -85,10 +85,61 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="table_prof"/>
+         <widget class="QTableWidget" name="table_prof">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>3</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
+         <widget class="mygraphicsview" name="graph_plot">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>5</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: transparent;</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="renderHints">
+           <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_plot">
+       <attribute name="title">
+        <string>Thresholds</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
          <widget class="QTabWidget" name="tab_thresholds">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>3</verstretch>
+           </sizepolicy>
+          </property>
           <property name="tabPosition">
            <enum>QTabWidget::North</enum>
           </property>
@@ -97,6 +148,9 @@
           </property>
           <property name="currentIndex">
            <number>0</number>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
           </property>
           <widget class="QWidget" name="tab_indiff">
            <attribute name="title">
@@ -130,15 +184,23 @@
           </widget>
          </widget>
         </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_plot">
-       <attribute name="title">
-        <string>Model plot</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
-         <widget class="mygraphicsview" name="graph_plot">
+        <item>
+         <widget class="mygraphicsview" name="graph_plot_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>5</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: transparent;</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Sunken</enum>
+          </property>
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
