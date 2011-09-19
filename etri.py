@@ -27,7 +27,8 @@ class electre_tri:
         else:
             self.directions = directions
 
-    def get_model_min(self):
+    @property
+    def model_min(self):
         actions = self.update_actions(self.actions, self.directions)
         profiles = self.update_profiles(self.profiles, self.directions)
 
@@ -51,7 +52,8 @@ class electre_tri:
 
         return minima
 
-    def get_model_max(self):
+    @property
+    def model_max(self):
         actions = self.update_actions(self.actions, self.directions)
         profiles = self.update_profiles(self.profiles, self.directions)
 

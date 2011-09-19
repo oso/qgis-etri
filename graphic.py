@@ -106,8 +106,8 @@ class graph_etri(QtGui.QGraphicsScene):
         return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
 
     def __profile_get_points(self, profile):
-        minima = self.model.get_model_min()
-        maxima = self.model.get_model_max()
+        minima = self.model.model_min
+        maxima = self.model.model_max
         diff = self.__d_substract(maxima, minima) 
 
         axis_unused = self.axis_height-self.model_height
@@ -150,8 +150,8 @@ class graph_etri(QtGui.QGraphicsScene):
         
     def __plot_profiles(self):
         profiles = self.model.profiles
-        minima = self.model.get_model_min()
-        maxima = self.model.get_model_max()
+        minima = self.model.model_min
+        maxima = self.model.model_max
 
         polygon_list = []
         below = self.__profile_get_points(minima)
