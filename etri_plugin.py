@@ -25,11 +25,5 @@ class etri_plugin:
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        ui = EtriMainWindow(self.iface)
-
-        mapCanvas = self.iface.mapCanvas()
-        for i in range(mapCanvas.layerCount()):
-            layer = mapCanvas.layer(i)
-            ui.add_crit_layer(layer)
-
+        ui = EtriMainWindow(self.iface, self.iface.mapCanvas())
         ui.show()

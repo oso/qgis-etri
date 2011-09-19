@@ -20,14 +20,12 @@ COL_DIRECTION = 1
 
 class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
-    def __init__(self, iface):
+    def __init__(self, iface, map_canvas=None):
+        self.map_canvas = map_canvas
         self.iface = iface
         parent = self.iface.mainWindow()
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        self.table_crit.setColumnWidth(0, 235)
-        self.table_crit.setColumnWidth(1, 60)
-        self.table_crit.setColumnWidth(2, 50)
 
         self.criteria_activated = []
         self.ncriteria = 0
@@ -37,13 +35,24 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.crit_layers = []
         self.refs_ids = []
 
+        self.__update_layer_list(map_canvas)
+
+        self.table_crit.setColumnWidth(0, 235)
+        self.table_crit.setColumnWidth(1, 60)
+        self.table_crit.setColumnWidth(2, 50)
+
     def closeEvent(self, event):
         if self.isEnabled() == False:
             event.ignore();
 
-    def add_crit_layer(self, layer):
-        self.combo_layer.addItem(layer.name())
-        self.crit_layers.append(layer)
+    def __update_layer_list(self, map_canvas):
+        if map_canvas == None:
+            return
+
+        for i in range(map_canvas.layerCount()):
+            layer = map_canvas.layer(i)
+            self.combo_layer.addItem(layer.name())
+            self.crit_layers.append(layer)
 
     def clear_rows(self, table):
         nrows = table.rowCount()
