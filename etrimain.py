@@ -305,22 +305,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
         return directions
 
-    def get_profile_min(self):
-        values = {}
-        for j in self.criteria_activated:
-            criterion = self.criteria[j]['id']
-            crit_min = self.criteria[j]['min']
-            values["%s" % criterion] = float(crit_min)
-        return values
-
-    def get_profile_max(self):
-        values = {}
-        for j in self.criteria_activated:
-            criterion = self.criteria[j]['id']
-            crit_max = self.criteria[j]['max']
-            values["%s" % criterion] = float(crit_max)
-        return values
-
     def get_profiles(self):
         nrows = self.table_prof.rowCount()
         ncols = self.table_prof.columnCount()
