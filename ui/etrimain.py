@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/etrimain.ui'
 #
-# Created: Mon Sep 19 17:28:12 2011
+# Created: Mon Sep 19 21:05:42 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -100,6 +100,7 @@ class Ui_EtriMainWindow(object):
         self.tab_indiff = QtGui.QWidget()
         self.tab_indiff.setObjectName(_fromUtf8("tab_indiff"))
         self.gridLayout_3 = QtGui.QGridLayout(self.tab_indiff)
+        self.gridLayout_3.setMargin(0)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.table_indiff = QtGui.QTableWidget(self.tab_indiff)
         self.table_indiff.setObjectName(_fromUtf8("table_indiff"))
@@ -110,6 +111,7 @@ class Ui_EtriMainWindow(object):
         self.tab_pref = QtGui.QWidget()
         self.tab_pref.setObjectName(_fromUtf8("tab_pref"))
         self.gridLayout_4 = QtGui.QGridLayout(self.tab_pref)
+        self.gridLayout_4.setMargin(0)
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
         self.table_pref = QtGui.QTableWidget(self.tab_pref)
         self.table_pref.setObjectName(_fromUtf8("table_pref"))
@@ -120,6 +122,7 @@ class Ui_EtriMainWindow(object):
         self.tab_veto = QtGui.QWidget()
         self.tab_veto.setObjectName(_fromUtf8("tab_veto"))
         self.gridLayout_7 = QtGui.QGridLayout(self.tab_veto)
+        self.gridLayout_7.setMargin(0)
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
         self.table_veto = QtGui.QTableWidget(self.tab_veto)
         self.table_veto.setObjectName(_fromUtf8("table_veto"))
