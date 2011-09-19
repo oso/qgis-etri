@@ -37,11 +37,6 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.crit_layers = []
         self.refs_ids = []
 
-        self.table_prof.resizeColumnsToContents()
-        self.table_indiff.resizeColumnsToContents()
-        self.table_pref.resizeColumnsToContents()
-        self.table_veto.resizeColumnsToContents()
-
     def closeEvent(self, event):
         if self.isEnabled() == False:
             event.ignore();
