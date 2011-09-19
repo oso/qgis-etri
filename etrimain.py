@@ -427,7 +427,10 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         if self.table_prof.currentRow() == row and self.table_prof.currentColumn() == column:
             self.table_prof.focusNextChild()
 
-        self.update_model_graph()
+        try:
+            self.update_model_graph()
+        except:
+            pass
 
     def on_table_indiff_cellChanged(self, row, column):
         self.check_is_float(self.table_indiff, row, column)
