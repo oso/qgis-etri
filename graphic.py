@@ -82,6 +82,8 @@ class graph_etri(QtGui.QGraphicsScene):
             diffwidth = newwidth-oldwidth
             text.moveBy(-diffwidth/2, 0)
 
+        self.setSceneRect(self.itemsBoundingRect())
+
     def __plot_axis(self):
         directions = self.model.directions
         self.criteria_text = {}
