@@ -3,16 +3,17 @@ import sys
 sys.path.append("..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from mcda import criterion
 from ui.table import criteria_table
 from data_ticino import *
 
 crit_table = None
 
-def criterion_direction_changed(crit_id, value):
-    print crit_id, ":", value
+def criterion_direction_changed(criterion):
+    print criterion.id, ":", criterion.direction
 
-def criterion_state_changed(crit_id, enabled):
-    print crit_id, ":", enabled
+def criterion_state_changed(criterion):
+    print criterion.id, ":", criterion.disabled
 
     print "# of criteria:", crit_table.ncriteria
     print "Criteria enabled:", crit_table.criteria_enabled
@@ -22,8 +23,12 @@ if __name__ == "__main__":
     table = criteria_table()
     crit_table = table
 
-    for i, crit in enumerate(criteria):
-        table.add(i, crit, True, w[crit])
+    for i, crit_name in enumerate(criteria):
+        crit = criterion(i)
+        crit.name = crit_name
+        crit.weight = w[crit_name]
+        crit.direction = d[crit_name] 
+        table.add(crit)
 
     table.connect(table, QtCore.SIGNAL("criterion_state_changed"),
                   criterion_state_changed)
