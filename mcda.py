@@ -16,3 +16,23 @@ class criterion:
         if weight == None:
             weight = 10
         self.weight = weight
+
+    def __repr__(self):
+        return "[%s]%s: %g" % (self.id, self.name,
+                               int(self.direction)*float(self.weight))
+
+class action:
+
+    def __init__(self, id=None, name=None, evaluations=None):
+        self.id = id
+        self.name = name
+        self.evaluations = evaluations
+
+    def __repr__(self):
+        return "[%s]%s" % (self.id, self.name)
+
+class profile(action):
+    pass
+
+class threshold(action):
+    pass
