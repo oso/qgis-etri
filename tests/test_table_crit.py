@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import sys
-sys.path.append("..")
+sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda import criterion
+from mcda.types import criterion
 from ui.table import criteria_table
 from data_ticino import *
 

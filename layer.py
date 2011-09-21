@@ -1,5 +1,5 @@
 from qgis.core import QgsVectorLayer
-from mcda import criterion
+from mcda.types import criterion
 
 class criteria_layer(QgsVectorLayer):
 

@@ -1,8 +1,8 @@
 import sys
-sys.path.append("..")
+sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda import criterion
+from mcda.types import criterion
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1
