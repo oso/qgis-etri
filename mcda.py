@@ -7,6 +7,12 @@ class criterion:
                  weight=None):
         self.id = id
         self.name = name
+        if disabled == None:
+            disabled = 0
         self.disabled = disabled
+        if direction == None:
+            direction = 1
         self.direction = direction
+        if weight == None:
+            weight = 10
         self.weight = weight
