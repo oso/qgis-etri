@@ -47,7 +47,7 @@ class criteria_table(QtGui.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsTristate)
         self.setItem(row, 0, item)
         cbox = QtGui.QCheckBox(self)
-        if criterion.disabled != False:
+        if criterion.disabled != True:
             cbox.setCheckState(QtCore.Qt.Checked)
         cbox.setText(criterion.name)
         self.__add_cbox_signal(cbox, row)
