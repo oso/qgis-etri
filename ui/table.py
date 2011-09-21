@@ -9,7 +9,7 @@ COMBO_INDEX_MIN=1
 
 class criteria_table(QtGui.QTableWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, criteria=None, parent=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.row_crit = {}
@@ -24,6 +24,12 @@ class criteria_table(QtGui.QTableWidget):
         self.setColumnWidth(0, 255)
         self.setColumnWidth(1, 60)
         self.setColumnWidth(2, 100)
+
+        if criteria == None:
+            return
+
+        for criterion in criteria:
+            self.add(criterion)
 
     def __add_headers(self):
         item = QtGui.QTableWidgetItem()
@@ -161,5 +167,5 @@ class profiles_table(QtGui.QTableWidget):
         self.setHorizontalHeaderItem(col, item)
         self.horizontalHeaderItem(col).setText(criterion.name)
         if criterion.disabled:
-            self.setColumnHidden(col, 1)
+            self.setColumnHidden(col, True)
         self.col_crit[col] = criterion

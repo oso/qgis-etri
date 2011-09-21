@@ -28,11 +28,8 @@ def criterion_state_changed(criterion):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    crit_table = criteria_table()
+    crit_table = criteria_table(crit_list)
     prof_table = profiles_table(crit_list)
-
-    for crit in crit_list:
-        crit_table.add(crit)
 
     crit_table.connect(crit_table,
                        QtCore.SIGNAL("criterion_state_changed"),
