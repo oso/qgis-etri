@@ -4,8 +4,8 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda import criterion
 
-INDEX_MAX=0
-INDEX_MIN=1
+COMBO_INDEX_MAX=0
+COMBO_INDEX_MIN=1
 
 class criteria_table(QtGui.QTableWidget):
 
@@ -59,11 +59,14 @@ class criteria_table(QtGui.QTableWidget):
         combo = QtGui.QComboBox(self)
         combo.addItem("Max")
         combo.addItem("Min")
+        if criterion.direction == -1:
+            combo.setCurrentIndex(1)
         self.__add_combo_signal(combo, row)
         self.setCellWidget(row, 1, combo)
 
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+        item.setText(str(criterion.weight))
         self.setItem(row, 2, item)
 
         self.row_crit[row] = criterion
@@ -97,8 +100,36 @@ class criteria_table(QtGui.QTableWidget):
     def __on_criterion_direction_changed(self, row):
         criterion = self.row_crit[row]
         item = self.cellWidget(row, 1)
-        criterion.direction = item.currentIndex()
+        if item.currentIndex() == COMBO_INDEX_MAX:
+            criterion.direction = 1
+        else:
+            criterion.direction = -1
         self.emit(QtCore.SIGNAL("criterion_direction_changed"), criterion)
+
+    def __get_criterion_row(self, criterion):
+        crit_row = dict([[v,k] for k,v in mydict.items()])
+        return crit_row[criterion]
+
+    def update_criterion_enable(self, criterion):
+        row = self.__get_criterion_row(criterion)
+        item = self.cellWidget(row, 1)
+        if criterion.disabled == 0:
+            item.setCheckState(QtCore.Qt.Checked)
+        else:
+            item.setCheckState(QtCore.Qt.Unchecked)
+
+    def update_criterion_direction(self, criterion):
+        row = self.__get_criterion_row(criterion)
+        item = self.cellWidget(row, 1)
+        if criterion.direction == 1:
+            item.setCurrentIndex(0)
+        else:
+            item.setCurrentIndex(1)
+
+    def update_criterion_weight(self, criterion):
+        row = self.__get_criterion_row(criterion)
+        item = self.cellWidget(row, 2)
+        item.setText(str(criterion.weight))
 
     @property
     def ncriteria(self):
