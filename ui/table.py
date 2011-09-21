@@ -143,3 +143,23 @@ class criteria_table(QtGui.QTableWidget):
             if item.isChecked() == True:
                 criteria.append(crit)
         return criteria
+
+class profiles_table(QtGui.QTableWidget):
+
+    def __init__(self, criteria, parent=None):
+        super(QtGui.QTableWidget, self).__init__(parent)
+        self.parent = parent
+        self.col_crit = {}
+
+        for criterion in criteria:
+            self.__add_criterion(criterion)
+
+    def __add_criterion(self, criterion):
+        col = self.columnCount()
+        self.insertColumn(col)
+        item = QtGui.QTableWidgetItem()
+        self.setHorizontalHeaderItem(col, item)
+        self.horizontalHeaderItem(col).setText(criterion.name)
+        if criterion.disabled:
+            self.setColumnHidden(col, 1)
+        self.col_crit[col] = criterion
