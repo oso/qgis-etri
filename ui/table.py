@@ -6,6 +6,23 @@ from mcda.types import criterion
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1
+COL_NAME = 0
+COL_DIRECTION = 1
+COL_WEIGHT = 2
+
+class criteria_delegate(QtGui.QItemDelegate):
+
+    def __init__(self, parent=None):
+        super(criteria_delegate, self).__init__(parent)
+
+    def createEditor(self, parent, option, index):
+        if index.column() == COL_WEIGHT:
+            line = QtGui.QLineEdit(parent)
+            expr = QtCore.QRegExp("[0-9]*\.?[0-9]*")
+            line.setValidator(QtGui.QRegExpValidator(expr, self))
+            return line
+        else:
+            Qtgui.QItemDelegate.createEditor(self, parent, option, index)
 
 class criteria_table(QtGui.QTableWidget):
 
@@ -21,27 +38,43 @@ class criteria_table(QtGui.QTableWidget):
         self.verticalHeader().setVisible(False)
         self.verticalHeader().setSortIndicatorShown(False)
         self.horizontalHeader().setHighlightSections(False)
-        self.setColumnWidth(0, 255)
-        self.setColumnWidth(1, 60)
-        self.setColumnWidth(2, 100)
+        self.setColumnWidth(COL_NAME, 255)
+        self.setColumnWidth(COL_DIRECTION, 60)
+        self.setColumnWidth(COL_WEIGHT, 100)
 
         if criteria != None:
             for criterion in criteria:
                 self.add(criterion)
 
+        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
+                     self.__cell_changed)
+        self.setItemDelegate(criteria_delegate(self))
+
+    def __cell_changed(self, row, col):
+        if col == COL_WEIGHT:
+            criterion = self.row_crit[row]
+            item = self.cellWidget(row, col)
+            try:
+                criterion.weight = float(item.text())
+            except:
+                QtGui.QMessageBox.warning(self,
+                                          "Criterion %s" % criterion.name,
+                                          "Invalid weight value")
+            print criterion
+
     def __add_headers(self):
         item = QtGui.QTableWidgetItem()
         item.setText("Criterion")
         item.setTextAlignment(QtCore.Qt.AlignLeft)
-        self.setHorizontalHeaderItem(0, item)
+        self.setHorizontalHeaderItem(COL_NAME, item)
 
         item = QtGui.QTableWidgetItem()
-        self.setHorizontalHeaderItem(1, item)
+        self.setHorizontalHeaderItem(COL_DIRECTION, item)
 
         item = QtGui.QTableWidgetItem()
         item.setText("Weight")
         item.setTextAlignment(QtCore.Qt.AlignRight)
-        self.setHorizontalHeaderItem(2, item)
+        self.setHorizontalHeaderItem(COL_WEIGHT, item)
 
     def add(self, criterion):
         row = self.rowCount()
@@ -49,29 +82,29 @@ class criteria_table(QtGui.QTableWidget):
 
         item = QtGui.QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsTristate)
-        self.setItem(row, 0, item)
+        self.setItem(row, COL_NAME, item)
         cbox = QtGui.QCheckBox(self)
         if criterion.disabled != True:
             cbox.setCheckState(QtCore.Qt.Checked)
         cbox.setText(criterion.name)
         self.__add_cbox_signal(cbox, row)
-        self.setCellWidget(row, 0, cbox)
+        self.setCellWidget(row, COL_NAME, cbox)
 
         item = QtGui.QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsTristate)
-        self.setItem(row, 1, item)
+        self.setItem(row, COL_DIRECTION, item)
         combo = QtGui.QComboBox(self)
         combo.addItem("Max")
         combo.addItem("Min")
         if criterion.direction == -1:
             combo.setCurrentIndex(1)
         self.__add_combo_signal(combo, row)
-        self.setCellWidget(row, 1, combo)
+        self.setCellWidget(row, COL_DIRECTION, combo)
 
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
         item.setText(str(criterion.weight))
-        self.setItem(row, 2, item)
+        self.setItem(row, COL_WEIGHT, item)
 
         self.row_crit[row] = criterion
 
@@ -111,12 +144,12 @@ class criteria_table(QtGui.QTableWidget):
         self.emit(QtCore.SIGNAL("criterion_direction_changed"), criterion)
 
     def __get_criterion_row(self, criterion):
-        crit_row = dict([[v,k] for k,v in mydict.items()])
+        crit_row = dict([[v,k] for k,v in self.row_crit.items()])
         return crit_row[criterion]
 
     def update_criterion_enable(self, criterion):
         row = self.__get_criterion_row(criterion)
-        item = self.cellWidget(row, 1)
+        item = self.cellWidget(row, COL_NAME)
         if criterion.disabled == 0:
             item.setCheckState(QtCore.Qt.Checked)
         else:
@@ -124,7 +157,7 @@ class criteria_table(QtGui.QTableWidget):
 
     def update_criterion_direction(self, criterion):
         row = self.__get_criterion_row(criterion)
-        item = self.cellWidget(row, 1)
+        item = self.cellWidget(row, COL_DIRECTION)
         if criterion.direction == 1:
             item.setCurrentIndex(0)
         else:
@@ -132,7 +165,8 @@ class criteria_table(QtGui.QTableWidget):
 
     def update_criterion_weight(self, criterion):
         row = self.__get_criterion_row(criterion)
-        item = self.cellWidget(row, 2)
+        item = self.cellWidget(row, COL_WEIGHT)
+        print 'set', str(criterion.weight)
         item.setText(str(criterion.weight))
 
     @property
