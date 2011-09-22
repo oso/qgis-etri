@@ -10,13 +10,14 @@ COL_NAME = 0
 COL_DIRECTION = 1
 COL_WEIGHT = 2
 
-class criteria_delegate(QtGui.QItemDelegate):
+class float_delegate(QtGui.QItemDelegate):
 
-    def __init__(self, parent=None):
-        super(criteria_delegate, self).__init__(parent)
+    def __init__(self, parent=None, columns=None):
+        super(float_delegate, self).__init__(parent)
+        self.columns = columns
 
     def createEditor(self, parent, option, index):
-        if index.column() == COL_WEIGHT:
+        if self.columns == None or index.column() in self.columns:
             line = QtGui.QLineEdit(parent)
             expr = QtCore.QRegExp("[0-9]*\.?[0-9]*")
             line.setValidator(QtGui.QRegExpValidator(expr, self))
@@ -30,6 +31,10 @@ class criteria_table(QtGui.QTableWidget):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.row_crit = {}
+
+        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
+                     self.__cell_changed)
+        self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
 
         self.setColumnCount(3)
         self.setShowGrid(False)
@@ -45,10 +50,6 @@ class criteria_table(QtGui.QTableWidget):
         if criteria != None:
             for criterion in criteria:
                 self.add(criterion)
-
-        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
-                     self.__cell_changed)
-        self.setItemDelegate(criteria_delegate(self))
 
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
@@ -184,14 +185,20 @@ class criteria_table(QtGui.QTableWidget):
 
 class profiles_table(QtGui.QTableWidget):
 
-    def __init__(self, criteria=None, parent=None):
+    def __init__(self, criteria=None, profiles=None, parent=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.col_crit = {}
 
+        self.setItemDelegate(float_delegate(self))
+
         if criteria != None:
             for criterion in criteria:
                 self.add_criterion(criterion)
+
+        if profiles != None:
+            for profile in profiles:
+                self.add_profile(profile)
 
     def add_criterion(self, criterion):
         col = self.columnCount()
@@ -202,3 +209,11 @@ class profiles_table(QtGui.QTableWidget):
         if criterion.disabled:
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
+
+    def add_profile(self, profile):
+        row = self.rowCount()
+        self.insertRow(row)
+        for col, crit in self.col_crit.iteritems():
+            item = QtGui.QTableWidgetItem()
+            item.setText(str(profile.evaluations[crit]))
+            self.setItem(row, col, item)

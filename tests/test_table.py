@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
     crit_table = criteria_table(criteria)
-    prof_table = profiles_table(criteria)
+    prof_table = profiles_table(criteria, profiles)
 
     crit_table.connect(crit_table,
                        QtCore.SIGNAL("criterion_state_changed"),
