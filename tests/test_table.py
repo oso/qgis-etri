@@ -5,17 +5,9 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
 from ui.table import criteria_table, profiles_table
-from data_ticino import *
+from data_ticino_new import *
 
 crit_table = None
-
-crit_list = []
-for i, crit_name in enumerate(criteria):
-    crit = criterion(i)
-    crit.name = crit_name
-    crit.weight = w[crit_name]
-    crit.direction = d[crit_name] 
-    crit_list.append(crit)
 
 def criterion_direction_changed(criterion):
     print criterion.id, ":", criterion.direction
@@ -28,8 +20,8 @@ def criterion_state_changed(criterion):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    crit_table = criteria_table(crit_list)
-    prof_table = profiles_table(crit_list)
+    crit_table = criteria_table(criteria)
+    prof_table = profiles_table(criteria)
 
     crit_table.connect(crit_table,
                        QtCore.SIGNAL("criterion_state_changed"),
