@@ -5,7 +5,6 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
 from ui.table import criteria_table, profiles_table
-from data_ticino_new import *
 
 crit_table = None
 
@@ -19,6 +18,12 @@ def criterion_state_changed(criterion):
     print "Criteria enabled:", crit_table.criteria_enabled
 
 if __name__ == "__main__":
+
+    if len(sys.argv) == 2 and sys.argv[1] == "-l":
+        from data_loulouka_new import *
+    else:
+        from data_ticino_new import *
+
     app = QtGui.QApplication(sys.argv)
     crit_table = criteria_table(criteria)
     prof_table = profiles_table(criteria)
