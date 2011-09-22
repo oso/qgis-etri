@@ -22,8 +22,8 @@ for key in affect_p.keys():
 		print 'Optimist affectation of %s mismatch (%d <> %d)' % (str(key), affect_o[key], etri_o[key])
 
 print "Model min values"
-model_min = etri.get_model_min()
+model_min = etri.model_min
 print model_min
 print "Model max values"
-model_max = etri.get_model_max()
+model_max = etri.model_max
 print model_max

@@ -23,7 +23,7 @@ class electre_tri:
         else:
             self.criteria = criteria
         if directions == None:
-            self.directions = { crit: 1 for crit in self.criteria }
+            self.directions = dict( (crit, 1) for crit in self.criteria )
         else:
             self.directions = directions
 
@@ -251,7 +251,7 @@ class electre_tri:
             print '%s\t\t' % action,
             for profile in profiles:
                 credibility = self.__credibility(evals, profile['refs'], profile['q'], profile['p'], profile['v'], self.weights)
-                print '%.2f\t\t' % __credibility,
+                print '%.2f\t\t' % credibility,
                 credibility = self.__credibility(profile['refs'], evals, profile['q'], profile['p'], profile['v'], self.weights)
-                print '%.2f\t\t' % __credibility,
+                print '%.2f\t\t' % credibility,
             print ''
