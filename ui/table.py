@@ -25,11 +25,9 @@ class criteria_table(QtGui.QTableWidget):
         self.setColumnWidth(1, 60)
         self.setColumnWidth(2, 100)
 
-        if criteria == None:
-            return
-
-        for criterion in criteria:
-            self.add(criterion)
+        if criteria != None:
+            for criterion in criteria:
+                self.add(criterion)
 
     def __add_headers(self):
         item = QtGui.QTableWidgetItem()
@@ -152,15 +150,16 @@ class criteria_table(QtGui.QTableWidget):
 
 class profiles_table(QtGui.QTableWidget):
 
-    def __init__(self, criteria, parent=None):
+    def __init__(self, criteria=None, parent=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.col_crit = {}
 
-        for criterion in criteria:
-            self.__add_criterion(criterion)
+        if criteria != None:
+            for criterion in criteria:
+                self.add_criterion(criterion)
 
-    def __add_criterion(self, criterion):
+    def add_criterion(self, criterion):
         col = self.columnCount()
         self.insertColumn(col)
         item = QtGui.QTableWidgetItem()
