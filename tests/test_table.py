@@ -7,15 +7,16 @@ from mcda.types import criterion
 from ui.table import criteria_table, profiles_table
 
 crit_table = None
+prof_table = None
 
 def criterion_direction_changed(criterion):
     print criterion.id, ":", criterion.direction
 
 def criterion_state_changed(criterion):
-    print criterion.id, ":", criterion.disabled
-
-    print "# of criteria:", crit_table.ncriteria
     print "Criteria enabled:", crit_table.criteria_enabled
+    if prof_table != None:
+        prof_table.disable_criterion(criterion,
+                                     criterion.disabled)
 
 if __name__ == "__main__":
 

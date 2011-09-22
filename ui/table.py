@@ -217,3 +217,10 @@ class profiles_table(QtGui.QTableWidget):
             item = QtGui.QTableWidgetItem()
             item.setText(str(profile.evaluations[crit]))
             self.setItem(row, col, item)
+
+    def __get_criterion_col(self, criterion):
+        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        return crit_col[criterion]
+
+    def disable_criterion(self, criterion, disable):
+        self.setColumnHidden(self.__get_criterion_col(criterion), disable)
