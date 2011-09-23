@@ -198,7 +198,7 @@ class profiles_table(QtGui.QTableWidget):
 
         if profiles != None:
             for profile in profiles:
-                self.add_profile(profile)
+                self.add(profile)
 
     def add_criterion(self, criterion):
         col = self.columnCount()
@@ -210,7 +210,7 @@ class profiles_table(QtGui.QTableWidget):
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
 
-    def add_profile(self, profile):
+    def add(self, profile):
         row = self.rowCount()
         self.insertRow(row)
         for col, crit in self.col_crit.iteritems():
@@ -224,3 +224,6 @@ class profiles_table(QtGui.QTableWidget):
 
     def disable_criterion(self, criterion, disable):
         self.setColumnHidden(self.__get_criterion_col(criterion), disable)
+
+class threshold_table(profiles_table):
+    pass
