@@ -32,10 +32,6 @@ class criteria_table(QtGui.QTableWidget):
         self.parent = parent
         self.row_crit = {}
 
-        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
-                     self.__cell_changed)
-        self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
-
         self.setColumnCount(3)
         self.setShowGrid(False)
         self.setDragEnabled(False)
@@ -51,6 +47,10 @@ class criteria_table(QtGui.QTableWidget):
             for criterion in criteria:
                 self.add(criterion)
 
+        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
+                     self.__cell_changed)
+        self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
+
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
             criterion = self.row_crit[row]
@@ -61,7 +61,6 @@ class criteria_table(QtGui.QTableWidget):
                 QtGui.QMessageBox.warning(self,
                                           "Criterion %s" % criterion.name,
                                           "Invalid weight value")
-            print criterion
 
     def __add_headers(self):
         item = QtGui.QTableWidgetItem()
@@ -215,7 +214,8 @@ class profiles_table(QtGui.QTableWidget):
         self.insertRow(row)
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            item.setText(str(profile.evaluations[crit]))
+            if profile.evaluations.has_key(crit):
+                item.setText(str(profile.evaluations[crit]))
             self.setItem(row, col, item)
 
     def __get_criterion_col(self, criterion):
