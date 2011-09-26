@@ -29,11 +29,22 @@ class action:
         self.id = id
         if name == None:
             self.name = str(id)
-        self.name = name
+        else:
+            self.name = name
         self.evaluations = evaluations
 
     def __repr__(self):
         return "A_%s: %s" % (self.name, self.evaluations)
+
+    def __add__(self, other):
+        a = self.evaluations
+        b = other.evaluations
+        return dict( (n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b) )
+
+    def __sub__(self, other):
+        a = self.evaluations
+        b = other.evaluations
+        return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
 
 class threshold(action):
     pass
