@@ -27,7 +27,7 @@ class float_delegate(QtGui.QItemDelegate):
 
 class criteria_table(QtGui.QTableWidget):
 
-    def __init__(self, criteria=None, parent=None):
+    def __init__(self, parent=None, criteria=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.row_crit = {}
@@ -166,7 +166,6 @@ class criteria_table(QtGui.QTableWidget):
     def update_criterion_weight(self, criterion):
         row = self.__get_criterion_row(criterion)
         item = self.cellWidget(row, COL_WEIGHT)
-        print 'set', str(criterion.weight)
         item.setText(str(criterion.weight))
 
     @property
@@ -184,7 +183,7 @@ class criteria_table(QtGui.QTableWidget):
 
 class profiles_table(QtGui.QTableWidget):
 
-    def __init__(self, criteria=None, profiles=None, parent=None):
+    def __init__(self, parent=None, criteria=None, profiles=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.col_crit = {}
