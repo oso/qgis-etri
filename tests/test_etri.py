@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.append("..")
-from etri import electre_tri
+from mcda.etri import electre_tri
 from data_ticino import *
 
 # Result should be:

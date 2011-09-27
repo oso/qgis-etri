@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.append("..")
-from etri import *
+from mcda.etri import *
 from data_loulouka import *
 
 etri = electre_tri(a, profiles, w, lbda)
