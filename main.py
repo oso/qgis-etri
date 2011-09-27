@@ -29,6 +29,7 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         try:
             self.layer = criteria_layer(map_canvas.layer(index))
             self.__loadlayer()
+            self.__enable_buttons()
         except:
             QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
 
@@ -39,6 +40,14 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         self.table_indiff.add_criteria(self.criteria)
         self.table_pref.add_criteria(self.criteria)
         self.table_veto.add_criteria(self.criteria)
+
+    def __enable_buttons(self):
+        self.button_add_profile.setEnabled(True)
+        self.button_del_profile.setEnabled(True)
+        self.button_generate.setEnabled(True)
+        self.button_chooserefs.setEnabled(True)
+        self.button_loadxmcda.setEnabled(True)
+        self.button_savexmcda.setEnabled(True)
 
     def __criterion_state_changed(self, criterion):
         for table in [ self.table_prof, self.table_indiff, self.table_pref, self.table_veto ]:
