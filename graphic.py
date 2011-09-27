@@ -1,6 +1,6 @@
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from etri import electre_tri
+from mcda.etri import electre_tri
 import colorsys
 
 class axis(QtGui.QGraphicsItem):
@@ -188,3 +188,17 @@ class graph_etri(QtGui.QGraphicsScene):
                 brush.setColor(QtGui.QColor("yellow"))
                 brush.setStyle(QtCore.Qt.SolidPattern)
                 self.addPolygon(u, QtGui.QPen(), brush)
+
+class mygraphicsview(QtGui.QGraphicsView):
+
+    def __init__(self, parent = None):
+        super(QtGui.QGraphicsView, self).__init__(parent)
+
+    def resizeEvent(self, event):
+        scene = self.scene()
+
+        if hasattr(scene, "update") == False:
+            return
+
+        scene.update(self.size())
+        self.resetCachedContent()
