@@ -5,7 +5,7 @@ from qgis.core import *
 import ui.resources_rc
 import sys, os
 
-from etrimain import EtriMainWindow
+from main import main_window
 
 class etri_plugin:
 
@@ -25,5 +25,5 @@ class etri_plugin:
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
-        ui = EtriMainWindow(self.iface, self.iface.mapCanvas())
+        ui = main_window(self.iface)
         ui.show()
