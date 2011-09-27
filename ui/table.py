@@ -43,18 +43,24 @@ class criteria_table(QtGui.QTableWidget):
         self.setColumnWidth(COL_DIRECTION, 60)
         self.setColumnWidth(COL_WEIGHT, 100)
 
-        if criteria != None:
-            for criterion in criteria:
-                self.add(criterion)
-
         self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
                      self.__cell_changed)
         self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
 
+        if criteria != None:
+            for criterion in criteria:
+                self.add(criterion)
+
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
+            if self.row_crit.has_key(row) == False:
+                return
+
             criterion = self.row_crit[row]
             item = self.cellWidget(row, col)
+            if item == None:
+                return
+
             try:
                 criterion.weight = float(item.text())
             except:
