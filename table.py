@@ -46,8 +46,7 @@ class criteria_table(QtGui.QTableWidget):
         self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
 
         if criteria != None:
-            for criterion in criteria:
-                self.add(criterion)
+            self.add(criteria)
 
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
@@ -80,7 +79,16 @@ class criteria_table(QtGui.QTableWidget):
         item.setTextAlignment(QtCore.Qt.AlignRight)
         self.setHorizontalHeaderItem(COL_WEIGHT, item)
 
-    def add(self, criterion):
+    def add(self, criteria):
+        if isinstance(criteria, list):
+            for crit in criteria:
+                self.__add_criterion(crit)
+        elif isinstance(criteria, criterion):
+            self.__add_criterion(criteria)
+        else:
+            raise TypeError, 'criteria_table:: invalid object type in add'
+
+    def __add_criterion(self, criterion):
         row = self.rowCount()
         self.insertRow(row)
 
@@ -201,6 +209,10 @@ class profiles_table(QtGui.QTableWidget):
         if profiles != None:
             for profile in profiles:
                 self.add(profile)
+
+    def add_criteria(self, criteria):
+        for criterion in criteria:
+            self.add_criterion(criterion)
 
     def add_criterion(self, criterion):
         col = self.columnCount()
