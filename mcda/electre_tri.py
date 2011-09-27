@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(0, "..")
 from mcda.types import criterion, action, profile
 
 class electre_tri:
