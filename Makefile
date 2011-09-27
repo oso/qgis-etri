@@ -1,6 +1,7 @@
 RSFILES :=	ui/resources_rc.py
 
 UIFILES :=	ui/etrimain.ui
+UIFILES +=	ui/main_window.ui
 UIFILES +=	ui/refsdialog.ui
 UIFILES +=	ui/infdialog.ui
 UIFILES +=	ui/pwdialog.ui
@@ -43,6 +44,7 @@ ui/%.py: ui/%.ui
 clean: 
 	rm -f pysimplesoap/*.pyc
 	rm -f ui/*.pyc
+	rm -f mcda/*.pyc
 	rm -f *.pyc
 
 mrproper: clean
