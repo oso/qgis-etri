@@ -3,7 +3,7 @@ ELECTRE TRI plugin for Quantum GIS
 
 License
 -------
-Copyright 2010 Olivier Sobrie
+Copyright 2010-2011 Olivier Sobrie
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,22 +22,27 @@ See COPYING for a version of the GPLv3 License
 
 Installation
 ------------
-
-### Linux
-
-1) Unzip the archive in ~/.qgis/python/plugins
+1) Unzip the archive in ~/.qgis/python/plugins (or the corresponding
+   folder on Windows)
 2) Start Quantum GIS
 3) Go to Plugins -> Manage Plugins
 4) Check the Electre Tri plugin
-5) After this step an icon should appear in the plugin bar. To use it click on
-   it...
+5) After this step an icon should appear in the plugin bar.
+   To use it click on the icon and the ELECTRE TRI window should
+   appear...
 
-### Windows
-
-1) Unzip the archive in C:\Documents and Settings\USERNAME\.qgis\python\plugins
-(You should set your appropriate drive and username)
-2) Start Quantum GIS
-3) Go to Plugins -> Manage Plugins
-4) Check the Electre Tri plugin
-5) After this step an icon should appear in the plugin bar. To use it click on
-   it...
+Usage
+-----
+1. When you start the plugin, a window with several tabs will be displayed.
+The first thing to do is to choose the vector layer containing the actions
+evaluated on the different criteria of the problem. This is done by
+selecting the corresponding entry in the list box and then by clicking on
+the load layer button.
+2. After loading the layer, the different attributes of the layer will be
+displayed in the criteria tab. Deselect attributes that are not criteria
+of the model. For the criteria of the problem, you can change the weights
+and the direction (if its a criterion to maximize or to minimize).
+3. Once the criteria parameters defined, you can define the profile and
+thresholds of the ELECTRE TRI model in the second tab.
+4. Finally choose a cut level in the box on the right and then you can
+generate the decision map by clicking on the corresponding button.
