@@ -28,10 +28,18 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         map_canvas = self.iface.mapCanvas()
         try:
             self.layer = criteria_layer(map_canvas.layer(index))
+            self.__clear_tables()
             self.__loadlayer()
             self.__enable_buttons()
         except:
             QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
+
+    def __clear_tables(self):
+        self.table_criteria.reset()
+        self.table_prof.reset()
+        self.table_indiff.reset()
+        self.table_pref.reset()
+        self.table_veto.reset()
 
     def __loadlayer(self):
         self.criteria = self.layer.criteria

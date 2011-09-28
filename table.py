@@ -79,6 +79,10 @@ class criteria_table(QtGui.QTableWidget):
         item.setTextAlignment(QtCore.Qt.AlignRight)
         self.setHorizontalHeaderItem(COL_WEIGHT, item)
 
+    def reset(self):
+        self.clearContents()
+        self.setRowCount(0)
+
     def add(self, criteria):
         if isinstance(criteria, list):
             for crit in criteria:
@@ -209,6 +213,11 @@ class profiles_table(QtGui.QTableWidget):
         if profiles != None:
             for profile in profiles:
                 self.add(profile)
+
+    def reset(self):
+        self.clear()
+        self.setRowCount(0)
+        self.setColumnCount(0)
 
     def add_criteria(self, criteria):
         for criterion in criteria:
