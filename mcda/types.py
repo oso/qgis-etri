@@ -1,4 +1,6 @@
-class criterion:
+from xmcda import xmcda_utils
+
+class criterion(xmcda_utils):
 
     DISABLED = 1
     ENABLED = 0
@@ -22,6 +24,29 @@ class criterion:
     def __repr__(self):
         return "C_%s: %g" % (self.name,
                              int(self.direction)*float(self.weight))
+
+    def to_xmcda(self):
+        output = "<criterion id='%s' name='%s'>" % (self.id, self.name)
+
+        if self.disabled == 0:
+            output += "<active>true</active>"
+        else:
+            output += "<active>false</active>"
+
+        output += "<scale><quantitative>"
+        if self.direction == 1:
+            output += "<preferenceDirection>max</preferenceDirection>"
+        else:
+            output += "<preferenceDirection>min</preferenceDirection>"
+        output += "</quantitative></scale>"
+
+        output += "<criterionValue>"
+        output += self.set_value(self.weight) 
+        output += "</criterionValue>"
+
+        output += "</criterion>"
+
+        return output
 
 class action:
 
