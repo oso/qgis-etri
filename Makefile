@@ -43,8 +43,9 @@ ui/%.py: ui/%.ui
 
 clean: 
 	rm -f pysimplesoap/*.pyc
-	rm -f ui/*.pyc
 	rm -f mcda/*.pyc
+	rm -f tests/*.pyc
+	rm -f ui/*.pyc
 	rm -f *.pyc
 
 mrproper: clean
