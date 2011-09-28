@@ -246,8 +246,9 @@ class profiles_table(QtGui.QTableWidget):
         crit_col = dict([[v,k] for k,v in self.col_crit.items()])
         return crit_col[criterion]
 
-    def disable_criterion(self, criterion, disable):
-        self.setColumnHidden(self.__get_criterion_col(criterion), disable)
+    def disable_criterion(self, criterion):
+        self.setColumnHidden(self.__get_criterion_col(criterion),
+                             criterion.disabled)
 
 class threshold_table(profiles_table):
     pass

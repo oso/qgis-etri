@@ -19,7 +19,7 @@ def criterion_state_changed(criterion):
     print "Criteria enabled:", crit_table.criteria_enabled
     for table in [ prof_table, indif_table, pref_table, veto_table ]:
         if table != None:
-            table.disable_criterion(criterion, criterion.disabled)
+            table.disable_criterion(criterion)
 
 def add_tab(tabs, table, name):
     tab = QtGui.QWidget()
