@@ -11,7 +11,7 @@ COL_WEIGHT = 2
 class float_delegate(QtGui.QItemDelegate):
 
     def __init__(self, parent=None, columns=None):
-        super(float_delegate, self).__init__(parent)
+        super(QtGui.QItemDelegate, self).__init__(parent)
         self.columns = columns
 
     def createEditor(self, parent, option, index):
