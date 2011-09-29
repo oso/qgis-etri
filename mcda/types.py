@@ -1,6 +1,14 @@
-from xmcda import xmcda_utils
+from xml.etree import ElementTree
 
-class criterion(xmcda_utils):
+class criteria(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('criteria')
+        for criterion in self:
+            root.append(criterion.to_xmcda())
+        return root
+
+class criterion:
 
     DISABLED = 1
     ENABLED = 0
@@ -26,27 +34,26 @@ class criterion(xmcda_utils):
                              int(self.direction)*float(self.weight))
 
     def to_xmcda(self):
-        output = "<criterion id='%s' name='%s'>" % (self.id, self.name)
+        root = ElementTree.Element('criterion', id=self.id, name=self.name)
 
+        active = ElementTree.SubElement(root, 'active')
         if self.disabled == 0:
-            output += "<active>true</active>"
+            active.text = 'true'
         else:
-            output += "<active>false</active>"
+            active.text = 'false'
 
-        output += "<scale><quantitative>"
+        scale = ElementTree.SubElement(root, 'scale')
+        quant = ElementTree.SubElement(scale, 'quantitative')
+        prefd = ElementTree.SubElement(quant, 'preferenceDirection')
         if self.direction == 1:
-            output += "<preferenceDirection>max</preferenceDirection>"
+            prefd.text = 'max'
         else:
-            output += "<preferenceDirection>min</preferenceDirection>"
-        output += "</quantitative></scale>"
+            prefd.text = 'min'
 
-        output += "<criterionValue>"
-        output += self.set_value(self.weight) 
-        output += "</criterionValue>"
+        value = ElementTree.SubElement(root, 'criterionValue')
+        value.text = '%f' % self.weight
 
-        output += "</criterion>"
-
-        return output
+        return root
 
 class action:
 
