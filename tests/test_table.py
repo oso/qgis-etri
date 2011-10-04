@@ -35,12 +35,12 @@ if __name__ == "__main__":
         from data_ticino_new import *
 
     app = QtGui.QApplication(sys.argv)
-    crit_table = criteria_table(None, criteria)
-    prof_table = profiles_table(None, criteria, profiles)
+    crit_table = criteria_table(None, c)
+    prof_table = profiles_table(None, c, profiles)
 
-    indif_table = threshold_table(None, criteria)
-    pref_table = threshold_table(None, criteria)
-    veto_table = threshold_table(None, criteria)
+    indif_table = threshold_table(None, c)
+    pref_table = threshold_table(None, c)
+    veto_table = threshold_table(None, c)
     for profile in profiles:
         indif_table.add(q)
         pref_table.add(p)

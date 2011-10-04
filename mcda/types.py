@@ -1,12 +1,40 @@
 from xml.etree import ElementTree
 
+type2tag = {
+    int: 'integer',
+    float: 'real'
+}
+
+unmarshallers = {
+    'integer': lambda x: int(x.text),
+    'real': lambda x: float(x.text),
+}
+
+def marshal(value):
+    tag = type2tag.get(type(value))
+    e = ElementTree.Element(tag)
+    e.text = str(value)
+    return e
+
+def unmarshal(xml):
+    m = unmarshallers.get(xml.tag)
+    return m(xml)
+
 class criteria(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('criteria')
-        for criterion in self:
-            root.append(criterion.to_xmcda())
+        for crit in self:
+            crit_xmcda = crit.to_xmcda()
+            root.append(crit_xmcda)
         return root
+
+    def from_xmcda(self, xmcda):
+        tag_list = xmcda.getiterator('criterion')
+        for tag in tag_list:
+            c = criterion(0)
+            c.from_xmcda(tag)
+            self.append(c)
 
 class criterion:
 
@@ -34,15 +62,15 @@ class criterion:
                              int(self.direction)*float(self.weight))
 
     def to_xmcda(self):
-        root = ElementTree.Element('criterion', id=self.id, name=self.name)
+        xmcda = ElementTree.Element('criterion', id=self.id, name=self.name)
 
-        active = ElementTree.SubElement(root, 'active')
+        active = ElementTree.SubElement(xmcda, 'active')
         if self.disabled == 0:
             active.text = 'true'
         else:
             active.text = 'false'
 
-        scale = ElementTree.SubElement(root, 'scale')
+        scale = ElementTree.SubElement(xmcda, 'scale')
         quant = ElementTree.SubElement(scale, 'quantitative')
         prefd = ElementTree.SubElement(quant, 'preferenceDirection')
         if self.direction == 1:
@@ -50,10 +78,36 @@ class criterion:
         else:
             prefd.text = 'min'
 
-        value = ElementTree.SubElement(root, 'criterionValue')
-        value.text = '%f' % self.weight
+        value = ElementTree.SubElement(xmcda, 'criterionValue')
+        weight = marshal(self.weight)
+        value.append(weight)
 
-        return root
+        return xmcda
+
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'criterion':
+            crit = xmcda
+        else:
+            crit = xmcda.find('.//criterion')
+        id = crit.get('id')
+        if id != None:
+            self.id = id
+        name = crit.get('name')
+        if name != None:
+            self.name = name
+        pdir = crit.find('.//scale/quantitative/preferenceDirection').text
+        if pdir != None:
+            if pdir == 'max':
+                self.direction = 1
+            elif pdir == 'min':
+                self.direction = -1
+            else:
+                raise TypeError, 'criterion::invalid preferenceDirection'
+        value = crit.find('.//criterionValue')
+
+        value = crit.find('criterionValue')
+        if value != None:
+            self.weight = unmarshal(value.getchildren()[0])
 
 class action:
 

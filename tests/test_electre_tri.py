@@ -10,7 +10,7 @@ if __name__ == "__main__":
     else:
         from data_ticino_new import *
 
-    etri = electre_tri(a, criteria, profiles, lbda)
+    etri = electre_tri(a, c, profiles, lbda)
     print "ELECTRE TRI - Pessimist"
     etri_p = etri.pessimist()
     print etri_p

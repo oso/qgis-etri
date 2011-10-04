@@ -15,7 +15,7 @@ g8 = criterion('g8', 'g8', 0, 1, 0.11)
 g9 = criterion('g9', 'g9', 0, 1, 0.13)
 g10 = criterion('g10', 'g10', 0, 1, 0.15)
 g11 = criterion('g11', 'g11', 0, 1, 0.17)
-criteria = [ g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11 ]
+c = [ g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11 ]
 
 # Actions
 a0 = action('a0', evaluations = {g1: 1, g2:1, g3:1, g4:1, g5:1, g6:1, g7:1, g8:4, g9:2, g10:3, g11:5})

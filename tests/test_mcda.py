@@ -1,7 +1,12 @@
 import sys
 sys.path.insert(0, "..")
-from data_ticino_new import *
 from mcda.types import criterion
 from xml.etree import ElementTree
+from data_ticino_new import *
 
-ElementTree.dump(criteria.to_xmcda())
+crit = c.to_xmcda()
+ElementTree.dump(crit)
+
+crit2 = criteria()
+crit2.from_xmcda(crit)
+print crit2

@@ -9,7 +9,7 @@ transport = criterion('transport', 'transport', 0, -1, 45)
 envir = criterion('envir', 'environment', 0, 1, 10)
 residents = criterion('residents', 'residents', 0, 1, 12)
 competition = criterion('competition', 'competition', 0, 1, 8)
-criteria = criteria([ prix, transport, envir, residents, competition ])
+c = criteria([ prix, transport, envir, residents, competition ])
 
 # Actions
 a1 = action('a1', 'a1', {prix: 120, transport:  284, envir: 5, residents: 3.5, competition: 18})
