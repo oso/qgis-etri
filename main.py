@@ -58,7 +58,7 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         self.button_savexmcda.setEnabled(True)
 
     def __criterion_state_changed(self, criterion):
-        table_prof.disable_criterion(criterion)
-        table_indiff.disable_criterion(criterion)
-        table_pref.disable_criterion(criterion)
-        table_veto.disable_criterion(criterion)
+        self.table_prof.disable_criterion(criterion)
+        self.table_indiff.disable_criterion(criterion)
+        self.table_pref.disable_criterion(criterion)
+        self.table_veto.disable_criterion(criterion)
