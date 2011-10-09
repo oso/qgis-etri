@@ -111,13 +111,16 @@ class criterion:
 
 class action:
 
-    def __init__(self, id=None, name=None, evaluations=None):
+    def __init__(self, id=None, name=None, evaluations=None, disabled=None):
         self.id = id
         if name == None:
             self.name = str(id)
         else:
             self.name = name
         self.evaluations = evaluations
+        if disabled == None:
+            disabled = 0
+        self.disabled = disabled
 
     def __repr__(self):
         return "A_%s: %s" % (self.name, self.evaluations)
@@ -131,6 +134,23 @@ class action:
         a = self.evaluations
         b = other.evaluations
         return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('alternative', id=self.id,
+                                    name=self.name)
+
+        active = ElementTree.SubElement(xmcda, 'active')
+        if self.disabled == 0:
+            active.text = 'true'
+        else:
+            active.text = 'false'
+
+        xmcda2 = ElementTree.Element('alternativePerformances')
+        altid = ElementTree.SubElement(xmcda2, 'alternativeID')
+        altid.text = self.id
+        #FIXME: add the performance table !!!
+
+        return (xmcda, xmcda2)
 
 class threshold(action):
     pass
