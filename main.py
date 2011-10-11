@@ -35,11 +35,11 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
             QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
 
     def __clear_tables(self):
-        self.table_criteria.reset()
-        self.table_prof.reset()
-        self.table_indiff.reset()
-        self.table_pref.reset()
-        self.table_veto.reset()
+        self.table_criteria.reset_table()
+        self.table_prof.reset_table()
+        self.table_indiff.reset_table()
+        self.table_pref.reset_table()
+        self.table_veto.reset_table()
 
     def __loadlayer(self):
         self.criteria = self.layer.criteria
