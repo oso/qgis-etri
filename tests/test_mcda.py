@@ -14,7 +14,3 @@ print crit2
 xmcda = a.to_xmcda()
 ElementTree.dump(xmcda[0])
 ElementTree.dump(xmcda[1])
-
-#a = a1.to_xmcda()
-#ElementTree.dump(a[0])
-#ElementTree.dump(a[1])
