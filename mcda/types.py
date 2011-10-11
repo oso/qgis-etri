@@ -148,7 +148,16 @@ class action:
         xmcda2 = ElementTree.Element('alternativePerformances')
         altid = ElementTree.SubElement(xmcda2, 'alternativeID')
         altid.text = self.id
-        #FIXME: add the performance table !!!
+
+        for crit, val in self.evaluations.iteritems():
+            perf = ElementTree.SubElement(xmcda2, 'performance')
+
+            critid = ElementTree.SubElement(perf, 'criterionID')
+            critid.text = crit.id
+
+            value = ElementTree.SubElement(perf, 'value')
+            p = marshal(val)
+            value.append(p)
 
         return (xmcda, xmcda2)
 
