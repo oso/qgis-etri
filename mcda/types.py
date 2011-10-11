@@ -109,6 +109,17 @@ class criterion:
         if value != None:
             self.weight = unmarshal(value.getchildren()[0])
 
+class actions(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('alternatives')
+        root2 = ElementTree.Element('performanceTable')
+        for action in self:
+            alt, perf = action.to_xmcda()
+            root.append(alt)
+            root2.append(perf)
+        return (root, root2)
+
 class action:
 
     def __init__(self, id=None, name=None, evaluations=None, disabled=None):

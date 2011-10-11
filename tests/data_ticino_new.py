@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from mcda.types import criteria, criterion, action, profile, threshold
+from mcda.types import criterion, criteria, action, actions, profile, threshold
 
 # Criteria
 prix = criterion('prix', 'prix', 0, -1, 25)
@@ -19,7 +19,7 @@ a4 = action('a4', 'a4', {prix:  60, transport:  596, envir: 6, residents: 8.0, c
 a5 = action('a5', 'a5', {prix:  30, transport: 1321, envir: 8, residents: 7.5, competition: 16})
 a6 = action('a6', 'a6', {prix:  80, transport:  734, envir: 5, residents: 4.0, competition: 21})
 a7 = action('a7', 'a7', {prix:  45, transport:  982, envir: 7, residents: 8.5, competition: 13})
-a = [ a1, a2, a3, a4, a5, a6, a7 ]
+a = actions([ a1, a2, a3, a4, a5, a6, a7 ])
 
 # Reference actions
 b1 = {prix: 100, transport: 1000, envir: 4, residents: 4, competition: 15}

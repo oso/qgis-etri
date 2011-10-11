@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys 
 sys.path.insert(0, "..")
-from mcda.types import criterion, action, profile, threshold
+from mcda.types import criterion, criteria, action, actions, profile, threshold
 
 # Weights
 g1 = criterion('g1', 'g1', 0, 1, 0.02)
@@ -15,7 +15,7 @@ g8 = criterion('g8', 'g8', 0, 1, 0.11)
 g9 = criterion('g9', 'g9', 0, 1, 0.13)
 g10 = criterion('g10', 'g10', 0, 1, 0.15)
 g11 = criterion('g11', 'g11', 0, 1, 0.17)
-c = [ g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11 ]
+c = criteria([ g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11 ])
 
 # Actions
 a0 = action('a0', evaluations = {g1: 1, g2:1, g3:1, g4:1, g5:1, g6:1, g7:1, g8:4, g9:2, g10:3, g11:5})
@@ -248,7 +248,7 @@ a226 = action('a226', evaluations = {g1:1, g2:1, g3:1, g4:1, g5:1, g6:1, g7:2, g
 a227 = action('a227', evaluations = {g1:2, g2:1, g3:1, g4:1, g5:1, g6:3, g7:1, g8:1, g9:1, g10:3, g11:4})
 a228 = action('a228', evaluations = {g1:2, g2:3, g3:3, g4:2, g5:4, g6:3, g7:2, g8:5, g9:3, g10:3, g11:5})
 
-a = [ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15,
+a = actions([ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15,
       a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30,
       a31, a32, a33, a34, a35, a36, a37, a38, a39, a40, a41, a42, a43, a44, a45,
       a46, a47, a48, a49, a50, a51, a52, a53, a54, a55, a56, a57, a58, a59, a60,
@@ -264,7 +264,7 @@ a = [ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15,
       a183, a184, a185, a186, a187, a188, a189, a190, a191, a192, a193, a194, a195,
       a196, a197, a198, a199, a200, a201, a202, a203, a204, a205, a206, a207, a208,
       a209, a210, a211, a212, a213, a214, a215, a216, a217, a218, a219, a220, a221,
-      a222, a223, a224, a225, a226, a227, a228 ]
+      a222, a223, a224, a225, a226, a227, a228 ])
 
 # Reference actions
 b1 = {g1: 1, g2: 2, g3: 1, g4: 1, g5: 1, g6: 1, g7: 2, g8: 4, g9: 1, g10: 1, g11: 1}
