@@ -150,7 +150,8 @@ def render_decision_map_old(layer, nprofils):
 
     for i in range(1, nprofils+2):
         s = QgsSymbol(layer.geometryType())
-        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
+        h = 1-float(i-1)/nprofils*float(2)/3
+        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         s.setBrush(QBrush(QColor(r*255, g*255, b*255)))
         label = 'Category %d' % i
         s.setLabel(label)
@@ -164,7 +165,8 @@ def render_decision_map_new(layer, nprofils):
     cat_list = []
     for i in range(1, nprofils+2):
         s = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
+        h = 1-float(i-1)/nprofils*float(2)/3
+        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         s.setColor(QColor(r*255, g*255, b*255))
         cat_list.append(QgsRendererCategoryV2(i, s, 'Category %d' % i))
 

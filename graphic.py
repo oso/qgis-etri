@@ -146,7 +146,8 @@ class graph_etri(QtGui.QGraphicsScene):
         return points
 
     def __get_category_brush(self, category):
-        h = 1-float(category)/(len(self.model.profiles)+1)
+        nprof = len(self.model.profiles)
+        h = 1-float(category)/nprof*float(2)/3
         r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
         
