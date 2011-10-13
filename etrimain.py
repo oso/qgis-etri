@@ -409,6 +409,8 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             self.criteria_activated.append(row)
             self.criteria_activated.sort()
 
+        self.update_model_graph()
+
     def on_Bloadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
         try:
@@ -418,9 +420,11 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
 
     def on_Badd_profile_pressed(self):
         self.add_profile(-1)
+        self.update_model_graph()
 
     def on_Bdel_profile_pressed(self):
         self.del_profile(self.table_prof.rowCount()-1)
+        self.update_model_graph()
 
     def on_table_prof_cellChanged(self, row, column):
         self.check_profile_crit(row, column)
