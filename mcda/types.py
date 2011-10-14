@@ -78,7 +78,8 @@ class criterion:
         else:
             prefd.text = 'min'
 
-        value = ElementTree.SubElement(xmcda, 'criterionValue')
+        crit_val = ElementTree.SubElement(xmcda, 'criterionValue')
+        value = ElementTree.SubElement(crit_val, 'value')
         weight = marshal(self.weight)
         value.append(weight)
 
@@ -103,9 +104,7 @@ class criterion:
                 self.direction = -1
             else:
                 raise TypeError, 'criterion::invalid preferenceDirection'
-        value = crit.find('.//criterionValue')
-
-        value = crit.find('criterionValue')
+        value = crit.find('.//criterionValue/value')
         if value != None:
             self.weight = unmarshal(value.getchildren()[0])
 
