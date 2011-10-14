@@ -831,6 +831,7 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
             return
 
         self.load_xmcda_data(file)
+        self.update_model_graph()
 
     def save_xmcda_data(self, file):
         weights = self.get_criteria_weights()
