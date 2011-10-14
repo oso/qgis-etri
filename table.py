@@ -62,7 +62,8 @@ class criteria_table(QtGui.QTableWidget):
                 criterion.weight = float(item.text())
             except:
                 QtGui.QMessageBox.warning(self,
-                                          "Criterion %s" % criterion.name,
+                                          "Criterion [%d] %s"
+                                          % (criterion.id, criterion.name),
                                           "Invalid weight value")
 
     def __add_headers(self):
@@ -102,7 +103,10 @@ class criteria_table(QtGui.QTableWidget):
         cbox = QtGui.QCheckBox(self)
         if criterion.disabled != True:
             cbox.setCheckState(QtCore.Qt.Checked)
-        cbox.setText(criterion.name)
+        if criterion.name:
+            cbox.setText(criterion.name)
+        else:
+            cbox.setText(criterion.id)
         self.__add_cbox_signal(cbox, row)
         self.setCellWidget(row, COL_NAME, cbox)
 
@@ -228,7 +232,10 @@ class profiles_table(QtGui.QTableWidget):
         self.insertColumn(col)
         item = QtGui.QTableWidgetItem()
         self.setHorizontalHeaderItem(col, item)
-        self.horizontalHeaderItem(col).setText(criterion.name)
+        if criterion.name:
+            self.horizontalHeaderItem(col).setText(criterion.name)
+        else:
+            self.horizontalHeaderItem(col).setText(criterion.id)
         if criterion.disabled:
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
