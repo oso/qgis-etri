@@ -49,28 +49,37 @@ def save_to_xmcda():
         return
 
     fname = save_dialog_box()
-    root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
-    criteria_xmcda = c.to_xmcda()
-    root.append(criteria_xmcda)
-    indent(root)
-    ElementTree.ElementTree(root).write(fname, xml_declaration=True,
-                                        encoding='utf-8', method='xml')
+    if fname:
+        root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
+        criteria_xmcda = c.to_xmcda()
+        root.append(criteria_xmcda)
+        indent(root)
+        ElementTree.ElementTree(root).write(fname, xml_declaration=True,
+                                            encoding='utf-8', method='xml')
 
 def load_from_xmcda():
     if not crit_table:
         return
 
     fname = load_dialog_box()
-    tree = ElementTree.parse(fname)
-    root = tree.getroot()
+    if fname:
+        tree = ElementTree.parse(fname)
+        root = tree.getroot()
+        ElementTree.dump(root)
 
-    c = criteria()
-    c.from_xmcda(root)
+        c = criteria()
+        c.from_xmcda(root, root)
 
-    print c
+        crit_table.reset_table()
+        crit_table.add(c)
 
-    crit_table.reset_table()
-    crit_table.add(c)
+def add_criterion():
+    string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
+    if ok and not string.isEmpty():
+        name = str(string.toUtf8())
+        crit = criterion(name, name)
+        crit_table.add(crit)
+        c.append(crit)
 
 def criterion_direction_changed(criterion):
     print criterion.id, ":", criterion.direction
@@ -101,9 +110,13 @@ if __name__ == "__main__":
                        QtCore.SIGNAL("criterion_direction_changed"),
                        criterion_direction_changed)
 
+    button_add = QtGui.QPushButton("Add criterion")
     button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
     button_from_xmcda = QtGui.QPushButton("Load from XMCDA")
 
+    button_to_xmcda.connect(button_add,
+                            QtCore.SIGNAL("clicked()"),
+                            add_criterion)
     button_to_xmcda.connect(button_to_xmcda,
                             QtCore.SIGNAL("clicked()"),
                             save_to_xmcda)
@@ -116,6 +129,7 @@ if __name__ == "__main__":
 
     layout = QtGui.QVBoxLayout()
     layout.addWidget(crit_table)
+    layout.addWidget(button_add)
     layout.addWidget(button_to_xmcda)
     layout.addWidget(button_from_xmcda)
     dialog = QtGui.QDialog()
