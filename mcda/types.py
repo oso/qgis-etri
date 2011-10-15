@@ -29,12 +29,17 @@ class criteria(list):
             root.append(crit_xmcda)
         return root
 
-    def from_xmcda(self, xmcda):
+    def from_xmcda(self, xmcda, xmcda_critval=None):
         tag_list = xmcda.getiterator('criterion')
         for tag in tag_list:
             c = criterion(0)
             c.from_xmcda(tag)
             self.append(c)
+
+        if xmcda_critval is not None:
+            tag_list = xmcda_critval.getiterator('criterionValue')
+            for tag in tag_list:
+                c.from_xmcda(xmcda_critval=tag)
 
 class criterion:
 
@@ -85,28 +90,38 @@ class criterion:
 
         return xmcda
 
-    def from_xmcda(self, xmcda):
-        if xmcda.tag == 'criterion':
-            crit = xmcda
-        else:
-            crit = xmcda.find('.//criterion')
-        id = crit.get('id')
-        if id != None:
-            self.id = id
-        name = crit.get('name')
-        if name != None:
-            self.name = name
-        pdir = crit.find('.//scale/quantitative/preferenceDirection').text
-        if pdir != None:
-            if pdir == 'max':
-                self.direction = 1
-            elif pdir == 'min':
-                self.direction = -1
+    def from_xmcda(self, xmcda=None, xmcda_critval=None):
+        if xmcda is not None:
+            if xmcda.tag == 'criterion':
+                crit = xmcda
             else:
-                raise TypeError, 'criterion::invalid preferenceDirection'
-        value = crit.find('.//criterionValue/value')
-        if value != None:
-            self.weight = unmarshal(value.getchildren()[0])
+                crit = xmcda.find('.//criterion')
+            id = crit.get('id')
+            if id != None:
+                self.id = id
+            name = crit.get('name')
+            if name != None:
+                self.name = name
+            pdir = crit.find('.//scale/quantitative/preferenceDirection').text
+            if pdir != None:
+                if pdir == 'max':
+                    self.direction = 1
+                elif pdir == 'min':
+                    self.direction = -1
+                else:
+                    raise TypeError, 'criterion::invalid preferenceDirection'
+            value = crit.find('.//criterionValue/value')
+            if value != None:
+                self.weight = unmarshal(value.getchildren()[0])
+
+        if xmcda_critval is not None:
+            if xmcda_critval.tag == 'criterionValue':
+                critval = xmcda_critval
+            else:
+                critval = xmcda_critval.find('.//criterionValue')
+            value = critval.find('.//value')
+            if value != None:
+                self.weight = unmarshal(value.getchildren()[0])
 
 class actions(list):
 
