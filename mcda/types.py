@@ -58,8 +58,6 @@ class criterion:
         if direction == None:
             direction = 1
         self.direction = direction
-        if weight == None:
-            weight = 10
         self.weight = weight
 
     def __repr__(self):
@@ -83,10 +81,11 @@ class criterion:
         else:
             prefd.text = 'min'
 
-        crit_val = ElementTree.SubElement(xmcda, 'criterionValue')
-        value = ElementTree.SubElement(crit_val, 'value')
-        weight = marshal(self.weight)
-        value.append(weight)
+        if self.weight:
+            crit_val = ElementTree.SubElement(xmcda, 'criterionValue')
+            value = ElementTree.SubElement(crit_val, 'value')
+            weight = marshal(self.weight)
+            value.append(weight)
 
         return xmcda
 
@@ -170,19 +169,22 @@ class action:
         else:
             active.text = 'false'
 
-        xmcda2 = ElementTree.Element('alternativePerformances')
-        altid = ElementTree.SubElement(xmcda2, 'alternativeID')
-        altid.text = self.id
+        if self.evaluations:
+            xmcda2 = ElementTree.Element('alternativePerformances')
+            altid = ElementTree.SubElement(xmcda2, 'alternativeID')
+            altid.text = self.id
 
-        for crit, val in self.evaluations.iteritems():
-            perf = ElementTree.SubElement(xmcda2, 'performance')
+            for crit, val in self.evaluations.iteritems():
+                perf = ElementTree.SubElement(xmcda2, 'performance')
 
-            critid = ElementTree.SubElement(perf, 'criterionID')
-            critid.text = crit.id
+                critid = ElementTree.SubElement(perf, 'criterionID')
+                critid.text = crit.id
 
-            value = ElementTree.SubElement(perf, 'value')
-            p = marshal(val)
-            value.append(p)
+                value = ElementTree.SubElement(perf, 'value')
+                p = marshal(val)
+                value.append(p)
+        else:
+            xmcda2 = None
 
         return (xmcda, xmcda2)
 
