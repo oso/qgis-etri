@@ -62,7 +62,7 @@ class criteria_table(QtGui.QTableWidget):
                 criterion.weight = float(item.text())
             except:
                 QtGui.QMessageBox.warning(self,
-                                          "Criterion [%d] %s"
+                                          "Criterion [%s] %s"
                                           % (criterion.id, criterion.name),
                                           "Invalid weight value")
 
