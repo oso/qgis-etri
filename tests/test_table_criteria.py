@@ -77,7 +77,7 @@ def add_criterion():
     string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
     if ok and not string.isEmpty():
         name = str(string.toUtf8())
-        crit = criterion(name, name)
+        crit = criterion(name, name, 0, 1, 10)
         crit_table.add(crit)
         c.append(crit)
 
