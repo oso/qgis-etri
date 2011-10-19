@@ -143,17 +143,17 @@ class action:
 
     def __init__(self, id=None, name=None, performances=None, disabled=None):
         self.id = id
-        if name == None:
-            self.name = str(id)
-        else:
-            self.name = name
+        self.name = name
         self.performances = performances
         if disabled == None:
             disabled = False
         self.disabled = disabled
 
     def __repr__(self):
-        return "A_%s: %s" % (self.name, self.performances)
+        if self.name is not None:
+            return "%s (%s)" % (self.id, self.name)
+        else:
+            return "%s" % self.id
 
     def __add__(self, other):
         a = self.performances
