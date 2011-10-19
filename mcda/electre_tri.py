@@ -2,24 +2,25 @@ from mcda.types import criterion, action, profile
 
 class electre_tri:
 
-    def __init__(self, actions, criteria, profiles, lbda):
+    def __init__(self, criteria, actions, pt, profiles, lbda):
         self.criteria = criteria
         self.actions = actions
+        self.pt = pt
         self.profiles = profiles
         self.lbda = lbda
 
     def __partial_concordance(self, x, y, c, q, p):
         # compute g_j(b) - g_j(a)
-        diff = (y.evaluations[c]-x.evaluations[c])*c.direction
+        diff = (y.performances[c]-x.performances[c])*c.direction
 
         # compute c_j(a, b)
-        if diff > p.evaluations[c]:
+        if diff > p.performances[c]:
             return 0
-        elif diff <= q.evaluations[c]:
+        elif diff <= q.performances[c]:
             return 1
         else:
-            num = float(p.evaluations[c]-diff)
-            den = float(p.evaluations[c]-q.evaluations[c])
+            num = float(p.performances[c]-diff)
+            den = float(p.performances[c]-q.performances[c])
             return num/den
 
     def __concordance(self, x, y, clist, q, p):
@@ -39,18 +40,18 @@ class electre_tri:
 
     def __partial_discordance(self, x, y, c, p, v):
         # compute g_j(b) - g_j(a)
-        diff = (y.evaluations[c]-x.evaluations[c])*c.direction
+        diff = (y.performances[c]-x.performances[c])*c.direction
 
         # compute d_j(a,b)
-        if v.evaluations.has_key(c) == False:
+        if v.performances.has_key(c) == False:
             return 0
-        elif diff > v.evaluations[c]:
+        elif diff > v.performances[c]:
             return 1
-        elif diff <= p.evaluations[c]:
+        elif diff <= p.performances[c]:
             return 0
         else:
-            num = float(v.evaluations[c]-diff)
-            den = float(v.evaluations[c]-p.evaluations[c])
+            num = float(v.performances[c]-diff)
+            den = float(v.performances[c]-p.performances[c])
             return num/den
 
     def __credibility(self, x, y, clist, q, p, v):
@@ -69,13 +70,13 @@ class electre_tri:
 
         return sigma
 
-    def __outrank(self, action, criteria, profile, lbda):
+    def __outrank(self, action_perfs, criteria, profile, lbda):
         q = profile.indifference
         p = profile.preference
         v = profile.veto
 
-        s_ab = self.__credibility(action, profile, criteria, q, p, v)
-        s_ba = self.__credibility(profile, action, criteria, q, p, v)
+        s_ab = self.__credibility(action_perfs, profile, criteria, q, p, v)
+        s_ba = self.__credibility(profile, action_perfs, criteria, q, p, v)
 
         if s_ab >= lbda:
             if s_ba >= lbda:
@@ -93,27 +94,27 @@ class electre_tri:
         profiles.reverse()
         nprofiles = len(profiles)+1
         affectations = {}
-        for action in self.actions:
+        for action_perfs in self.pt:
             category = nprofiles
             for profile in profiles:
-                outr = self.__outrank(action, self.criteria, profile, self.lbda)
+                outr = self.__outrank(action_perfs, self.criteria, profile, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
 
-            affectations[action] = category
+            affectations[action_perfs.alternative] = category
 
         return affectations
 
     def optimist(self):
         profiles = self.profiles
         affectations = {}
-        for action in self.actions:
+        for action_perfs in self.pt:
             category = 1
             for profile in profiles:
-                outr = self.__outrank(action, self.criteria, profile, self.lbda)
+                outr = self.__outrank(action_perfs, self.criteria, profile, self.lbda)
                 if outr != "-":
                     category += 1
 
-            affectations[action] = category
+            affectations[action_perfs.alternative] = category
 
         return affectations
