@@ -141,28 +141,28 @@ class actions(list):
 
 class action:
 
-    def __init__(self, id=None, name=None, evaluations=None, disabled=None):
+    def __init__(self, id=None, name=None, performances=None, disabled=None):
         self.id = id
         if name == None:
             self.name = str(id)
         else:
             self.name = name
-        self.evaluations = evaluations
+        self.performances = performances
         if disabled == None:
             disabled = False
         self.disabled = disabled
 
     def __repr__(self):
-        return "A_%s: %s" % (self.name, self.evaluations)
+        return "A_%s: %s" % (self.name, self.performances)
 
     def __add__(self, other):
-        a = self.evaluations
-        b = other.evaluations
+        a = self.performances
+        b = other.performances
         return dict( (n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b) )
 
     def __sub__(self, other):
-        a = self.evaluations
-        b = other.evaluations
+        a = self.performances
+        b = other.performances
         return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
 
     def to_xmcda(self):
@@ -175,12 +175,12 @@ class action:
         else:
             active.text = 'false'
 
-        if self.evaluations:
+        if self.performances:
             xmcda2 = ElementTree.Element('alternativePerformances')
             altid = ElementTree.SubElement(xmcda2, 'alternativeID')
             altid.text = self.id
 
-            for crit, val in self.evaluations.iteritems():
+            for crit, val in self.performances.iteritems():
                 perf = ElementTree.SubElement(xmcda2, 'performance')
 
                 critid = ElementTree.SubElement(perf, 'criterionID')
@@ -227,9 +227,9 @@ class threshold(action):
 
 class profile(action):
 
-    def __init__(self, id=None, name=None, evaluations=None,
+    def __init__(self, id=None, name=None, performances=None,
                  indifference=None, preference=None, veto=None):
-        action.__init__(self, id, name, evaluations)
+        action.__init__(self, id, name, performances)
         self.indifference = indifference
         self.preference = preference
         self.veto = veto
