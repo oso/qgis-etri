@@ -49,8 +49,6 @@ class criterion:
     def __init__(self, id, name=None, disabled=None, direction=None,
                  weight=None):
         self.id = id
-        if name == None:
-            self.name = str(id)
         self.name = name
         if disabled == None:
             disabled = False
@@ -61,8 +59,10 @@ class criterion:
         self.weight = weight
 
     def __repr__(self):
-        return "C_%s: %g" % (self.name,
-                             int(self.direction)*float(self.weight))
+        if self.name is not None:
+            return "%s (%s)" % (self.id, self.name)
+        else:
+            return "%s" % self.id
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('criterion', id=self.id, name=self.name)
