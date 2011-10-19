@@ -194,6 +194,34 @@ class action:
 
         return (xmcda, xmcda2)
 
+class performance_table(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('performanceTable')
+        for alt_perfs in self:
+            xmcda = alt_perfs.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class alternative_performances():
+
+    def __init__(self, alternative, performances):
+        self.alternative = alternative
+        self.performances = performances
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('alternativePerformances')
+        altid = ElementTree.SubElement(xmcda, 'alternativeID')
+        altid.text = self.alternative.id 
+
+        for crit, val in self.performances.iteritems():
+            perf = ElementTree.SubElement(xmcda, 'performance')
+            critid = ElementTree.SubElement(perf, 'criterionID')
+            critid.text = crit.id
+            value = ElementTree.SubElement(perf, 'value')
+            p = marshal(val)
+            value.append(p)
+
 class threshold(action):
     pass
 
