@@ -53,7 +53,7 @@ class criterion:
             self.name = str(id)
         self.name = name
         if disabled == None:
-            disabled = 0
+            disabled = False
         self.disabled = disabled
         if direction == None:
             direction = 1
@@ -68,7 +68,7 @@ class criterion:
         xmcda = ElementTree.Element('criterion', id=self.id, name=self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
-        if self.disabled == 0:
+        if self.disabled == False:
             active.text = 'true'
         else:
             active.text = 'false'
@@ -101,11 +101,17 @@ class criterion:
             name = crit.get('name')
             if name != None:
                 self.name = name
-            pdir = crit.find('.//scale/quantitative/preferenceDirection').text
+            active = crit.find('.//active')
+            if active != None:
+                if active.text == 'false':
+                    self.disabled = True
+                else:
+                    self.disabled = False
+            pdir = crit.find('.//scale/quantitative/preferenceDirection')
             if pdir != None:
-                if pdir == 'max':
+                if pdir.text == 'max':
                     self.direction = 1
-                elif pdir == 'min':
+                elif pdir.text == 'min':
                     self.direction = -1
                 else:
                     raise TypeError, 'criterion::invalid preferenceDirection'
@@ -143,7 +149,7 @@ class action:
             self.name = name
         self.evaluations = evaluations
         if disabled == None:
-            disabled = 0
+            disabled = False
         self.disabled = disabled
 
     def __repr__(self):
@@ -164,7 +170,7 @@ class action:
                                     name=self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
-        if self.disabled == 0:
+        if self.disabled == False:
             active.text = 'true'
         else:
             active.text = 'false'
