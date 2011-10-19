@@ -96,19 +96,19 @@ class criterion:
             else:
                 crit = xmcda.find('.//criterion')
             id = crit.get('id')
-            if id != None:
+            if id is not None:
                 self.id = id
             name = crit.get('name')
-            if name != None:
+            if name is not None:
                 self.name = name
             active = crit.find('.//active')
-            if active != None:
+            if active is not None:
                 if active.text == 'false':
                     self.disabled = True
                 else:
                     self.disabled = False
             pdir = crit.find('.//scale/quantitative/preferenceDirection')
-            if pdir != None:
+            if pdir is not None:
                 if pdir.text == 'max':
                     self.direction = 1
                 elif pdir.text == 'min':
@@ -116,7 +116,7 @@ class criterion:
                 else:
                     raise TypeError, 'criterion::invalid preferenceDirection'
             value = crit.find('.//criterionValue/value')
-            if value != None:
+            if value is not None:
                 self.weight = unmarshal(value.getchildren()[0])
 
         if xmcda_critval is not None:
@@ -125,7 +125,7 @@ class criterion:
             else:
                 critval = xmcda_critval.find('.//criterionValue')
             value = critval.find('.//value')
-            if value != None:
+            if value is not None:
                 self.weight = unmarshal(value.getchildren()[0])
 
 class actions(list):
