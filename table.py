@@ -259,3 +259,77 @@ class profiles_table(QtGui.QTableWidget):
 
 class threshold_table(profiles_table):
     pass
+
+class qt_performance_table(QtGui.QTableWidget):
+
+    def __init__(self, parent=None, criteria=None, alternatives=None, pt=None):
+        super(QtGui.QTableWidget, self).__init__(parent)
+        self.parent = parent
+        self.col_crit = {}
+        self.row_alt = {}
+
+        self.setItemDelegate(float_delegate(self))
+
+        if criteria is not None:
+            for criterion in criteria:
+                self.add_criterion(criterion)
+
+        if alternatives is not None:
+            for alternative in alternatives:
+                if pt is not None:
+                    #FIXME: if pt(alternative) doesn't exist
+                    self.add(alternative, pt(alternative))
+                else:
+                    self.add(alternative)
+
+        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
+                     self.__cell_changed)
+
+    def reset_table(self):
+        self.clear()
+        self.setRowCount(0)
+        self.setColumnCount(0)
+
+    def add_criterion(self, criterion):
+        col = self.columnCount()
+        self.insertColumn(col)
+        item = QtGui.QTableWidgetItem()
+        self.setHorizontalHeaderItem(col, item)
+        if criterion.name:
+            self.horizontalHeaderItem(col).setText(criterion.name)
+        else:
+            self.horizontalHeaderItem(col).setText(criterion.id)
+        if criterion.disabled:
+            self.setColumnHidden(col, True)
+        self.col_crit[col] = criterion
+
+    def __get_criterion_col(self, criterion):
+        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        return crit_col[criterion]
+
+    def disable_criterion(self, criterion):
+        self.setColumnHidden(self.__get_criterion_col(criterion),
+                             criterion.disabled)
+
+    def add(self, alternative, alt_perfs=None):
+        row = self.rowCount()
+        self.insertRow(row)
+        item = QtGui.QTableWidgetItem()
+        self.setVerticalHeaderItem(row, item)
+        if alternative.name:
+            self.verticalHeaderItem(row).setText(alternative.name)
+        else:
+            self.verticalHeaderItem(row).setText(alternative.id)
+        self.row_alt[row] = alternative
+
+        for col, crit in self.col_crit.iteritems():
+            item = QtGui.QTableWidgetItem()
+            if alt_perfs is not None:
+                performances = alt_perfs.performances
+                if performances.has_key(crit):
+                    item.setText(str(performances[crit]))
+            self.setItem(row, col, item)
+
+    def __cell_changed(self, row, col):
+        #Update the performance of the action on the criterion
+        pass
