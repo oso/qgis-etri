@@ -196,6 +196,7 @@ class action:
 
 class performance_table(list):
 
+    # FIXME: remove __call__?
     def __call__(self, alternative, criterion=None):
         for altp in self:
             if altp.alternative == alternative:
@@ -209,6 +210,17 @@ class performance_table(list):
             return alt_perfs
         else:
             return alt_perfs(criterion)
+
+    def __getitem__(self, alternative):
+        for altp in self:
+            if altp.alternative == alternative:
+                alt_perfs = altp
+                break
+
+        if alt_perfs is None:
+            raise KeyError, "Alternative %si not found" % alternative
+
+        return alt_perfs
 
     def to_xmcda(self):
         root = ElementTree.Element('performanceTable')
