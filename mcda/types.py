@@ -196,6 +196,20 @@ class action:
 
 class performance_table(list):
 
+    def __call__(self, alternative, criterion=None):
+        for altp in self:
+            if altp.alternative == alternative:
+                alt_perfs = altp
+                break
+
+        if alt_perfs is None:
+            raise KeyError, "Alternative %si not found" % alternative
+
+        if criterion is None:
+            return alt_perfs
+        else:
+            return alt_perfs(criterion)
+
     def to_xmcda(self):
         root = ElementTree.Element('performanceTable')
         for alt_perfs in self:
@@ -208,6 +222,9 @@ class alternative_performances():
     def __init__(self, alternative, performances):
         self.alternative = alternative
         self.performances = performances
+
+    def __call__(self, criterion):
+        return self.performances[criterion]
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativePerformances')
