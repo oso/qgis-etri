@@ -245,8 +245,8 @@ class profiles_table(QtGui.QTableWidget):
         self.insertRow(row)
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            if profile.evaluations.has_key(crit):
-                item.setText(str(profile.evaluations[crit]))
+            if profile.performances.has_key(crit):
+                item.setText(str(profile.performances[crit]))
             self.setItem(row, col, item)
 
     def __get_criterion_col(self, criterion):
