@@ -87,12 +87,6 @@ def criterion_direction_changed(criterion):
 def criterion_state_changed(criterion):
     print "Criteria enabled:", crit_table.criteria_enabled
 
-def add_tab(tabs, table, name):
-    tab = QtGui.QWidget()
-    layout = QtGui.QVBoxLayout(tab)
-    layout.addWidget(table)
-    tabs.addTab(tab, name)
-
 if __name__ == "__main__":
 
     if len(sys.argv) == 2 and sys.argv[1] == "-l":
