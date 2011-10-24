@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
-from table import criteria_table, profiles_table, threshold_table
+from table import criteria_table
 from xml.etree import ElementTree
 
 ElementTree.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
