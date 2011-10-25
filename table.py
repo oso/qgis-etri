@@ -276,8 +276,7 @@ class qt_performance_table(QtGui.QTableWidget):
 
         if alternatives is not None:
             for alternative in alternatives:
-                if pt is not None:
-                    #FIXME: if pt(alternative) doesn't exist
+                if pt is not None and pt.has_alternative(alternative):
                     self.add(alternative, pt(alternative))
                 else:
                     self.add(alternative)

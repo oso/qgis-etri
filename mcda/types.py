@@ -222,6 +222,13 @@ class performance_table(list):
 
         return alt_perfs
 
+    def has_alternative(self, alternative):
+        for altp in self:
+            if altp.alternative == alternative:
+                return True
+
+        return False
+
     def to_xmcda(self):
         root = ElementTree.Element('performanceTable')
         for alt_perfs in self:
