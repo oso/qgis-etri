@@ -52,6 +52,8 @@ def save_to_xmcda():
     if fname:
         root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
         pt_xmcda = pt.to_xmcda()
+        root.append(pt_xmcda)
+        criteria_xmcda = c.to_xmcda()
         root.append(criteria_xmcda)
         indent(root)
         ElementTree.ElementTree(root).write(fname, xml_declaration=True,
@@ -71,7 +73,7 @@ def load_from_xmcda():
         c.from_xmcda(root, root)
 
         pt_table.reset_table()
-        pt_table.add(c)
+        pt_table.add_criteria(c)
 
 def add_alternative():
     string, ok = QtGui.QInputDialog.getText(None, "Add alternative", "Alternative name")
@@ -81,6 +83,7 @@ def add_alternative():
         alt_perfs = alternative_performances(alt)
         pt_table.add(alt, alt_perfs)
         a.append(alt)
+        pt.append(alt_perfs)
 
 def add_criterion():
     string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
