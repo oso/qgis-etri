@@ -262,7 +262,6 @@ class threshold_table(profiles_table):
 
 class qt_performance_table(QtGui.QTableWidget):
 
-    #FIXME: Do we need alternatives ? It is provided in pt...
     def __init__(self, parent=None, criteria=None, alternatives=None, pt=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
@@ -336,6 +335,7 @@ class qt_performance_table(QtGui.QTableWidget):
             self.row_altp.has_key(row) == False:
             return
 
+        alt = self.row_alt[row]
         altp = self.row_altp[row]
         crit = self.col_crit[col]
 
@@ -346,7 +346,6 @@ class qt_performance_table(QtGui.QTableWidget):
         try:
             altp.performances[crit] = float(item.text())
         except:
-            alt = altp.alternative
             QtGui.QMessageBox.warning(self,
                                       "Alternative [%s] %s"
                                       % (alt.id, alt.name),
