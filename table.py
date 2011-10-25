@@ -262,11 +262,13 @@ class threshold_table(profiles_table):
 
 class qt_performance_table(QtGui.QTableWidget):
 
+    #FIXME: Do we need alternatives ? It is provided in pt...
     def __init__(self, parent=None, criteria=None, alternatives=None, pt=None):
         super(QtGui.QTableWidget, self).__init__(parent)
         self.parent = parent
         self.col_crit = {}
         self.row_alt = {}
+        self.row_altp = {}
 
         self.setItemDelegate(float_delegate(self))
 
@@ -274,12 +276,9 @@ class qt_performance_table(QtGui.QTableWidget):
             for criterion in criteria:
                 self.add_criterion(criterion)
 
-        if alternatives is not None:
+        if alternatives is not None and pt is not None:
             for alternative in alternatives:
-                if pt is not None and pt.has_alternative(alternative):
                     self.add(alternative, pt(alternative))
-                else:
-                    self.add(alternative)
 
         self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
                      self.__cell_changed)
@@ -321,13 +320,31 @@ class qt_performance_table(QtGui.QTableWidget):
             self.verticalHeaderItem(row).setText(alternative.id)
         self.row_alt[row] = alternative
 
+        performances = alt_perfs.performances
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            performances = alt_perfs.performances
             if performances.has_key(crit):
                  item.setText(str(performances[crit]))
             self.setItem(row, col, item)
+        self.row_altp[row] = alt_perfs
 
     def __cell_changed(self, row, col):
-        #Update the performance of the action on the criterion
-        pass
+        if self.col_crit.has_key(col) == False or   \
+            self.row_altp.has_key(row) == False:
+            return
+
+        altp = self.row_altp[row]
+        crit = self.col_crit[col]
+
+        item = self.cellWidget(row, col)
+        if item == None:
+            return
+
+        try:
+            altp.performances[crit] = float(item.text())
+        except:
+            alt = altp.alternative
+            QtGui.QMessageBox.warning(self,
+                                      "Alternative [%s] %s"
+                                      % (alt.id, alt.name),
+                                      "Invalid evaluation")
