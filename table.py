@@ -310,7 +310,7 @@ class qt_performance_table(QtGui.QTableWidget):
         self.setColumnHidden(self.__get_criterion_col(criterion),
                              criterion.disabled)
 
-    def add(self, alternative, alt_perfs=None):
+    def add(self, alternative, alt_perfs):
         row = self.rowCount()
         self.insertRow(row)
         item = QtGui.QTableWidgetItem()
@@ -323,10 +323,9 @@ class qt_performance_table(QtGui.QTableWidget):
 
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            if alt_perfs is not None:
-                performances = alt_perfs.performances
-                if performances.has_key(crit):
-                    item.setText(str(performances[crit]))
+            performances = alt_perfs.performances
+            if performances.has_key(crit):
+                 item.setText(str(performances[crit]))
             self.setItem(row, col, item)
 
     def __cell_changed(self, row, col):

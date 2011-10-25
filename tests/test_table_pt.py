@@ -51,7 +51,7 @@ def save_to_xmcda():
     fname = save_dialog_box()
     if fname:
         root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
-        criteria_xmcda = c.to_xmcda()
+        pt_xmcda = pt.to_xmcda()
         root.append(criteria_xmcda)
         indent(root)
         ElementTree.ElementTree(root).write(fname, xml_declaration=True,
@@ -78,7 +78,8 @@ def add_alternative():
     if ok and not string.isEmpty():
         name = str(string.toUtf8())
         alt = action(name, name)
-        pt_table.add(alt)
+        alt_perfs = alternative_performances(alt)
+        pt_table.add(alt, alt_perfs)
         a.append(alt)
 
 def add_criterion():
