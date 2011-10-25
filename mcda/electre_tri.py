@@ -11,16 +11,16 @@ class electre_tri:
 
     def __partial_concordance(self, x, y, c, q, p):
         # compute g_j(b) - g_j(a)
-        diff = (y.performances[c]-x.performances[c])*c.direction
+        diff = (y.performances[c.id]-x.performances[c.id])*c.direction
 
         # compute c_j(a, b)
-        if diff > p.performances[c]:
+        if diff > p.performances[c.id]:
             return 0
-        elif diff <= q.performances[c]:
+        elif diff <= q.performances[c.id]:
             return 1
         else:
-            num = float(p.performances[c]-diff)
-            den = float(p.performances[c]-q.performances[c])
+            num = float(p.performances[c.id]-diff)
+            den = float(p.performances[c.id]-q.performances[c.id])
             return num/den
 
     def __concordance(self, x, y, clist, q, p):
@@ -40,18 +40,18 @@ class electre_tri:
 
     def __partial_discordance(self, x, y, c, p, v):
         # compute g_j(b) - g_j(a)
-        diff = (y.performances[c]-x.performances[c])*c.direction
+        diff = (y.performances[c.id]-x.performances[c.id])*c.direction
 
         # compute d_j(a,b)
-        if v.performances.has_key(c) == False:
+        if v.performances.has_key(c.id) == False:
             return 0
-        elif diff > v.performances[c]:
+        elif diff > v.performances[c.id]:
             return 1
-        elif diff <= p.performances[c]:
+        elif diff <= p.performances[c.id]:
             return 0
         else:
-            num = float(v.performances[c]-diff)
-            den = float(v.performances[c]-p.performances[c])
+            num = float(v.performances[c.id]-diff)
+            den = float(v.performances[c.id]-p.performances[c.id])
             return num/den
 
     def __credibility(self, x, y, clist, q, p, v):
@@ -101,7 +101,7 @@ class electre_tri:
                 if outr != "S" and outr != "I":
                     category -= 1
 
-            affectations[action_perfs.alternative] = category
+            affectations[action_perfs.alternative_id] = category
 
         return affectations
 
@@ -115,6 +115,6 @@ class electre_tri:
                 if outr != "-":
                     category += 1
 
-            affectations[action_perfs.alternative] = category
+            affectations[action_perfs.alternative_id] = category
 
         return affectations

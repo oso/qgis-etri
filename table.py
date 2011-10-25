@@ -276,7 +276,7 @@ class qt_performance_table(QtGui.QTableWidget):
 
         if alternatives is not None and pt is not None:
             for alternative in alternatives:
-                    self.add(alternative, pt(alternative))
+                self.add(alternative, pt(alternative))
 
         self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
                      self.__cell_changed)
@@ -325,8 +325,8 @@ class qt_performance_table(QtGui.QTableWidget):
         performances = alt_perfs.performances
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            if performances.has_key(crit):
-                 item.setText(str(performances[crit]))
+            if performances.has_key(crit.id):
+                 item.setText(str(performances[crit.id]))
             self.setItem(row, col, item)
         self.row_altp[row] = alt_perfs
 

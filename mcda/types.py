@@ -231,17 +231,17 @@ class alternative_performances():
         self.performances = performances
 
     def __call__(self, criterion):
-        return self.performances[criterion]
+        return self.performances[criterion.id]
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativePerformances')
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
         altid.text = self.alternative_id 
 
-        for crit, val in self.performances.iteritems():
+        for crit_id, val in self.performances.iteritems():
             perf = ElementTree.SubElement(xmcda, 'performance')
             critid = ElementTree.SubElement(perf, 'criterionID')
-            critid.text = crit.id
+            critid.text = crit_id
             value = ElementTree.SubElement(perf, 'value')
             p = marshal(val)
             value.append(p)
