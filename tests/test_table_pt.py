@@ -80,7 +80,7 @@ def add_alternative():
     if ok and not string.isEmpty():
         name = str(string.toUtf8())
         alt = action(name, name)
-        alt_perfs = alternative_performances(alt)
+        alt_perfs = alternative_performances(alt.id)
         pt_table.add(alt, alt_perfs)
         a.append(alt)
         pt.append(alt_perfs)

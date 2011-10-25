@@ -198,12 +198,12 @@ class performance_table(list):
 
     def __call__(self, alternative, criterion=None):
         for altp in self:
-            if altp.alternative == alternative:
+            if altp.alternative_id == alternative.id:
                 alt_perfs = altp
                 break
 
         if alt_perfs is None:
-            raise KeyError, "Alternative %si not found" % alternative
+            raise KeyError, "Alternative %s not found" % alternative
 
         if criterion is None:
             return alt_perfs
@@ -212,7 +212,7 @@ class performance_table(list):
 
     def has_alternative(self, alternative):
         for altp in self:
-            if altp.alternative == alternative:
+            if altp.alternative_id == alternative.id:
                 return True
 
         return False
@@ -226,8 +226,8 @@ class performance_table(list):
 
 class alternative_performances():
 
-    def __init__(self, alternative, performances={}):
-        self.alternative = alternative
+    def __init__(self, alternative_id, performances={}):
+        self.alternative_id = alternative_id
         self.performances = performances
 
     def __call__(self, criterion):
@@ -236,7 +236,7 @@ class alternative_performances():
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativePerformances')
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
-        altid.text = self.alternative.id 
+        altid.text = self.alternative_id 
 
         for crit, val in self.performances.iteritems():
             perf = ElementTree.SubElement(xmcda, 'performance')
