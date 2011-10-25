@@ -246,6 +246,8 @@ class alternative_performances():
             p = marshal(val)
             value.append(p)
 
+        return xmcda
+
 class threshold(action):
     pass
 
