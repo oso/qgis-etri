@@ -196,7 +196,6 @@ class action:
 
 class performance_table(list):
 
-    # FIXME: remove __call__?
     def __call__(self, alternative, criterion=None):
         for altp in self:
             if altp.alternative == alternative:
@@ -210,17 +209,6 @@ class performance_table(list):
             return alt_perfs
         else:
             return alt_perfs(criterion)
-
-    def __getitem__(self, alternative):
-        for altp in self:
-            if altp.alternative == alternative:
-                alt_perfs = altp
-                break
-
-        if alt_perfs is None:
-            raise KeyError, "Alternative %si not found" % alternative
-
-        return alt_perfs
 
     def has_alternative(self, alternative):
         for altp in self:
@@ -238,7 +226,7 @@ class performance_table(list):
 
 class alternative_performances():
 
-    def __init__(self, alternative, performances):
+    def __init__(self, alternative, performances={}):
         self.alternative = alternative
         self.performances = performances
 
