@@ -273,8 +273,7 @@ class qt_performance_table(QtGui.QTableWidget):
         self.setItemDelegate(float_delegate(self))
 
         if criteria is not None:
-            for criterion in criteria:
-                self.add_criterion(criterion)
+            self.add_criteria(criteria)
 
         if alternatives is not None and pt is not None:
             for alternative in alternatives:
@@ -287,6 +286,10 @@ class qt_performance_table(QtGui.QTableWidget):
         self.clear()
         self.setRowCount(0)
         self.setColumnCount(0)
+
+    def add_criteria(self, criteria):
+        for crit in criteria:
+            self.add_criterion(crit)
 
     def add_criterion(self, criterion):
         col = self.columnCount()
