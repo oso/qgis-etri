@@ -139,6 +139,18 @@ class alternatives(list):
             root2.append(perf)
         return (root, root2)
 
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'alternatives':
+            alternatives = xmcda
+        else:
+            alternatives = xmcda.find('.//alternatives')
+
+        tag_list = alternatives.getiterator('alternative')
+        for tag in tag_list:
+            alt = alternative(0)
+            alt.from_xmcda(tag)
+            self.append(alt)
+
 class alternative:
 
     def __init__(self, id=None, name=None, performances=None, disabled=None):
@@ -193,6 +205,23 @@ class alternative:
             xmcda2 = None
 
         return (xmcda, xmcda2)
+
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'alternative':
+            alternative = xmcda
+        else:
+            alternative = xmcda.find('.//alternative')
+
+        self.id = alternative.get('id')
+        name = alternative.get('name')
+        if name:
+            self.name = name
+
+        active = alternative.find('active')
+        if active is not None and active.text == 'false':
+            self.active = False
+        else:
+            self.active = True
 
 class performance_table(list):
 
