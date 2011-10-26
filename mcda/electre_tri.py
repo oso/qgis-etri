@@ -1,5 +1,3 @@
-from mcda.types import criterion, action, profile
-
 class electre_tri:
 
     def __init__(self, criteria, actions, pt, profiles, lbda):
