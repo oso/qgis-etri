@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda.types import criterion
+from mcda.types import alternatives, criteria, performance_table
 from table import qt_performance_table 
 from xml.etree import ElementTree
 
@@ -52,9 +52,11 @@ def save_to_xmcda():
     if fname:
         root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
         pt_xmcda = pt.to_xmcda()
-        root.append(pt_xmcda)
         criteria_xmcda = c.to_xmcda()
+        alternatives_xmcda = a.to_xmcda()[0]
+        root.append(pt_xmcda)
         root.append(criteria_xmcda)
+        root.append(alternatives_xmcda)
         indent(root)
         ElementTree.ElementTree(root).write(fname, xml_declaration=True,
                                             encoding='utf-8', method='xml')
@@ -69,17 +71,24 @@ def load_from_xmcda():
         root = tree.getroot()
         ElementTree.dump(root)
 
+        a = alternatives()
+        a.from_xmcda(root)
+
         c = criteria()
         c.from_xmcda(root, root)
 
+        pt = performance_table()
+        pt.from_xmcda(root)
+
         pt_table.reset_table()
         pt_table.add_criteria(c)
+        pt_table.add_pt(a, pt)
 
 def add_alternative():
     string, ok = QtGui.QInputDialog.getText(None, "Add alternative", "Alternative name")
     if ok and not string.isEmpty():
         name = str(string.toUtf8())
-        alt = action(name, name)
+        alt = alternative(name, name)
         alt_perfs = alternative_performances(alt.id)
         pt_table.add(alt, alt_perfs)
         a.append(alt)
