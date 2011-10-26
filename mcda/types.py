@@ -128,7 +128,7 @@ class criterion:
             if value is not None:
                 self.weight = unmarshal(value.getchildren()[0])
 
-class actions(list):
+class alternatives(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('alternatives')
@@ -139,7 +139,7 @@ class actions(list):
             root2.append(perf)
         return (root, root2)
 
-class action:
+class alternative:
 
     def __init__(self, id=None, name=None, performances=None, disabled=None):
         self.id = id
@@ -280,14 +280,14 @@ class alternative_performances():
             crit_val = unmarshal(value.getchildren()[0])
             self.performances[crit_id] = crit_val
 
-class threshold(action):
+class threshold(alternative):
     pass
 
-class profile(action):
+class profile(alternative):
 
     def __init__(self, id=None, name=None, performances=None,
                  indifference=None, preference=None, veto=None):
-        action.__init__(self, id, name, performances)
+        alternative.__init__(self, id, name, performances)
         self.indifference = indifference
         self.preference = preference
         self.veto = veto

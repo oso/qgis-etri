@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from mcda.types import criterion, criteria, action, actions, profile, threshold, alternative_performances, performance_table
+from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold, alternative_performances, performance_table
 
 # Criteria
 prix = criterion('prix', 'prix', 0, -1, 25)
@@ -12,14 +12,14 @@ competition = criterion('competition', 'competition', 0, 1, 8)
 c = criteria([ prix, transport, envir, residents, competition ])
 
 # Actions
-a1 = action('a1', 'a1')
-a2 = action('a2', 'a2')
-a3 = action('a3', 'a3')
-a4 = action('a4', 'a4')
-a5 = action('a5', 'a5')
-a6 = action('a6', 'a6')
-a7 = action('a7', 'a7')
-a = actions([ a1, a2, a3, a4, a5, a6, a7 ])
+a1 = alternative('a1', 'a1')
+a2 = alternative('a2', 'a2')
+a3 = alternative('a3', 'a3')
+a4 = alternative('a4', 'a4')
+a5 = alternative('a5', 'a5')
+a6 = alternative('a6', 'a6')
+a7 = alternative('a7', 'a7')
+a = alternatives([ a1, a2, a3, a4, a5, a6, a7 ])
 
 # Performance table
 p1 = alternative_performances('a1', {'prix': 120, 'transport':  284, 'envir': 5, 'residents': 3.5, 'competition': 18})
