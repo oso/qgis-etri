@@ -275,8 +275,7 @@ class qt_performance_table(QtGui.QTableWidget):
             self.add_criteria(criteria)
 
         if alternatives is not None and pt is not None:
-            for alternative in alternatives:
-                self.add(alternative, pt(alternative))
+            self.add_pt(alternatives, pt)
 
         self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
                      self.__cell_changed)
@@ -310,6 +309,10 @@ class qt_performance_table(QtGui.QTableWidget):
     def disable_criterion(self, criterion):
         self.setColumnHidden(self.__get_criterion_col(criterion),
                              criterion.disabled)
+
+    def add_pt(self, alternatives, pt):
+        for alternative in alternatives:
+            self.add(alternative, pt(alternative))
 
     def add(self, alternative, alt_perfs):
         row = self.rowCount()
