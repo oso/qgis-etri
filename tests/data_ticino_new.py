@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold, alternative_performances, performance_table
+from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table
 
 # Criteria
 prix = criterion('prix', 'prix', 0, -1, 25)
@@ -36,9 +36,9 @@ b1 = {'prix': 100, 'transport': 1000, 'envir': 4, 'residents': 4, 'competition':
 b2 = {'prix':  50, 'transport':  500, 'envir': 7, 'residents': 7, 'competition': 20}
 
 # Indifference, Preference and Veto
-q = threshold('q', 'indifference',  {'prix': 15,  'transport':  80, 'envir': 1, 'residents': 0.5, 'competition': 1})
-p = threshold('p', 'preference', {'prix': 40, 'transport': 350, 'envir': 3, 'residents': 3.5, 'competition': 5})
-v = threshold('v', 'veto', {'prix': 100, 'transport': 850, 'envir': 5, 'residents': 4.5, 'competition': 8})
+q = threshold_old('q', 'indifference',  {'prix': 15,  'transport':  80, 'envir': 1, 'residents': 0.5, 'competition': 1})
+p = threshold_old('p', 'preference', {'prix': 40, 'transport': 350, 'envir': 3, 'residents': 3.5, 'competition': 5})
+v = threshold_old('v', 'veto', {'prix': 100, 'transport': 850, 'envir': 5, 'residents': 4.5, 'competition': 8})
 
 # Profiles
 prof1 = profile('p1', 'profile_down', b1, q, p, v)

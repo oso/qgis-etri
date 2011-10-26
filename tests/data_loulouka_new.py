@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys 
 sys.path.insert(0, "..")
-from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold, alternative_performances, performance_table
+from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table
 
 # Weights
 g1 = criterion('g1', 'g1', 0, 1, 0.02)
@@ -246,7 +246,7 @@ a224 = alternative('a224')
 a225 = alternative('a225')
 a226 = alternative('a226')
 a227 = alternative('a227')
-a228 = action('a228')
+a228 = alternative('a228')
 
 a = alternatives([ a0, a1, a2, a3, a4, a5, a6, a7,
               a8, a9, a10, a11, a12, a13, a14, a15,
@@ -545,9 +545,9 @@ b2 = {'g1': 2, 'g2': 2, 'g3': 2, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 4, 'g
 b3 = {'g1': 2, 'g2': 3, 'g3': 3, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 5, 'g9': 3, 'g10': 3, 'g11': 5}
 
 # Indifference, Preference and Veto
-q = threshold('q', 'indifference', {'g1':0, 'g2':0, 'g3': 0, 'g4':0, 'g5':0, 'g6':0, 'g7':0, 'g8':0, 'g9':0, 'g10':0, 'g11':0})
-p = threshold('p', 'preference', {'g1':1, 'g2':1, 'g3': 1, 'g4':1, 'g5':1, 'g6':1, 'g7':1, 'g8':1, 'g9':1, 'g10':2, 'g11':1})
-v = threshold('v', 'veto', {'g11':4})
+q = threshold_old('q', 'indifference', {'g1':0, 'g2':0, 'g3': 0, 'g4':0, 'g5':0, 'g6':0, 'g7':0, 'g8':0, 'g9':0, 'g10':0, 'g11':0})
+p = threshold_old('p', 'preference', {'g1':1, 'g2':1, 'g3': 1, 'g4':1, 'g5':1, 'g6':1, 'g7':1, 'g8':1, 'g9':1, 'g10':2, 'g11':1})
+v = threshold_old('v', 'veto', {'g11':4})
 
 # Profiles
 prof1 = profile('p1', 'profile_down', b1, q, p, v)

@@ -309,7 +309,7 @@ class alternative_performances():
             crit_val = unmarshal(value.getchildren()[0])
             self.performances[crit_id] = crit_val
 
-class threshold(alternative):
+class threshold_old(alternative):
     pass
 
 class profile(alternative):
