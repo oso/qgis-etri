@@ -197,6 +197,7 @@ class action:
 class performance_table(list):
 
     def __call__(self, alternative, criterion=None):
+        alt_perfs = None
         for altp in self:
             if altp.alternative_id == alternative.id:
                 alt_perfs = altp
@@ -224,14 +225,29 @@ class performance_table(list):
             root.append(xmcda)
         return root
 
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'performanceTable':
+            pt = xmcda
+        else:
+            pt = xmcda.find('.//performanceTable')
+
+        tag_list = pt.getiterator('alternativePerformances')
+        for tag in tag_list:
+            altp = alternative_performances(0, {})
+            altp.from_xmcda(tag)
+            self.append(altp)
+
 class alternative_performances():
 
-    def __init__(self, alternative_id, performances={}):
+    def __init__(self, alternative_id, performances):
         self.alternative_id = alternative_id
         self.performances = performances
 
     def __call__(self, criterion):
         return self.performances[criterion.id]
+
+    def __repr__(self):
+        return "%s: %s" % (self.alternative_id, self.performances)
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativePerformances')
@@ -247,6 +263,22 @@ class alternative_performances():
             value.append(p)
 
         return xmcda
+
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'alternativePerformances':
+            altp = xmcda
+        else:
+            altp = xmcda.find('.//alternativePerformances')
+
+        altid = altp.find('.//alternativeID')
+        self.alternative_id = altid.text
+
+        tag_list = altp.getiterator('performance')
+        for tag in tag_list:
+            crit_id = tag.find('.//criterionID').text
+            value = tag.find('.//value')
+            crit_val = unmarshal(value.getchildren()[0])
+            self.performances[crit_id] = crit_val
 
 class threshold(action):
     pass
