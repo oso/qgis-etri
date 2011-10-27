@@ -595,17 +595,17 @@ p_g11 = threshold('p', 'preference', constant('p11', 1))
 v_g11 = threshold('v', 'veto', constant('v11', 4))
 
 # Thresholds by criterion
-t_g1 = thresholds([q_g1, p_g1])
-t_g2 = thresholds([q_g2, p_g2])
-t_g3 = thresholds([q_g3, p_g3])
-t_g4 = thresholds([q_g4, p_g4])
-t_g5 = thresholds([q_g5, p_g5])
-t_g6 = thresholds([q_g6, p_g6])
-t_g7 = thresholds([q_g7, p_g7])
-t_g8 = thresholds([q_g8, p_g8])
-t_g9 = thresholds([q_g9, p_g9])
-t_g10 = thresholds([q_g10, p_g10])
-t_g11 = thresholds([q_g11, p_g11, v_g11])
+g1.thresholds = thresholds([q_g1, p_g1])
+g2.thresholds = thresholds([q_g2, p_g2])
+g3.thresholds = thresholds([q_g3, p_g3])
+g4.thresholds = thresholds([q_g4, p_g4])
+g5.thresholds = thresholds([q_g5, p_g5])
+g6.thresholds = thresholds([q_g6, p_g6])
+g7.thresholds = thresholds([q_g7, p_g7])
+g8.thresholds = thresholds([q_g8, p_g8])
+g9.thresholds = thresholds([q_g9, p_g9])
+g10.thresholds = thresholds([q_g10, p_g10])
+g11.thresholds = thresholds([q_g11, p_g11, v_g11])
 
 # Lambda
 lbda = 0.76

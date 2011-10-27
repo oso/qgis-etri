@@ -75,11 +75,11 @@ v_residents = threshold('v', 'veto', constant('v4', 4.5))
 v_competition = threshold('v', 'veto', constant('v5', 8))
 
 # Thresholds by criterion
-t_prix = thresholds([q_prix, p_prix, v_prix])
-t_transport = thresholds([q_transport, p_transport, v_transport])
-t_envir = thresholds([q_envir, p_envir, v_envir])
-t_residents = thresholds([q_residents, p_residents, v_residents])
-t_competition = thresholds([q_competition, p_competition, v_competition])
+prix.thresholds = thresholds([q_prix, p_prix, v_prix])
+transport.thresholds = thresholds([q_transport, p_transport, v_transport])
+envir.thresholds = thresholds([q_envir, p_envir, v_envir])
+residents.thresholds = thresholds([q_residents, p_residents, v_residents])
+competition.thresholds = thresholds([q_competition, p_competition, v_competition])
 
 # Affecations
 affect_p = {'a1': 2, 'a2': 1, 'a3': 2, 'a4': 3, 'a5': 1, 'a6': 2, 'a7':2}
