@@ -46,17 +46,14 @@ class criterion:
     DISABLED = 1
     ENABLED = 0
 
-    def __init__(self, id, name=None, disabled=None, direction=None,
-                 weight=None):
+    def __init__(self, id, name=None, disabled=False, direction=1,
+                 weight=None, thresholds=None):
         self.id = id
         self.name = name
-        if disabled == None:
-            disabled = False
         self.disabled = disabled
-        if direction == None:
-            direction = 1
         self.direction = direction
         self.weight = weight
+        self.thresholds = thresholds
 
     def __repr__(self):
         if self.name is not None:
@@ -88,6 +85,10 @@ class criterion:
             value = ElementTree.SubElement(crit_val, 'value')
             weight = marshal(self.weight)
             value.append(weight)
+
+        if self.thresholds:
+            thresholds = self.thresholds.to_xmcda()
+            xmcda.append(thresholds)
 
         return xmcda
 
