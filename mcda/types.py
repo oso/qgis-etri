@@ -355,7 +355,7 @@ class constant():
     def to_xmcda(self):
         xmcda = ElementTree.Element('constant')
         value = marshal(self.value)
-        value.append(value)
+        xmcda.append(value)
         return xmcda
 
 class thresholds(list):
