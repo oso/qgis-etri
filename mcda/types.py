@@ -375,13 +375,90 @@ class threshold():
         self.values = values
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('threshold')
+        xmcda = ElementTree.Element('threshold', self.id)
         if self.name is not None:
             xmcda.set('name', self.name)
 
         values = self.values.to_xmcda()
         xmcda.append(values)
 
+        return xmcda
+
+class categories(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('categories')
+        for category in self:
+            xmcda = category.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class category():
+
+    def __init__(self, id, name=None, disabled=False, rank=None):
+        self.id = id
+        self.name = name
+        self.disabled = disabled
+        self.rank = rank
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('threshold', self.id)
+        if self.name is not None:
+            xmcda.set('name', self.name)
+
+        active = ElementTree.SubElement(xmcda, 'active')
+        if self.disabled == False:
+            active.text = 'true'
+        else:
+            active.text = 'false'
+
+        rank = ElementTree.SubElement(xmcda, 'rank')
+        rank.text = marshal(self.rank)
+
+        return xmcda
+
+class limits():
+
+    def __init__(self, lower=None, upper=None):
+        self.lower = lower
+        self.upper  = upper
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('limits')
+
+        if self.lower:
+            lower = ElementTree.SubElement(xmcda, 'lowerCategory')
+            catid = ElementTree.SubElement(lower, 'categoryID')
+            catid.text = lower
+
+        if self.upper:
+            upper = ElementTree.SubElement(xmcda, 'upperCategory')
+            catid = ElementTree.SubElement(upper, 'categoryID')
+            catid.text = upper
+
+        return xmcda
+
+class categories_profiles(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('categoriesProfiles')
+        for category_profile in self:
+            xmcda = category_profile.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class category_profile():
+
+    def __init__(self, alternative_id, value):
+        self.alternative_id = value
+        self.value = value
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('categoryProfile')
+        altid = ElementTree.SubElement(xmcda, 'alternativeID')
+        altid.text = self.alternative_id
+        value = self.value.to_xmcda()
+        xmcda.append(value)
         return xmcda
 
 class threshold_old(alternative):
