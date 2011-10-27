@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
-from table import criteria_table, profiles_table, threshold_table
+from table import criteria_table, qt_performance_table, threshold_table
 
 crit_table = None
 prof_table = None
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
     crit_table = criteria_table(None, c)
-    prof_table = profiles_table(None, c, profiles)
+    prof_table = qt_performance_table(None, c, b, ptb)
 
     indif_table = threshold_table(None, c)
     pref_table = threshold_table(None, c)

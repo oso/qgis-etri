@@ -48,6 +48,7 @@ profiles = [ prof1, prof2 ]
 # Reference actions
 b1 = alternative('b1')
 b2 = alternative('b2')
+b = alternatives([b1, b2])
 
 # Performance table of reference actions
 pb1 = alternative_performances('b1', {'prix': 100, 'transport': 1000, 'envir': 4, 'residents': 4, 'competition': 15})

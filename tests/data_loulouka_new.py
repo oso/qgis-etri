@@ -559,6 +559,7 @@ profiles = [ prof1, prof2, prof3 ]
 b1 = alternative('b1')
 b2 = alternative('b2')
 b3 = alternative('b3')
+b = alternatives([b1, b2, b3])
 
 # Performance table of reference actions
 pb1 = alternative_performances('b1', {'g1': 1, 'g2': 2, 'g3': 1, 'g4': 1, 'g5': 1, 'g6': 1, 'g7': 2, 'g8': 4, 'g9': 1, 'g10': 1, 'g11': 1})
