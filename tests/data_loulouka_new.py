@@ -564,6 +564,7 @@ b3 = alternative('b3')
 pb1 = alternative_performances('b1', {'g1': 1, 'g2': 2, 'g3': 1, 'g4': 1, 'g5': 1, 'g6': 1, 'g7': 2, 'g8': 4, 'g9': 1, 'g10': 1, 'g11': 1})
 pb2 = alternative_performances('b2', {'g1': 2, 'g2': 2, 'g3': 2, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 4, 'g9': 2, 'g10': 3, 'g11': 4})
 pb3 = alternative_performances('b3', {'g1': 2, 'g2': 3, 'g3': 3, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 5, 'g9': 3, 'g10': 3, 'g11': 5})
+ptb = performance_table([pb1, pb2, pb3])
 
 # Indifference thresholds
 q_g1 = threshold('q', 'indifference', constant('q1', 0))

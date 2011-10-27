@@ -52,6 +52,7 @@ b2 = alternative('b2')
 # Performance table of reference actions
 pb1 = alternative_performances('b1', {'prix': 100, 'transport': 1000, 'envir': 4, 'residents': 4, 'competition': 15})
 pb2 = alternative_performances('b2', {'prix':  50, 'transport':  500, 'envir': 7, 'residents': 7, 'competition': 20})
+ptb = performance_table([pb1, pb2])
 
 # Indifference threshold
 q_prix = threshold('q', 'indifference', constant('q1', 15))
