@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys 
 sys.path.insert(0, "..")
-from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table
+from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table, threshold, thresholds, constant
 
 # Weights
 g1 = criterion('g1', 'g1', 0, 1, 0.02)
@@ -539,21 +539,73 @@ pt = performance_table([ p0, p1, p2, p3, p4, p5, p6, p7,
               p216, p217, p218, p219, p220, p221, p222, p223,
               p224, p225, p226, p227, p228 ])
 
-# Reference actions
-b1 = {'g1': 1, 'g2': 2, 'g3': 1, 'g4': 1, 'g5': 1, 'g6': 1, 'g7': 2, 'g8': 4, 'g9': 1, 'g10': 1, 'g11': 1}
-b2 = {'g1': 2, 'g2': 2, 'g3': 2, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 4, 'g9': 2, 'g10': 3, 'g11': 4}
-b3 = {'g1': 2, 'g2': 3, 'g3': 3, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 5, 'g9': 3, 'g10': 3, 'g11': 5}
+# FIXME: Reference actions
+b1_old = {'g1': 1, 'g2': 2, 'g3': 1, 'g4': 1, 'g5': 1, 'g6': 1, 'g7': 2, 'g8': 4, 'g9': 1, 'g10': 1, 'g11': 1}
+b2_old = {'g1': 2, 'g2': 2, 'g3': 2, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 4, 'g9': 2, 'g10': 3, 'g11': 4}
+b3_old = {'g1': 2, 'g2': 3, 'g3': 3, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 5, 'g9': 3, 'g10': 3, 'g11': 5}
 
-# Indifference, Preference and Veto
-q = threshold_old('q', 'indifference', {'g1':0, 'g2':0, 'g3': 0, 'g4':0, 'g5':0, 'g6':0, 'g7':0, 'g8':0, 'g9':0, 'g10':0, 'g11':0})
-p = threshold_old('p', 'preference', {'g1':1, 'g2':1, 'g3': 1, 'g4':1, 'g5':1, 'g6':1, 'g7':1, 'g8':1, 'g9':1, 'g10':2, 'g11':1})
-v = threshold_old('v', 'veto', {'g11':4})
+# FIXME: Indifference, Preference and Veto
+q_old = threshold_old('q', 'indifference', {'g1':0, 'g2':0, 'g3': 0, 'g4':0, 'g5':0, 'g6':0, 'g7':0, 'g8':0, 'g9':0, 'g10':0, 'g11':0})
+p_old = threshold_old('p', 'preference', {'g1':1, 'g2':1, 'g3': 1, 'g4':1, 'g5':1, 'g6':1, 'g7':1, 'g8':1, 'g9':1, 'g10':2, 'g11':1})
+v_old = threshold_old('v', 'veto', {'g11':4})
 
-# Profiles
-prof1 = profile('p1', 'profile_down', b1, q, p, v)
-prof2 = profile('p2', 'profile_middle', b2, q, p, v)
-prof3 = profile('p3', 'profile_up', b3, q, p, v)
+# FIXME: Profiles
+prof1 = profile('p1', 'profile_down', b1_old, q_old, p_old, v_old)
+prof2 = profile('p2', 'profile_middle', b2_old, q_old, p_old, v_old)
+prof3 = profile('p3', 'profile_up', b3_old, q_old, p_old, v_old)
 profiles = [ prof1, prof2, prof3 ]
+
+# Reference actions
+b1 = alternative('b1')
+b2 = alternative('b2')
+b3 = alternative('b3')
+
+# Performance table of reference actions
+pb1 = alternative_performances('b1', {'g1': 1, 'g2': 2, 'g3': 1, 'g4': 1, 'g5': 1, 'g6': 1, 'g7': 2, 'g8': 4, 'g9': 1, 'g10': 1, 'g11': 1})
+pb2 = alternative_performances('b2', {'g1': 2, 'g2': 2, 'g3': 2, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 4, 'g9': 2, 'g10': 3, 'g11': 4})
+pb3 = alternative_performances('b3', {'g1': 2, 'g2': 3, 'g3': 3, 'g4': 2, 'g5': 3, 'g6': 1, 'g7': 3, 'g8': 5, 'g9': 3, 'g10': 3, 'g11': 5})
+
+# Indifference thresholds
+q_g1 = threshold('q', 'indifference', constant('q1', 0))
+q_g2 = threshold('q', 'indifference', constant('q2', 0))
+q_g3 = threshold('q', 'indifference', constant('q3', 0))
+q_g4 = threshold('q', 'indifference', constant('q4', 0))
+q_g5 = threshold('q', 'indifference', constant('q5', 0))
+q_g6 = threshold('q', 'indifference', constant('q6', 0))
+q_g7 = threshold('q', 'indifference', constant('q7', 0))
+q_g8 = threshold('q', 'indifference', constant('q8', 0))
+q_g9 = threshold('q', 'indifference', constant('q9', 0))
+q_g10 = threshold('q', 'indifference', constant('q10',0))
+q_g11 = threshold('q', 'indifference', constant('q11', 0))
+
+# Preference thresholds
+p_g1 = threshold('p', 'preference', constant('p1', 1))
+p_g2 = threshold('p', 'preference', constant('p2', 1))
+p_g3 = threshold('p', 'preference', constant('p3', 1))
+p_g4 = threshold('p', 'preference', constant('p4', 1))
+p_g5 = threshold('p', 'preference', constant('p5', 1))
+p_g6 = threshold('p', 'preference', constant('p6', 1))
+p_g7 = threshold('p', 'preference', constant('p7', 1))
+p_g8 = threshold('p', 'preference', constant('p8', 1))
+p_g9 = threshold('p', 'preference', constant('p9', 1))
+p_g10 = threshold('p', 'preference', constant('p10', 2))
+p_g11 = threshold('p', 'preference', constant('p11', 1))
+
+# Veto thresholds
+v_g11 = threshold('v', 'veto', constant('v11', 4))
+
+# Thresholds by criterion
+t_g1 = thresholds([q_g1, p_g1])
+t_g2 = thresholds([q_g2, p_g2])
+t_g3 = thresholds([q_g3, p_g3])
+t_g4 = thresholds([q_g4, p_g4])
+t_g5 = thresholds([q_g5, p_g5])
+t_g6 = thresholds([q_g6, p_g6])
+t_g7 = thresholds([q_g7, p_g7])
+t_g8 = thresholds([q_g8, p_g8])
+t_g9 = thresholds([q_g9, p_g9])
+t_g10 = thresholds([q_g10, p_g10])
+t_g11 = thresholds([q_g11, p_g11, v_g11])
 
 # Lambda
 lbda = 0.76

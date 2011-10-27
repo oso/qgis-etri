@@ -65,7 +65,9 @@ class criterion:
             return "%s" % self.id
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('criterion', id=self.id, name=self.name)
+        xmcda = ElementTree.Element('criterion', id=self.id)
+        if self.name is not None:
+            xmcda.set('name', self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
         if self.disabled == False:
@@ -178,8 +180,9 @@ class alternative:
         return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('alternative', id=self.id,
-                                    name=self.name)
+        xmcda = ElementTree.Element('alternative', id=self.id)
+        if self.name is not None:
+            xmcda.set('name', self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
         if self.disabled == False:
@@ -232,6 +235,7 @@ class performance_table(list):
                 alt_perfs = altp
                 break
 
+        # FIXME: to remove
         if alt_perfs is None:
             raise KeyError, "Alternative %s not found" % alternative
 
@@ -308,6 +312,76 @@ class alternative_performances():
             value = tag.find('.//value')
             crit_val = unmarshal(value.getchildren()[0])
             self.performances[crit_id] = crit_val
+
+class points(list):
+
+    def __call__(self, id):
+        p = None
+        for point in self:
+            if point.id == id:
+                p = point
+
+        return p
+
+    def to_xmcda(self):
+        root = ElementTree.Element('points')
+        for point in self:
+            xmcda = point.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class point():
+
+    def __init__(self, id, abscissa, ordinate):
+        self.id = id
+        self.abscissa = abscissa
+        self.ordinate = ordinate
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('point')
+        abscissa = ElementTree.SubElement('abscissa')
+        abscissa.append(marshal(self.abscissa))
+        ordinate = ElementTree.SubElement('ordinate')
+        ordinate.append(marshal(self.ordinate))
+        return xmcda
+
+class constant():
+
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('constant')
+        value = marshal(self.value)
+        value.append(value)
+        return xmcda
+
+class thresholds(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('thresholds')
+        for threshold in self:
+            xmcda = threshold.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class threshold():
+
+    def __init__(self, id, name=None, values=None):
+        self.id = id
+        self.name = name
+        self.values = values
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('threshold')
+        if self.name is not None:
+            xmcda.set('name', self.name)
+
+        values = self.values.to_xmcda()
+        xmcda.append(values)
+
+        return xmcda
 
 class threshold_old(alternative):
     pass
