@@ -40,7 +40,11 @@ def criterion_state_changed(criterion):
 def add_tab(tabs, table, name):
     tab = QtGui.QWidget()
     layout = QtGui.QVBoxLayout(tab)
-    layout.addWidget(table)
+    if isinstance(table, list):
+        for t in table:
+            layout.addWidget(t)
+    else:
+        layout.addWidget(table)
     tabs.addTab(tab, name)
 
 def save_dialog_box():
@@ -89,10 +93,9 @@ if __name__ == "__main__":
     veto_table.add_threshold('v', 'v')
 
     tabs = QtGui.QTabWidget()
-    add_tab(tabs, prof_table, "Profiles")
-    add_tab(tabs, indif_table, "Indifference")
-    add_tab(tabs, pref_table, "Preference")
-    add_tab(tabs, veto_table, "Veto")
+    add_tab(tabs, crit_table, "Criteria")
+    add_tab(tabs, prof_table, "Categories")
+    add_tab(tabs, [indif_table, pref_table, veto_table], "Thresholds")
 
     button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
 
@@ -110,7 +113,6 @@ if __name__ == "__main__":
     print "Criteria enabled:", crit_table.criteria_enabled
 
     layout = QtGui.QVBoxLayout()
-    layout.addWidget(crit_table)
     layout.addWidget(tabs)
     layout.addWidget(button_to_xmcda)
     dialog = QtGui.QDialog()
