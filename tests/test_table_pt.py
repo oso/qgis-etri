@@ -57,8 +57,8 @@ def save_to_xmcda():
         root.append(pt_xmcda)
         root.append(criteria_xmcda)
         root.append(alternatives_xmcda)
-        ElementTree.dump(root)
         indent(root)
+        ElementTree.dump(root)
         ElementTree.ElementTree(root).write(fname, xml_declaration=True,
                                             encoding='utf-8', method='xml')
 
