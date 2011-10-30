@@ -4,17 +4,17 @@ sys.path.insert(0, "..")
 from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table, threshold, thresholds, constant
 
 # Weights
-g1 = criterion('g1', 'g1', 0, 1, 0.02)
-g2 = criterion('g2', 'g2', 0, 1, 0.05)
-g3 = criterion('g3', 'g3', 0, 1, 0.06)
-g4 = criterion('g4', 'g4', 0, 1, 0.06)
-g5 = criterion('g5', 'g5', 0, 1, 0.07)
-g6 = criterion('g6', 'g6', 0, 1, 0.09)
-g7 = criterion('g7', 'g7', 0, 1, 0.09)
-g8 = criterion('g8', 'g8', 0, 1, 0.11)
-g9 = criterion('g9', 'g9', 0, 1, 0.13)
-g10 = criterion('g10', 'g10', 0, 1, 0.15)
-g11 = criterion('g11', 'g11', 0, 1, 0.17)
+g1 = criterion('g1', 'g1', False, 1, 0.02)
+g2 = criterion('g2', 'g2', False, 1, 0.05)
+g3 = criterion('g3', 'g3', False, 1, 0.06)
+g4 = criterion('g4', 'g4', False, 1, 0.06)
+g5 = criterion('g5', 'g5', False, 1, 0.07)
+g6 = criterion('g6', 'g6', False, 1, 0.09)
+g7 = criterion('g7', 'g7', False, 1, 0.09)
+g8 = criterion('g8', 'g8', False, 1, 0.11)
+g9 = criterion('g9', 'g9', False, 1, 0.13)
+g10 = criterion('g10', 'g10', False, 1, 0.15)
+g11 = criterion('g11', 'g11', False, 1, 0.17)
 c = criteria([ g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11 ])
 
 # Actions
