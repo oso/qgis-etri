@@ -360,12 +360,30 @@ class constant():
 
 class thresholds(list):
 
+    def __call__(self, id):
+        threshold = None
+        for t in self:
+            if t.id == id:
+                threshold = t
+
+        if threshold is None:
+            raise KeyError, "Threshold %s not found" % id
+
+        return threshold
+
     def to_xmcda(self):
         root = ElementTree.Element('thresholds')
         for t in self:
             xmcda = t.to_xmcda()
             root.append(xmcda)
         return root
+
+    def has_threshold(self, threshold_id):
+        for t in self:
+            if t.id == threshold_id:
+                return True
+
+        return False
 
 class threshold():
 

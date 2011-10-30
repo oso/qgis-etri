@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
-from table import criteria_table, qt_performance_table, threshold_table
+from table import criteria_table, qt_performance_table, qt_threshold_table
 
 crit_table = None
 prof_table = None
@@ -38,13 +38,13 @@ if __name__ == "__main__":
     crit_table = criteria_table(None, c)
     prof_table = qt_performance_table(None, c, b, ptb)
 
-    indif_table = threshold_table(None, c)
-    pref_table = threshold_table(None, c)
-    veto_table = threshold_table(None, c)
-    for profile in profiles:
-        indif_table.add(q)
-        pref_table.add(p)
-        veto_table.add(v)
+    indif_table = qt_threshold_table(None, c)
+    pref_table = qt_threshold_table(None, c)
+    veto_table = qt_threshold_table(None, c)
+
+    indif_table.add_threshold('q', 'q')
+    pref_table.add_threshold('p', 'p')
+    veto_table.add_threshold('v', 'v')
 
     tabs = QtGui.QTabWidget()
     add_tab(tabs, prof_table, "Profiles")

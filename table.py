@@ -1,6 +1,6 @@
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda.types import criterion
+from mcda.types import criterion, constant
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1
@@ -317,6 +317,7 @@ class qt_performance_table(QtGui.QTableWidget):
     def add(self, alternative, alt_perfs):
         row = self.rowCount()
         self.insertRow(row)
+
         item = QtGui.QTableWidgetItem()
         self.setVerticalHeaderItem(row, item)
         if alternative.name:
@@ -353,3 +354,97 @@ class qt_performance_table(QtGui.QTableWidget):
                                       "Alternative [%s] %s"
                                       % (alt.id, alt.name),
                                       "Invalid evaluation")
+
+class qt_threshold_table(QtGui.QTableWidget):
+
+    def __init__(self, parent=None, criteria=None):
+        super(QtGui.QTableWidget, self).__init__(parent)
+        self.parent = parent
+        self.col_crit = {}
+        self.row_threshid = {}
+
+        self.setItemDelegate(float_delegate(self)) 
+
+        if criteria is not None:
+            self.add_criteria(criteria)
+
+        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
+                     self.__cell_changed)
+
+    def reset_table(self):
+        self.clear()
+        self.setRowCount(0)
+        self.setColumnCount(0)
+
+    def add_criteria(self, criteria):
+        for crit in criteria:
+            self.add_criterion(crit)
+
+    def add_criterion(self, criterion):
+        col = self.columnCount()
+        self.insertColumn(col)
+        item = QtGui.QTableWidgetItem()
+        self.setHorizontalHeaderItem(col, item)
+        if criterion.name:
+            self.horizontalHeaderItem(col).setText(criterion.name)
+        else:
+            self.horizontalHeaderItem(col).setText(criterion.id)
+        if criterion.disabled:
+            self.setColumnHidden(col, True)
+        self.col_crit[col] = criterion
+
+    def __get_criterion_col(self, criterion):
+        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        return crit_col[criterion]
+
+    def disable_criterion(self, criterion):
+        self.setColumnHidden(self.__get_criterion_col(criterion),
+                             criterion.disabled)
+
+    def add_threshold(self, threshold_id, threshold_name):
+        row = self.rowCount()
+        self.insertRow(row)
+
+        item = QtGui.QTableWidgetItem()
+        self.setVerticalHeaderItem(row, item)
+        if threshold_name:
+            self.verticalHeaderItem(row).setText(threshold_name)
+        else:
+            self.verticalHeaderItem(row).setText(threshold_id)
+        self.row_threshid[row] = threshold_id 
+
+        for col, crit in self.col_crit.iteritems():
+            item = QtGui.QTableWidgetItem()
+            if crit.thresholds.has_threshold(threshold_id):
+                t = crit.thresholds(threshold_id)
+                # FIXME: handle the points
+                if isinstance(t.values, constant):
+                    item.setText(str(t.values.value))
+                else:
+                    raise TypeError, "Not handled by qt_threshold_table"
+            else:
+                item.setFlags(~QtCore.Qt.ItemIsEditable)
+            self.setItem(row, col, item)
+
+    def __cell_changed(self, row, col):
+        if self.col_crit.has_key(col) is False or   \
+            self.row_threshid.has_key(row) is False:
+            return
+
+        crit = self.col_crit[col]
+        thresholds = crit.thresholds
+        threshold_id = self.row_threshid[row]
+        threshold = thresholds(threshold_id)
+
+        item = self.cellWidget(row, col)
+        if item == None:
+            return
+
+        # FIXME: Handle other types than constant
+        try:
+            threshold.values.value = float(item.text())
+        except:
+            QtGui.QMessageBox.warning(self,
+                                          "Criterion [%s] %s"
+                                          % (crit.id, crit.name),
+                                          "Invalid threshold value")
