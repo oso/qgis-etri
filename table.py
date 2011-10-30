@@ -284,6 +284,9 @@ class qt_performance_table(QtGui.QTableWidget):
         self.clear()
         self.setRowCount(0)
         self.setColumnCount(0)
+        self.col_crit = {}
+        self.row_alt = {}
+        self.row_altp = {}
 
     def add_criteria(self, criteria):
         for crit in criteria:
@@ -298,7 +301,7 @@ class qt_performance_table(QtGui.QTableWidget):
             self.horizontalHeaderItem(col).setText(criterion.name)
         else:
             self.horizontalHeaderItem(col).setText(criterion.id)
-        if criterion.disabled:
+        if criterion.disabled is True:
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
 
@@ -348,7 +351,7 @@ class qt_performance_table(QtGui.QTableWidget):
             return
 
         try:
-            altp.performances[crit] = float(item.text())
+            altp.performances[crit.id] = float(item.text())
         except:
             QtGui.QMessageBox.warning(self,
                                       "Alternative [%s] %s"
