@@ -67,7 +67,7 @@ class criterion:
             xmcda.set('name', self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
-        if self.disabled == False:
+        if self.disabled is False:
             active.text = 'true'
         else:
             active.text = 'false'
@@ -98,9 +98,9 @@ class criterion:
                 crit = xmcda
             else:
                 crit = xmcda.find('.//criterion')
-            id = crit.get('id')
-            if id is not None:
-                self.id = id
+            c_id = crit.get('id')
+            if c_id is not None:
+                self.id = c_id
             name = crit.get('name')
             if name is not None:
                 self.name = name
@@ -186,7 +186,7 @@ class alternative:
             xmcda.set('name', self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
-        if self.disabled == False:
+        if self.disabled is False:
             active.text = 'true'
         else:
             active.text = 'false'
@@ -326,8 +326,8 @@ class points(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('points')
-        for point in self:
-            xmcda = point.to_xmcda()
+        for p in self:
+            xmcda = p.to_xmcda()
             root.append(xmcda)
         return root
 
@@ -362,8 +362,8 @@ class thresholds(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('thresholds')
-        for threshold in self:
-            xmcda = threshold.to_xmcda()
+        for t in self:
+            xmcda = t.to_xmcda()
             root.append(xmcda)
         return root
 
@@ -388,8 +388,8 @@ class categories(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('categories')
-        for category in self:
-            xmcda = category.to_xmcda()
+        for c in self:
+            xmcda = c.to_xmcda()
             root.append(xmcda)
         return root
 
@@ -407,7 +407,7 @@ class category():
             xmcda.set('name', self.name)
 
         active = ElementTree.SubElement(xmcda, 'active')
-        if self.disabled == False:
+        if self.disabled is False:
             active.text = 'true'
         else:
             active.text = 'false'
@@ -442,15 +442,15 @@ class categories_profiles(list):
 
     def to_xmcda(self):
         root = ElementTree.Element('categoriesProfiles')
-        for category_profile in self:
-            xmcda = category_profile.to_xmcda()
+        for cp in self:
+            xmcda = cp.to_xmcda()
             root.append(xmcda)
         return root
 
 class category_profile():
 
     def __init__(self, alternative_id, value):
-        self.alternative_id = value
+        self.alternative_id = alternative_id
         self.value = value
 
     def to_xmcda(self):
