@@ -59,7 +59,11 @@ class criteria_table(QtGui.QTableWidget):
                 return
 
             try:
-                criterion.weight = float(item.text())
+                value = str(item.text())
+                if value.find('.') == -1:
+                    criterion.weight = int(value)
+                else:
+                    criterion.weight = float(value)
             except:
                 QtGui.QMessageBox.warning(self,
                                           "Criterion [%s] %s"
@@ -351,7 +355,11 @@ class qt_performance_table(QtGui.QTableWidget):
             return
 
         try:
-            altp.performances[crit.id] = float(item.text())
+            value = str(item.text())
+            if value.find('.') == -1:
+               altp.performances[crit.id] = int(value)
+            else:
+               altp.performances[crit.id] = float(value)
         except:
             QtGui.QMessageBox.warning(self,
                                       "Alternative [%s] %s"
@@ -445,7 +453,11 @@ class qt_threshold_table(QtGui.QTableWidget):
 
         # FIXME: Handle other types than constant
         try:
-            threshold.values.value = float(item.text())
+            value = str(item.text())
+            if value.find('.') == -1:
+                threshold.values.value = int(value)
+            else:
+                threshold.values.value = float(value)
         except:
             QtGui.QMessageBox.warning(self,
                                           "Criterion [%s] %s"
