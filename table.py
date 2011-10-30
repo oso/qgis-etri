@@ -21,7 +21,7 @@ class float_delegate(QtGui.QItemDelegate):
             line.setValidator(QtGui.QRegExpValidator(expr, self))
             return line
         else:
-            Qtgui.QItemDelegate.createEditor(self, parent, option, index)
+            QtGui.QItemDelegate.createEditor(self, parent, option, index)
 
 class criteria_table(QtGui.QTableWidget):
 
@@ -50,7 +50,7 @@ class criteria_table(QtGui.QTableWidget):
 
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
-            if self.row_crit.has_key(row) == False:
+            if self.row_crit.has_key(row) is False:
                 return
 
             criterion = self.row_crit[row]
@@ -101,7 +101,7 @@ class criteria_table(QtGui.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsTristate)
         self.setItem(row, COL_NAME, item)
         cbox = QtGui.QCheckBox(self)
-        if criterion.disabled != True:
+        if criterion.disabled is not True:
             cbox.setCheckState(QtCore.Qt.Checked)
         if criterion.name:
             cbox.setText(criterion.name)
@@ -334,8 +334,8 @@ class qt_performance_table(QtGui.QTableWidget):
         self.row_altp[row] = alt_perfs
 
     def __cell_changed(self, row, col):
-        if self.col_crit.has_key(col) == False or   \
-            self.row_altp.has_key(row) == False:
+        if self.col_crit.has_key(col) is False or   \
+            self.row_altp.has_key(row) is False:
             return
 
         alt = self.row_alt[row]
