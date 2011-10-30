@@ -156,12 +156,10 @@ class alternatives(list):
 
 class alternative:
 
-    def __init__(self, id=None, name=None, performances=None, disabled=None):
+    def __init__(self, id=None, name=None, performances=None, disabled=False):
         self.id = id
         self.name = name
         self.performances = performances
-        if disabled == None:
-            disabled = False
         self.disabled = disabled
 
     def __repr__(self):
@@ -223,9 +221,9 @@ class alternative:
 
         active = alternative.find('active')
         if active is not None and active.text == 'false':
-            self.active = False
+            self.disabled = True
         else:
-            self.active = True
+            self.disabled = False
 
 class performance_table(list):
 
@@ -286,7 +284,7 @@ class alternative_performances():
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativePerformances')
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
-        altid.text = self.alternative_id 
+        altid.text = self.alternative_id
 
         for crit_id, val in self.performances.iteritems():
             perf = ElementTree.SubElement(xmcda, 'performance')
