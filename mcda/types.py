@@ -393,7 +393,7 @@ class threshold():
         self.values = values
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('threshold', self.id)
+        xmcda = ElementTree.Element('threshold', id=self.id)
         if self.name is not None:
             xmcda.set('name', self.name)
 
