@@ -33,7 +33,7 @@ def criterion_direction_changed(criterion):
 
 def criterion_state_changed(criterion):
     print "Criteria enabled:", crit_table.criteria_enabled
-    for table in [ prof_table, indif_table, pref_table, veto_table ]:
+    for table in [ perf_table, prof_table, indif_table, pref_table, veto_table ]:
         if table != None:
             table.disable_criterion(criterion)
 
@@ -81,6 +81,7 @@ if __name__ == "__main__":
         from data_ticino_new import *
 
     app = QtGui.QApplication(sys.argv)
+    perf_table = qt_performance_table(None, c, a, pt)
     crit_table = criteria_table(None, c)
     prof_table = qt_performance_table(None, c, b, ptb)
 
@@ -93,6 +94,7 @@ if __name__ == "__main__":
     veto_table.add_threshold('v', 'v')
 
     tabs = QtGui.QTabWidget()
+    add_tab(tabs, perf_table, "Performance table")
     add_tab(tabs, crit_table, "Criteria")
     add_tab(tabs, prof_table, "Categories")
     add_tab(tabs, [indif_table, pref_table, veto_table], "Thresholds")
