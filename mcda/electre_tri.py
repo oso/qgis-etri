@@ -41,7 +41,7 @@ class electre_tri:
         diff = (y.performances[c.id]-x.performances[c.id])*c.direction
 
         # compute d_j(a,b)
-        if v.performances.has_key(c.id) == False:
+        if v.performances.has_key(c.id) is False:
             return 0
         elif diff > v.performances[c.id]:
             return 1
