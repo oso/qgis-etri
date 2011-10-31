@@ -7,28 +7,39 @@ class electre_tri:
         self.profiles = profiles
         self.lbda = lbda
 
-    def __partial_concordance(self, x, y, c, q, p):
+    def __get_threshold_by_profile(self, c, threshold_id, profile_number):
+        threshid = "%s%s" % (threshold_id, profile_number)
+        if c.thresholds.has_threshold(threshid):
+            return c.thresholds(threshid).values.value
+        elif c.thresholds.has_threshold(threshold_id):
+            return c.thresholds(threshold_id).values.value
+        else:
+            return None
+
+    def __partial_concordance(self, x, y, c, profile_number):
         # compute g_j(b) - g_j(a)
         diff = (y.performances[c.id]-x.performances[c.id])*c.direction
 
         # compute c_j(a, b)
-        if diff > p.performances[c.id]:
+        p = self.__get_threshold_by_profile(c, 'p', profile_number)
+        q = self.__get_threshold_by_profile(c, 'q', profile_number)
+        if diff > p:
             return 0
-        elif diff <= q.performances[c.id]:
+        elif diff <= q:
             return 1
         else:
-            num = float(p.performances[c.id]-diff)
-            den = float(p.performances[c.id]-q.performances[c.id])
+            num = float(p-diff)
+            den = float(p-q)
             return num/den
 
-    def __concordance(self, x, y, clist, q, p):
+    def __concordance(self, x, y, clist, profile_number):
         wsum = 0
         pjcj = 0
         for c in clist:
             if c.disabled == 1:
                 continue
 
-            cj = self.__partial_concordance(x, y, c, q, p)
+            cj = self.__partial_concordance(x, y, c, profile_number)
             wcj = c.weight*cj
 
             pjcj += wcj
@@ -36,31 +47,33 @@ class electre_tri:
 
         return pjcj/wsum
 
-    def __partial_discordance(self, x, y, c, p, v):
+    def __partial_discordance(self, x, y, c, profile_number):
         # compute g_j(b) - g_j(a)
         diff = (y.performances[c.id]-x.performances[c.id])*c.direction
 
         # compute d_j(a,b)
-        if v.performances.has_key(c.id) is False:
+        p = self.__get_threshold_by_profile(c, 'p', profile_number)
+        v = self.__get_threshold_by_profile(c, 'v', profile_number)
+        if v is None:
             return 0
-        elif diff > v.performances[c.id]:
+        elif diff > v:
             return 1
-        elif diff <= p.performances[c.id]:
+        elif diff <= p:
             return 0
         else:
-            num = float(v.performances[c.id]-diff)
-            den = float(v.performances[c.id]-p.performances[c.id])
+            num = float(v-diff)
+            den = float(v-p)
             return num/den
 
-    def __credibility(self, x, y, clist, q, p, v):
-        concordance = self.__concordance(x, y, clist, q, p)
+    def __credibility(self, x, y, clist, profile_number):
+        concordance = self.__concordance(x, y, clist, profile_number)
 
         sigma = concordance
         for c in clist:
             if c.disabled == 1:
                 continue
 
-            dj = self.__partial_discordance(x, y, c, p, v)
+            dj = self.__partial_discordance(x, y, c, profile_number)
             if dj > concordance:
                 num = float(1-dj)
                 den = float(1-concordance)
@@ -68,13 +81,9 @@ class electre_tri:
 
         return sigma
 
-    def __outrank(self, action_perfs, criteria, profile, lbda):
-        q = profile.indifference
-        p = profile.preference
-        v = profile.veto
-
-        s_ab = self.__credibility(action_perfs, profile, criteria, q, p, v)
-        s_ba = self.__credibility(profile, action_perfs, criteria, q, p, v)
+    def __outrank(self, action_perfs, criteria, profile, profile_number, lbda):
+        s_ab = self.__credibility(action_perfs, profile, criteria, profile_number)
+        s_ba = self.__credibility(profile, action_perfs, criteria, profile_number)
 
         if s_ab >= lbda:
             if s_ba >= lbda:
@@ -94,8 +103,8 @@ class electre_tri:
         affectations = {}
         for action_perfs in self.pt:
             category = nprofiles
-            for profile in profiles:
-                outr = self.__outrank(action_perfs, self.criteria, profile, self.lbda)
+            for i, profile in enumerate(profiles):
+                outr = self.__outrank(action_perfs, self.criteria, profile, i+1, self.lbda)
                 if outr != "S" and outr != "I":
                     category -= 1
 
@@ -108,8 +117,8 @@ class electre_tri:
         affectations = {}
         for action_perfs in self.pt:
             category = 1
-            for profile in profiles:
-                outr = self.__outrank(action_perfs, self.criteria, profile, self.lbda)
+            for i, profile in enumerate(profiles):
+                outr = self.__outrank(action_perfs, self.criteria, profile, i+1, self.lbda)
                 if outr != "-":
                     category += 1
 
