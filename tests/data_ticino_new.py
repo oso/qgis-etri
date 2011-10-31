@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table, threshold, thresholds, constant
+from mcda.types import criterion, criteria, alternative, alternatives, profile, threshold_old, alternative_performances, performance_table, threshold, thresholds, constant, alternative_affectation, alternatives_affectations
 
 # Criteria
 prix = criterion('prix', 'prix', False, -1, 25)
@@ -83,9 +83,28 @@ envir.thresholds = thresholds([q_envir, p_envir, v_envir])
 residents.thresholds = thresholds([q_residents, p_residents, v_residents])
 competition.thresholds = thresholds([q_competition, p_competition, v_competition])
 
-# Affecations
-affect_p = {'a1': 2, 'a2': 1, 'a3': 2, 'a4': 3, 'a5': 1, 'a6': 2, 'a7':2}
-affect_o = {'a1': 2, 'a2': 3, 'a3': 2, 'a4': 3, 'a5': 2, 'a6': 2, 'a7':2}
-
 # Lambda
 lbda = 0.75
+
+# Alternatives affectations
+aap1 = alternative_affectation('a1', 2)
+aap2 = alternative_affectation('a2', 1)
+aap3 = alternative_affectation('a3', 2)
+aap4 = alternative_affectation('a4', 3)
+aap5 = alternative_affectation('a5', 1)
+aap6 = alternative_affectation('a6', 2)
+aap7 = alternative_affectation('a7', 2)
+aap = alternatives_affectations([aap1, aap2, aap3, aap4, aap5, aap6, aap7])
+
+aao1 = alternative_affectation('a1', 2)
+aao2 = alternative_affectation('a2', 3)
+aao3 = alternative_affectation('a3', 2)
+aao4 = alternative_affectation('a4', 3)
+aao5 = alternative_affectation('a5', 2)
+aao6 = alternative_affectation('a6', 2)
+aao7 = alternative_affectation('a7', 2)
+aao = alternatives_affectations([aao1, aao2, aao3, aao4, aao5, aao6, aao7])
+
+# FIXME: Affecations
+affect_p = {'a1': 2, 'a2': 1, 'a3': 2, 'a4': 3, 'a5': 1, 'a6': 2, 'a7':2}
+affect_o = {'a1': 2, 'a2': 3, 'a3': 2, 'a4': 3, 'a5': 2, 'a6': 2, 'a7':2}
