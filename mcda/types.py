@@ -513,6 +513,12 @@ class category_profile():
 
 class alternatives_affectations(list):
 
+    def __call__(self, id):
+        for a in self:
+            if a.alternative_id == id:
+                return a.category_id
+        return None
+
     def to_xmcda(self):
         root = ElementTree.Element('alternativesAffectations')
         for aa in self:
@@ -525,6 +531,9 @@ class alternative_affectation():
     def __init__(self, alternative_id, category_id):
         self.alternative_id = alternative_id
         self.category_id = category_id
+
+    def __repr__(self):
+        return "%s: %s" % (self.alternative_id, self.category_id)
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('alternativeAffectation')

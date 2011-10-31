@@ -19,7 +19,7 @@ if __name__ == "__main__":
     print etri_o
 
     for key in affect_p.keys():
-        if affect_p[key] <> etri_p[key]:
+        if affect_p[key] <> etri_p(key):
             print 'Pessimits affectation of %s mismatch (%d <> %d)' % (str(key), affect_p[key], etri_p[key])
-        if affect_o[key] <> etri_o[key]:
+        if affect_o[key] <> etri_o(key):
             print 'Optimist affectation of %s mismatch (%d <> %d)' % (str(key), affect_o[key], etri_o[key])

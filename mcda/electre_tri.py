@@ -1,3 +1,5 @@
+from mcda.types import alternative_affectation, alternatives_affectations
+
 class electre_tri:
 
     def __init__(self, criteria, pt, profiles, lbda):
@@ -99,7 +101,7 @@ class electre_tri:
         profiles = self.profiles[:]
         profiles.reverse()
         nprofiles = len(profiles)+1
-        affectations = {}
+        affectations = alternatives_affectations([])
         for action_perfs in self.pt:
             category = nprofiles
             for i, profile in enumerate(profiles):
@@ -107,13 +109,15 @@ class electre_tri:
                 if outr != "S" and outr != "I":
                     category -= 1
 
-            affectations[action_perfs.alternative_id] = category
+            alternative_id = action_perfs.alternative_id
+            alt_affect = alternative_affectation(alternative_id, category)
+            affectations.append(alt_affect)
 
         return affectations
 
     def optimist(self):
         profiles = self.profiles
-        affectations = {}
+        affectations = alternatives_affectations([])
         for action_perfs in self.pt:
             category = 1
             for i, profile in enumerate(profiles):
@@ -121,6 +125,8 @@ class electre_tri:
                 if outr != "-":
                     category += 1
 
-            affectations[action_perfs.alternative_id] = category
+            alternative_id = action_perfs.alternative_id
+            alt_affect = alternative_affectation(alternative_id, category)
+            affectations.append(alt_affect)
 
         return affectations
