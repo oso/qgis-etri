@@ -1,8 +1,7 @@
 class electre_tri:
 
-    def __init__(self, criteria, actions, pt, profiles, lbda):
+    def __init__(self, criteria, pt, profiles, lbda):
         self.criteria = criteria
-        self.actions = actions
         self.pt = pt
         self.profiles = profiles
         self.lbda = lbda
