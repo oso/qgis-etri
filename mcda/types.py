@@ -511,6 +511,29 @@ class category_profile():
         xmcda.append(value)
         return xmcda
 
+class alternatives_affectations(list):
+
+    def to_xmcda(self):
+        root = ElementTree.Element('alternativesAffectations')
+        for aa in self:
+            xmcda = aa.to_xmcda()
+            root.append(xmcda)
+        return root
+
+class alternative_affectation():
+
+    def __init__(self, alternative_id, category_id):
+        self.alternative_id = alternative_id
+        self.category_id = category_id
+
+    def to_xmcda(self):
+        xmcda = ElementTree.Element('alternativesAffectation')
+        altid = ElementTree.SubElement(xmcda, 'alternativeID')
+        altid.text = self.alternative_id
+        catid = ElementTree.SubElement(xmcda, 'categoryID')
+        catid.text = self.category_id
+        return xmcda
+
 class threshold_old(alternative):
     pass
 
