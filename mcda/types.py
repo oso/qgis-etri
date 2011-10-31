@@ -32,7 +32,7 @@ class criteria(list):
     def from_xmcda(self, xmcda, xmcda_critval=None):
         tag_list = xmcda.getiterator('criterion')
         for tag in tag_list:
-            c = criterion(0)
+            c = criterion(None)
             c.from_xmcda(tag)
             self.append(c)
 
@@ -150,7 +150,7 @@ class alternatives(list):
 
         tag_list = alternatives.getiterator('alternative')
         for tag in tag_list:
-            alt = alternative(0)
+            alt = alternative(None)
             alt.from_xmcda(tag)
             self.append(alt)
 
@@ -352,9 +352,19 @@ class constant():
 
     def to_xmcda(self):
         xmcda = ElementTree.Element('constant')
+        if self.id is not None:
+            xmcda.set('id', self.id)
         value = marshal(self.value)
         xmcda.append(value)
         return xmcda
+
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'constant':
+            constant = xmcda
+        else:
+            constant = xmcda.find('.//constant')
+        self.id = constant.get('id')
+        self.value = unmarshal(constant.getchildren()[0])
 
 class thresholds(list):
 
@@ -369,6 +379,13 @@ class thresholds(list):
 
         return threshold
 
+    def has_threshold(self, threshold_id):
+        for t in self:
+            if t.id == threshold_id:
+                return True
+
+        return False
+
     def to_xmcda(self):
         root = ElementTree.Element('thresholds')
         for t in self:
@@ -376,12 +393,17 @@ class thresholds(list):
             root.append(xmcda)
         return root
 
-    def has_threshold(self, threshold_id):
-        for t in self:
-            if t.id == threshold_id:
-                return True
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'thresholds':
+            thresholds = xmcda
+        else:
+            thresholds = xmcda.find('.//thresholds')
 
-        return False
+        tag_list = thresholds.getiterator('threshold')
+        for tag in tag_list:
+            t = threshold(None)
+            t.from_xmcda(tag)
+            self.append(t)
 
 class threshold():
 
@@ -399,6 +421,18 @@ class threshold():
         xmcda.append(values)
 
         return xmcda
+
+    def from_xmcda(self, xmcda):
+        if xmcda.tag == 'threshold':
+            threshold = xmcda
+        else:
+            threshold = xmcda.find('.//threshold')
+        self.id = threshold.get('id')
+        self.name = threshold.get('name')
+        values = threshold.getchildren()[0]
+        if values.tag == 'constant':
+            c = constant(None, 0)
+            c.from_xmcda(values)
 
 class categories(list):
 
