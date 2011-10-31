@@ -527,7 +527,7 @@ class alternative_affectation():
         self.category_id = category_id
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('alternativesAffectation')
+        xmcda = ElementTree.Element('alternativeAffectation')
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
         altid.text = self.alternative_id
         catid = ElementTree.SubElement(xmcda, 'categoryID')
