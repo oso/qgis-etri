@@ -85,19 +85,30 @@ if __name__ == "__main__":
     crit_table = qt_criteria_table(None, c)
     prof_table = qt_performance_table(None, c, b, ptb)
 
+    cbox = QtGui.QCheckBox('Use same thresholds for all profiles')
     indif_table = qt_threshold_table(None, c)
     pref_table = qt_threshold_table(None, c)
     veto_table = qt_threshold_table(None, c)
 
-    indif_table.add_threshold('q', 'q')
-    pref_table.add_threshold('p', 'p')
-    veto_table.add_threshold('v', 'v')
+    if c[0].thresholds.has_threshold('q'):
+        indif_table.add_threshold('q', 'q')
+        pref_table.add_threshold('p', 'p')
+        veto_table.add_threshold('v', 'v')
+        cbox.setCheckState(QtCore.Qt.Checked)
+    else:
+        for i in range(1,len(b)+1):
+            indi_thr = "q%d"% i
+            pref_thr = "p%d"% i
+            veto_thr = "v%d"% i
+            indif_table.add_threshold(indi_thr, indi_thr)
+            pref_table.add_threshold(pref_thr, pref_thr)
+            veto_table.add_threshold(veto_thr, veto_thr)
 
     tabs = QtGui.QTabWidget()
     add_tab(tabs, perf_table, "Performance table")
     add_tab(tabs, crit_table, "Criteria")
     add_tab(tabs, prof_table, "Categories")
-    add_tab(tabs, [indif_table, pref_table, veto_table], "Thresholds")
+    add_tab(tabs, [cbox, indif_table, pref_table, veto_table], "Thresholds")
 
     button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
 
