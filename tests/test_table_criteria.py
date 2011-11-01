@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
-from table import criteria_table
+from table import qt_criteria_table
 from xml.etree import ElementTree
 
 ElementTree.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
@@ -95,7 +95,7 @@ if __name__ == "__main__":
         from data_ticino_new import *
 
     app = QtGui.QApplication(sys.argv)
-    crit_table = criteria_table(None, c)
+    crit_table = qt_criteria_table(None, c)
 
     crit_table.connect(crit_table,
                        QtCore.SIGNAL("criterion_state_changed"),

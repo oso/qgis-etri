@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Tue Sep 27 20:38:13 2011
+# Created: Tue Nov  1 17:34:55 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,7 +29,7 @@ class Ui_main_window(object):
         self.tab_criteria.setObjectName(_fromUtf8("tab_criteria"))
         self.gridLayout_2 = QtGui.QGridLayout(self.tab_criteria)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-        self.table_criteria = criteria_table(self.tab_criteria)
+        self.table_criteria = qt_criteria_table(self.tab_criteria)
         self.table_criteria.setColumnCount(3)
         self.table_criteria.setObjectName(_fromUtf8("table_criteria"))
         self.table_criteria.setRowCount(0)
@@ -344,6 +344,6 @@ class Ui_main_window(object):
         item = self.table_refs.horizontalHeaderItem(0)
         self.tab_parameters.setTabText(self.tab_parameters.indexOf(self.tab_inference), QtGui.QApplication.translate("main_window", "Inference", None, QtGui.QApplication.UnicodeUTF8))
 
-from table import criteria_table, profiles_table, threshold_table
+from table import threshold_table, qt_criteria_table, profiles_table
 from graphic import mygraphicsview
 import resources_rc

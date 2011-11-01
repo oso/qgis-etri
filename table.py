@@ -23,7 +23,7 @@ class float_delegate(QtGui.QItemDelegate):
         else:
             QtGui.QItemDelegate.createEditor(self, parent, option, index)
 
-class criteria_table(QtGui.QTableWidget):
+class qt_criteria_table(QtGui.QTableWidget):
 
     def __init__(self, parent=None, criteria=None):
         super(QtGui.QTableWidget, self).__init__(parent)
@@ -95,7 +95,7 @@ class criteria_table(QtGui.QTableWidget):
         elif isinstance(criteria, criterion):
             self.__add_criterion(criteria)
         else:
-            raise TypeError, 'criteria_table:: invalid object type in add'
+            raise TypeError, 'qt_criteria_table:: invalid object type in add'
 
     def __add_criterion(self, criterion):
         row = self.rowCount()

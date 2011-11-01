@@ -26,7 +26,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="criteria_table" name="table_criteria">
+         <widget class="qt_criteria_table" name="table_criteria">
           <property name="columnCount">
            <number>3</number>
           </property>
@@ -544,7 +544,7 @@ p, li { white-space: pre-wrap; }
    <header location="global">graphic</header>
   </customwidget>
   <customwidget>
-   <class>criteria_table</class>
+   <class>qt_criteria_table</class>
    <extends>QTableWidget</extends>
    <header location="global">table</header>
   </customwidget>

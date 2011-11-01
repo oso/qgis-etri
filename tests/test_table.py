@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.types import criterion
-from table import criteria_table, qt_performance_table, qt_threshold_table
+from table import qt_criteria_table, qt_performance_table, qt_threshold_table
 from xml.etree import ElementTree
 
 crit_table = None
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
     perf_table = qt_performance_table(None, c, a, pt)
-    crit_table = criteria_table(None, c)
+    crit_table = qt_criteria_table(None, c)
     prof_table = qt_performance_table(None, c, b, ptb)
 
     indif_table = qt_threshold_table(None, c)
