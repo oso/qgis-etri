@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 sys.path.append("..")
-from etri import electre_tri
+from mcda.etri import electre_tri
 from graphic import graph_etri
 from PyQt4 import QtCore
 from PyQt4 import QtGui
