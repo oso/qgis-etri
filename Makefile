@@ -15,6 +15,7 @@ PKG_FILES +=	qgis_utils.py
 PKG_FILES +=	xmcda.py
 PKG_FILES +=	infdialog.py
 PKG_FILES +=	refsdialog.py
+PKG_FILES +=	graphic.py
 
 PKG_FILES +=	ui/__init__.py
 PKG_FILES +=	ui/etrimain.py
@@ -22,6 +23,7 @@ PKG_FILES +=	ui/refsdialog.py
 PKG_FILES +=	ui/infdialog.py
 PKG_FILES +=	ui/pwdialog.py
 PKG_FILES +=	ui/resources_rc.py
+PKG_FILES +=	ui/graphic.py
 
 PKG_FILES +=	pysimplesoap/__init__.py
 PKG_FILES +=	pysimplesoap/client.py

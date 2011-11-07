@@ -7,7 +7,7 @@ def description():
     return "A decision aid plugin based on ELECTRE TRI"
 
 def version():
-    return "0.2.1"
+    return "0.3"
 
 def qgisMinimumVersion():
     return "1.4"
