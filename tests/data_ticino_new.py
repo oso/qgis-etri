@@ -56,25 +56,25 @@ pb2 = alternative_performances('b2', {'prix':  50, 'transport':  500, 'envir': 7
 ptb = performance_table([pb1, pb2])
 
 # Indifference threshold
-q_prix = threshold('q', 'indifference', constant('q1', 15))
-q_transport = threshold('q', 'indifference', constant('q2', 80))
-q_envir = threshold('q', 'indifference', constant('q3', 1))
-q_residents = threshold('q', 'indifference', constant('q4', 0.5))
-q_competition = threshold('q', 'indifference', constant('q5', 1))
+q_prix = threshold('q', 'indifference', constant(None, 15))
+q_transport = threshold('q', 'indifference', constant(None, 80))
+q_envir = threshold('q', 'indifference', constant(None, 1))
+q_residents = threshold('q', 'indifference', constant(None, 0.5))
+q_competition = threshold('q', 'indifference', constant(None, 1))
 
 # Preference threshold
-p_prix = threshold('p', 'preference', constant('p1', 40))
-p_transport = threshold('p', 'preference', constant('p2', 350))
-p_envir = threshold('p', 'preference', constant('p3', 3))
-p_residents = threshold('p', 'preference', constant('p4', 3.5))
-p_competition = threshold('p', 'preference', constant('p5', 5))
+p_prix = threshold('p', 'preference', constant(None, 40))
+p_transport = threshold('p', 'preference', constant(None, 350))
+p_envir = threshold('p', 'preference', constant(None, 3))
+p_residents = threshold('p', 'preference', constant(None, 3.5))
+p_competition = threshold('p', 'preference', constant(None, 5))
 
 # Veto threshold
-v_prix = threshold('v', 'veto', constant('v1', 100))
-v_transport = threshold('v', 'veto', constant('v2', 850))
-v_envir = threshold('v', 'veto', constant('v3', 5))
-v_residents = threshold('v', 'veto', constant('v4', 4.5))
-v_competition = threshold('v', 'veto', constant('v5', 8))
+v_prix = threshold('v', 'veto', constant(None, 100))
+v_transport = threshold('v', 'veto', constant(None, 850))
+v_envir = threshold('v', 'veto', constant(None, 5))
+v_residents = threshold('v', 'veto', constant(None, 4.5))
+v_competition = threshold('v', 'veto', constant(None, 8))
 
 # Thresholds by criterion
 prix.thresholds = thresholds([q_prix, p_prix, v_prix])
