@@ -455,7 +455,9 @@ class qt_threshold_table(QtGui.QTableWidget):
         # FIXME: Handle other types than constant
         try:
             value = str(item.text())
-            if value.find('.') == -1:
+            if value == '':
+                threshold.values.value = None
+            elif value.find('.') == -1:
                 threshold.values.value = int(value)
             else:
                 threshold.values.value = float(value)
