@@ -309,6 +309,30 @@ class qt_performance_table(QtGui.QTableWidget):
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
 
+    def add_affectations(self, affectations, category_colors=None):
+        col = self.columnCount()
+        self.insertColumn(col)
+        item = QtGui.QTableWidgetItem()
+        self.setHorizontalHeaderItem(col, item)
+        self.horizontalHeaderItem(col).setText('Category')
+        for affectation in affectations:
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            item.setText(str(affectation.category_id))
+            row = self.__get_alternative_row_by_id(affectation.alternative_id)
+            if category_colors is not None:
+                item.setBackgroundColor(category_colors[affectation.category_id])
+            self.setItem(row, col, item)
+
+    def __get_alternative_row_by_id(self, alternative_id):
+        for row, alt in self.row_alt.iteritems():
+            if alt.id == alternative_id:
+                return row
+
+    def __get_alternative_row(self, alternative):
+        alt_row = dict([[v,k] for k,v in self.row_alt.items()])
+        return alt_row[alternative]
+
     def __get_criterion_col(self, criterion):
         crit_col = dict([[v,k] for k,v in self.col_crit.items()])
         return crit_col[criterion]
