@@ -2,6 +2,7 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from mcda.etri import electre_tri
 import colorsys
+import colors
 
 class axis(QtGui.QGraphicsItem):
 
@@ -146,9 +147,8 @@ class graph_etri(QtGui.QGraphicsScene):
         return points
 
     def __get_category_brush(self, category):
-        h = 1-float(category)/(len(self.model.profiles)+1)
-        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-        return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
+        cat_colors = colors.ncategories_colors[len(self.model.profiles)+1]
+        return QtGui.QBrush(cat_colors[category])
         
     def __plot_profiles(self):
         profiles = self.model.profiles
@@ -163,7 +163,7 @@ class graph_etri(QtGui.QGraphicsScene):
             ppoints = below + above
             polygon = QtGui.QPolygonF(ppoints)
             polygon_list.append(polygon)
-            brush = self.__get_category_brush(i)
+            brush = self.__get_category_brush(i+1)
             self.addPolygon(polygon, QtGui.QPen(), brush)
             below = above[:]
 
@@ -172,7 +172,7 @@ class graph_etri(QtGui.QGraphicsScene):
         ppoints = below + above
         polygon = QtGui.QPolygonF(ppoints)
         polygon_list.append(polygon)
-        brush = self.__get_category_brush(i+1)
+        brush = self.__get_category_brush(i+2)
         self.addPolygon(polygon, QtGui.QPen(), brush)
 
         for i, p in enumerate(polygon_list):
