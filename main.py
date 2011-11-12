@@ -1,6 +1,10 @@
+import os
+from xml.etree import ElementTree
 from PyQt4 import QtCore, QtGui
 from ui.main_window import Ui_main_window 
 from layer import criteria_layer
+from mcda.electre_tri import electre_tri
+from mcda.types import criteria, performance_table, alternatives
 
 class main_window(QtGui.QMainWindow, Ui_main_window):
 
@@ -23,6 +27,22 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
             layer = map_canvas.layer(i)
             self.combo_layer.addItem(layer.name())
 
+    def __load_from_xmcda(self, xmcda_file):
+        tree = ElementTree.parse(xmcda_file)
+        root = tree.getroot()
+        ElementTree.dump(root)
+        xmcda_crit = root.find('.//criteria')
+        xmcda_ptb = root.find('.//performanceTable')
+        xmcda_b = root.find('.//alternatives')
+        xmcda_lbda = root.find('.//methodParameters')
+
+        c = criteria()
+        c.from_xmcda(xmcda_crit)
+        ptb = performance_table()
+        ptb.from_xmcda(xmcda_ptb)
+        b = alternatives()
+        b.from_xmcda(xmcda_b)
+
     def on_button_loadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
         map_canvas = self.iface.mapCanvas()
@@ -33,6 +53,13 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
             self.__enable_buttons()
         except:
             QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
+            return
+
+        try:
+            xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] + ".xmcda"
+            self.__load_from_xmcda(xmcda_file)
+        except:
+            pass
 
     def __clear_tables(self):
         self.table_criteria.reset_table()
