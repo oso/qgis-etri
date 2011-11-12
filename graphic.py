@@ -147,7 +147,10 @@ class graph_etri(QtGui.QGraphicsScene):
 
     def __get_category_brush(self, category):
         nprof = len(self.model.profiles)
-        h = 1-float(category)/nprof*float(2)/3
+        if nprof == 0:
+            h = 1
+        else:
+            h = 1-float(category)/nprof*float(2)/3
         r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
         return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
         
@@ -168,6 +171,7 @@ class graph_etri(QtGui.QGraphicsScene):
             self.addPolygon(polygon, QtGui.QPen(), brush)
             below = above[:]
 
+        i = len(profiles)-1
         above = self.__profile_get_points(maxima)
         below.reverse()
         ppoints = below + above
