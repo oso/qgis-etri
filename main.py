@@ -1,10 +1,13 @@
-import os
+import os, sys, traceback
 from xml.etree import ElementTree
 from PyQt4 import QtCore, QtGui
 from ui.main_window import Ui_main_window 
 from layer import criteria_layer
 from mcda.electre_tri import electre_tri
 from mcda.types import criteria, performance_table, alternatives
+from mcda.types import alternative, alternative_performances
+
+# Method used to update criteria from XMCDA file
 
 class main_window(QtGui.QMainWindow, Ui_main_window):
 
@@ -27,21 +30,40 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
             layer = map_canvas.layer(i)
             self.combo_layer.addItem(layer.name())
 
+    def __update_criteria(self, criteria):
+        for c in self.criteria:
+            if criteria.has_criterion(c.id): 
+                c2 = criteria(c.id)
+                c.disabled = c2.disabled
+                c.direction = c2.direction
+                if c2.weight is not None:
+                    c.weight = c2.weight
+                else:
+                    c.weight = 0
+                c.thresholds = c2.thresholds
+            else:
+                c.disabled = True
+                c.weight = 0
+
     def __load_from_xmcda(self, xmcda_file):
         tree = ElementTree.parse(xmcda_file)
         root = tree.getroot()
         ElementTree.dump(root)
         xmcda_crit = root.find('.//criteria')
-        xmcda_ptb = root.find('.//performanceTable')
+        xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')
+        xmcda_ptb = root.find('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters')
 
         c = criteria()
-        c.from_xmcda(xmcda_crit)
-        ptb = performance_table()
-        ptb.from_xmcda(xmcda_ptb)
-        b = alternatives()
-        b.from_xmcda(xmcda_b)
+        c.from_xmcda(xmcda_crit, xmcda_critval)
+        self.__update_criteria(c)
+
+#        b = alternatives()
+#        b.from_xmcda(xmcda_b)
+#
+#        ptb = performance_table()
+#        ptb.from_xmcda(xmcda_ptb)
 
     def on_button_loadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
@@ -52,14 +74,9 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
             self.__loadlayer()
             self.__enable_buttons()
         except:
+            traceback.print_exc(sys.stderr)
             QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
             return
-
-        try:
-            xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] + ".xmcda"
-            self.__load_from_xmcda(xmcda_file)
-        except:
-            pass
 
     def __clear_tables(self):
         self.table_criteria.reset_table()
@@ -69,12 +86,30 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         self.table_veto.reset_table()
 
     def __loadlayer(self):
+        # References to map criteria and alternatives
         self.criteria = self.layer.criteria
+        self.alternatives = self.layer.alternatives
+        self.pt = self.layer.pt
+
+        # References to Electre Tri model
+        self.balternatives = alternatives([alternative('b1', 'b1')])
+        self.bpt = performance_table([alternative_performances('b1', {})])
+
+        xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] \
+                        + ".xmcda"
+        self.__load_from_xmcda(xmcda_file)
+
         self.table_criteria.add(self.criteria)
         self.table_prof.add_criteria(self.criteria)
         self.table_indiff.add_criteria(self.criteria)
         self.table_pref.add_criteria(self.criteria)
         self.table_veto.add_criteria(self.criteria)
+
+#        b1 = alternative('b1', 'b1')
+#        b = alternatives([b1])
+#        b1p = alternative_performances('b1', {})
+#        ptb = performance_table([b1p])
+#        self.table_prof.add_pt(b, ptb)
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)
