@@ -343,7 +343,7 @@ class qt_performance_table(QtGui.QTableWidget):
 
     def add_pt(self, alternatives, pt):
         for alternative in alternatives:
-            self.add(alternative, pt(alternative))
+            self.add(alternative, pt(alternative.id))
 
     def add(self, alternative, alt_perfs):
         row = self.rowCount()

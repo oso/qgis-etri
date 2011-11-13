@@ -247,21 +247,21 @@ class alternative:
 
 class performance_table(list):
 
-    def __call__(self, alternative, criterion=None):
+    def __call__(self, alternative_id, criterion_id=None):
         alt_perfs = None
         for altp in self:
-            if altp.alternative_id == alternative.id:
+            if altp.alternative_id == alternative_id:
                 alt_perfs = altp
                 break
 
         # FIXME: to remove
         if alt_perfs is None:
-            raise KeyError, "Alternative %s not found" % alternative
+            raise KeyError, "Alternative %s not found" % alternative_id
 
-        if criterion is None:
+        if criterion_id is None:
             return alt_perfs
         else:
-            return alt_perfs(criterion)
+            return alt_perfs(criterion_id)
 
     def has_alternative(self, alternative):
         for altp in self:
@@ -295,8 +295,8 @@ class alternative_performances():
         self.alternative_id = alternative_id
         self.performances = performances
 
-    def __call__(self, criterion):
-        return self.performances[criterion.id]
+    def __call__(self, criterion_id):
+        return self.performances[criterion_id]
 
     def __repr__(self):
         return "%s: %s" % (self.alternative_id, self.performances)

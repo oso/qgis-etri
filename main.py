@@ -65,6 +65,29 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
 #        ptb = performance_table()
 #        ptb.from_xmcda(xmcda_ptb)
 
+    def __generate_first_profile(self):
+        crit_min = {}
+        crit_max = {}
+        for altp in self.pt:
+            for crit in self.criteria:
+                d = crit.direction
+                print altp
+                if crit_min.has_key(crit.id) is False:
+                    crit_min[crit.id] = altp(crit.id)
+                elif crit_min[crit.id]*d > altp(crit.id)*d:
+                    crit_min[crit.id] = altp(crit.id)
+
+                if crit_max.has_key(crit.id) is False:
+                    crit_max[crit.id] = altp(crit.id)
+                elif crit_max[crit.id]*d < altp(crit.id)*d:
+                    crit_max[crit.id] = altp(crit.id)
+
+        b1 = alternative_performances('b1', {})
+        for crit in self.criteria:
+            b1.performances[crit.id] = (crit_max[crit.id]-crit_min[crit.id])/2
+        self.balternatives = alternatives([alternative('b1', 'b1')])
+        self.bpt = performance_table([b1])
+
     def on_button_loadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
         map_canvas = self.iface.mapCanvas()
@@ -91,9 +114,7 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         self.alternatives = self.layer.alternatives
         self.pt = self.layer.pt
 
-        # References to Electre Tri model
-        self.balternatives = alternatives([alternative('b1', 'b1')])
-        self.bpt = performance_table([alternative_performances('b1', {})])
+        self.__generate_first_profile()
 
         xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] \
                         + ".xmcda"
@@ -105,11 +126,7 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
         self.table_pref.add_criteria(self.criteria)
         self.table_veto.add_criteria(self.criteria)
 
-#        b1 = alternative('b1', 'b1')
-#        b = alternatives([b1])
-#        b1p = alternative_performances('b1', {})
-#        ptb = performance_table([b1p])
-#        self.table_prof.add_pt(b, ptb)
+        self.table_prof.add_pt(self.balternatives, self.bpt)
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)

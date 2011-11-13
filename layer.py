@@ -33,9 +33,10 @@ class criteria_layer(QgsVectorLayer):
             attrs = feat.attributeMap()
             perfs = {}
             for (k, attr) in attrs.iteritems():
-                perfs[k] = attr.toDouble()[0]
-            self.alternatives.append(alternative(feat.id(), feat.id()))
-            self.pt.append(alternative_performances(feat.id(), perfs))
+                perfs[str(k)] = attr.toDouble()[0]
+            self.alternatives.append(alternative(str(feat.id()),
+                                                 str(feat.id())))
+            self.pt.append(alternative_performances(str(feat.id()), perfs))
 
 def layer_get_attributes(layer):
     provider = layer.dataProvider()
