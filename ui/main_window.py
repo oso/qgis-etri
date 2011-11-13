@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Tue Nov  1 17:34:55 2011
+# Created: Sat Nov 12 23:05:27 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,7 +54,7 @@ class Ui_main_window(object):
         self.graph_plot.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing)
         self.graph_plot.setObjectName(_fromUtf8("graph_plot"))
         self.gridLayout_5.addWidget(self.graph_plot, 1, 0, 1, 1)
-        self.table_prof = profiles_table(self.tab_profiles)
+        self.table_prof = qt_performance_table(self.tab_profiles)
         self.table_prof.setObjectName(_fromUtf8("table_prof"))
         self.table_prof.setColumnCount(0)
         self.table_prof.setRowCount(0)
@@ -344,6 +344,6 @@ class Ui_main_window(object):
         item = self.table_refs.horizontalHeaderItem(0)
         self.tab_parameters.setTabText(self.tab_parameters.indexOf(self.tab_inference), QtGui.QApplication.translate("main_window", "Inference", None, QtGui.QApplication.UnicodeUTF8))
 
-from table import threshold_table, qt_criteria_table, profiles_table
+from table import qt_performance_table, qt_criteria_table, threshold_table
 from graphic import mygraphicsview
 import resources_rc

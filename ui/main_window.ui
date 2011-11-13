@@ -74,7 +74,7 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="profiles_table" name="table_prof"/>
+         <widget class="qt_performance_table" name="table_prof"/>
         </item>
        </layout>
       </widget>
@@ -549,12 +549,12 @@ p, li { white-space: pre-wrap; }
    <header location="global">table</header>
   </customwidget>
   <customwidget>
-   <class>profiles_table</class>
+   <class>threshold_table</class>
    <extends>QTableWidget</extends>
    <header location="global">table</header>
   </customwidget>
   <customwidget>
-   <class>threshold_table</class>
+   <class>qt_performance_table</class>
    <extends>QTableWidget</extends>
    <header location="global">table</header>
   </customwidget>
