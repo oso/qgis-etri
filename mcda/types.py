@@ -22,6 +22,20 @@ def unmarshal(xml):
 
 class criteria(list):
 
+    def __call__(self, criterion_id):
+        for crit in self:
+            if crit.id == criterion_id:
+                return crit
+
+        raise KeyError, "Criterion %s not found" % criterion_id
+
+    def has_criterion(self, criterion_id):
+        for crit in self:
+            if crit.id == criterion_id:
+                return True
+
+        return False
+
     def to_xmcda(self):
         root = ElementTree.Element('criteria')
         for crit in self:
@@ -39,7 +53,13 @@ class criteria(list):
         if xmcda_critval is not None:
             tag_list = xmcda_critval.getiterator('criterionValue')
             for tag in tag_list:
-                c.from_xmcda(xmcda_critval=tag)
+                c_id = tag.find('criterionID')
+                if c_id is not None:
+                    c_id = c_id.text
+
+                if self.has_criterion(c_id):
+                    c = self(c_id)
+                    c.from_xmcda(xmcda_critval=tag)
 
 class criterion:
 
