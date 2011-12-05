@@ -27,7 +27,7 @@ class criteria(list):
             if crit.id == criterion_id:
                 return crit
 
-        raise KeyError, "Criterion %s not found" % criterion_id
+        raise KeyError("Criterion %s not found" % criterion_id)
 
     def has_criterion(self, criterion_id):
         for crit in self:
@@ -137,7 +137,7 @@ class criterion:
                 elif pdir.text == 'min':
                     self.direction = -1
                 else:
-                    raise TypeError, 'criterion::invalid preferenceDirection'
+                    raise TypeError('criterion::invalid preferenceDirection')
             value = crit.find('.//criterionValue/value')
             if value is not None:
                 self.weight = unmarshal(value.getchildren()[0])
@@ -256,7 +256,7 @@ class performance_table(list):
 
         # FIXME: to remove
         if alt_perfs is None:
-            raise KeyError, "Alternative %s not found" % alternative_id
+            raise KeyError("Alternative %s not found" % alternative_id)
 
         if criterion_id is None:
             return alt_perfs
@@ -395,7 +395,7 @@ class thresholds(list):
                 threshold = t
 
         if threshold is None:
-            raise KeyError, "Threshold %s not found" % id
+            raise KeyError("Threshold %s not found" % id)
 
         return threshold
 
