@@ -291,7 +291,7 @@ class performance_table(list):
 
 class alternative_performances():
 
-    def __init__(self, alternative_id, performances):
+    def __init__(self, alternative_id=None, performances=None):
         self.alternative_id = alternative_id
         self.performances = performances
 
@@ -463,16 +463,23 @@ class categories(list):
             root.append(xmcda)
         return root
 
+    def from_xmcda(self, xmcda):
+        tag_list = xmcda.getiterator('category')
+        for tag in tag_list:
+            c = category()
+            c.from_xmcda(tag)
+            self.append(c)
+
 class category():
 
-    def __init__(self, id, name=None, disabled=False, rank=None):
+    def __init__(self, id=None, name=None, disabled=False, rank=None):
         self.id = id
         self.name = name
         self.disabled = disabled
         self.rank = rank
 
     def to_xmcda(self):
-        xmcda = ElementTree.Element('threshold', self.id)
+        xmcda = ElementTree.Element('category', self.id)
         if self.name is not None:
             xmcda.set('name', self.name)
 
@@ -486,6 +493,19 @@ class category():
         rank.text = marshal(self.rank)
 
         return xmcda
+
+    def from_xmcda(self, xmcda):
+        self.id = xmcda.get('id')
+        self.name = xmcda.get('name')
+        active = xmcda.find('.//active')
+        if active is not None:
+            if active.text == 'false':
+                self.disabled = True
+            else:
+                self.disabled = False
+
+        rank = xmcda.find('.//rank')
+        self.rank = unmarshal(rank.getchildren()[0])
 
 class limits():
 
@@ -546,9 +566,16 @@ class alternatives_affectations(list):
             root.append(xmcda)
         return root
 
+    def from_xmcda(self, xmcda):
+        tag_list = xmcda.getiterator('alternativeAffectation')
+        for tag in tag_list:
+            aa = alternative_affectation()
+            aa.from_xmcda(tag)
+            self.append(aa)
+
 class alternative_affectation():
 
-    def __init__(self, alternative_id, category_id):
+    def __init__(self, alternative_id=None, category_id=None):
         self.alternative_id = alternative_id
         self.category_id = category_id
 
@@ -562,6 +589,12 @@ class alternative_affectation():
         catid = ElementTree.SubElement(xmcda, 'categoryID')
         catid.text = self.category_id
         return xmcda
+
+    def from_xmcda(self, xmcda):
+        altid = xmcda.find('alternativeID')
+        self.alternative_id = altid.text 
+        catid = xmcda.find('categoryID')
+        self.category_id = catid.text
 
 class threshold_old(alternative):
     pass
