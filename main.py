@@ -45,6 +45,9 @@ class main_window(QtGui.QMainWindow, Ui_main_window):
                 c.disabled = True
                 c.weight = 0
 
+    def __update_profiles(self, alternatives, pt):
+        pass
+
     def __load_from_xmcda(self, xmcda_file):
         tree = ElementTree.parse(xmcda_file)
         root = tree.getroot()
