@@ -456,6 +456,12 @@ class threshold():
 
 class categories(list):
 
+    def __call__(self, id):
+        for c in self:
+            if c.id == id:
+                return c
+        return None
+
     def to_xmcda(self):
         root = ElementTree.Element('categories')
         for c in self:
