@@ -146,14 +146,10 @@ class graph_etri(QtGui.QGraphicsScene):
         return points
 
     def __get_category_brush(self, category):
-        nprof = len(self.model.profiles)
-        if nprof == 0:
-            h = 1
-        else:
-            h = 1-float(category)/nprof*float(2)/3
-        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-        return QtGui.QBrush(QtGui.QColor(r*255, g*255, b*255))
-        
+        ncategories = len(self.model.profiles)+1
+        color = QtGui.QColor(0, 255-220*(ncategories-category)/(ncategories), 0)
+        return QtGui.QBrush(QtGui.QColor(color))
+
     def __plot_profiles(self):
         profiles = self.model.profiles
         minima = self.model.model_min

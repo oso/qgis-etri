@@ -148,27 +148,27 @@ def render_decision_map_old(layer, nprofils):
     sr = QgsUniqueValueRenderer(layer.geometryType())
     sr.setClassificationField(0)
 
-    for i in range(1, nprofils+2):
+    nclasses = nprofils+1
+    for i in range(nclasses):
         s = QgsSymbol(layer.geometryType())
-        h = 1-float(i-1)/nprofils*float(2)/3
-        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-        s.setBrush(QBrush(QColor(r*255, g*255, b*255)))
-        label = 'Category %d' % i
+        color = QColor(0, 255-220*(nclasses-1-i)/(nclasses), 0)
+        s.setBrush(QBrush(color))
+        label = 'Category %d' % (i+1)
         s.setLabel(label)
-        s.setLowerValue(str(i))
-        s.setUpperValue(str(i))
-        sr.insertValue(str(i), s)
+        s.setLowerValue(str(i+1))
+        s.setUpperValue(str(i+1))
+        sr.insertValue(str(i+1), s)
 
     layer.setRenderer(sr)
 
 def render_decision_map_new(layer, nprofils):
     cat_list = []
-    for i in range(1, nprofils+2):
+    nclasses = nprofils+1
+    for i in range(nclasses):
         s = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        h = 1-float(i-1)/nprofils*float(2)/3
-        r, g, b = colorsys.hls_to_rgb(h, 0.5, 0.5)
-        s.setColor(QColor(r*255, g*255, b*255))
-        cat_list.append(QgsRendererCategoryV2(i, s, 'Category %d' % i))
+        color = QColor(0, 255-220*(nclasses-1-i)/(nclasses), 0)
+        s.setColor(color)
+        cat_list.append(QgsRendererCategoryV2(i+1, s, 'Category %d' % (i+1)))
 
     sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
     sr.setClassAttribute("category")
