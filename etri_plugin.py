@@ -27,3 +27,4 @@ class etri_plugin:
     def run(self):
         ui = main_window(self.iface)
         ui.show()
+        ui.exec_()

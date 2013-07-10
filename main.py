@@ -9,11 +9,13 @@ from mcda.types import alternative, alternative_performances
 
 # Method used to update criteria from XMCDA file
 
-class main_window(QtGui.QMainWindow, Ui_main_window):
+class main_window(QtGui.QDialog, Ui_main_window):
 
     def __init__(self, iface):
-        super(QtGui.QMainWindow, self).__init__(iface.mainWindow())
+        QtGui.QDialog.__init__(self)
+        Ui_main_window.__init__(self)
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.Window)
 
         self.iface = iface
 
