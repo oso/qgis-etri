@@ -24,6 +24,18 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                     QtCore.SIGNAL("criterion_state_changed"),
                                     self.__criterion_state_changed)
 
+    def closeEvent(self, event):
+        val = QtGui.QMessageBox.question(self, "ELECTRE TRI",
+                    "Close ELECTRE TRI?",
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                    QtGui.QMessageBox.No)
+        if val == QtGui.QMessageBox.No:
+            event.ignore()
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Escape:
+            self.close()
+
     def __update_layer_list(self, map_canvas):
         if map_canvas == None:
             return
