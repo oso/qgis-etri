@@ -1,6 +1,6 @@
 from qgis.core import QgsVectorLayer, QgsFeature
-from mcda.types import criteria, criterion, alternative, alternatives
-from mcda.types import performance_table, alternative_performances
+from mcda.types import Criteria, Criterion, Alternative, Alternatives
+from mcda.types import PerformanceTable, AlternativePerformances
 
 class criteria_layer(QgsVectorLayer):
 
@@ -15,10 +15,10 @@ class criteria_layer(QgsVectorLayer):
     def get_criteria(self):
         provider = self.layer.dataProvider()
         fields = provider.fields()
-        self.criteria = criteria([])
+        self.criteria = Criteria([])
         for id, field in fields.iteritems():
             name = str(field.name().trimmed())
-            crit = criterion(str(id), name)
+            crit = Criterion(str(id), name)
             self.criteria.append(crit)
 
     def get_alternatives_and_pt(self):
@@ -27,16 +27,16 @@ class criteria_layer(QgsVectorLayer):
         provider.select(attrib_index)
         feat = QgsFeature()
 
-        self.alternatives = alternatives([])
-        self.pt = performance_table([])
+        self.alternatives = Alternatives([])
+        self.pt = PerformanceTable([])
         while provider.nextFeature(feat):
             attrs = feat.attributeMap()
             perfs = {}
             for (k, attr) in attrs.iteritems():
                 perfs[str(k)] = attr.toDouble()[0]
-            self.alternatives.append(alternative(str(feat.id()),
+            self.alternatives.append(Alternative(str(feat.id()),
                                                  str(feat.id())))
-            self.pt.append(alternative_performances(str(feat.id()), perfs))
+            self.pt.append(AlternativePerformances(str(feat.id()), perfs))
 
 def layer_get_attributes(layer):
     provider = layer.dataProvider()

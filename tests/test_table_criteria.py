@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, "..")
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda.types import criterion
+from mcda.types import Criterion
 from table import qt_criteria_table
 from xml.etree import ElementTree
 
@@ -52,7 +52,9 @@ def save_to_xmcda():
     if fname:
         root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
         criteria_xmcda = c.to_xmcda()
+        criteria_values_xmcda = cv.to_xmcda()
         root.append(criteria_xmcda)
+        root.append(criteria_values_xmcda)
         indent(root)
         ElementTree.ElementTree(root).write(fname, xml_declaration=True,
                                             encoding='utf-8', method='xml')
@@ -67,25 +69,28 @@ def load_from_xmcda():
         root = tree.getroot()
         ElementTree.dump(root)
 
-        c = criteria()
-        c.from_xmcda(root, root)
+        c = Criteria()
+        c.from_xmcda(root.find('.//criteria'))
+
+        cv = CriteriaValues()
+        cv.from_xmcda(root.find('.//criteriaValues'))
 
         crit_table.reset_table()
-        crit_table.add(c)
+        crit_table.add_criteria(c, cv)
 
 def add_criterion():
     string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
     if ok and not string.isEmpty():
         name = str(string.toUtf8())
-        crit = criterion(name, name, 0, 1, 10)
-        crit_table.add(crit)
+        crit = Criterion(name, name, 0, 1, 10)
+        crit_table.add_criterion(crit)
         c.append(crit)
 
 def criterion_direction_changed(criterion):
-    print criterion.id, ":", criterion.direction
+    print "Criterion direction changed:", criterion
 
 def criterion_state_changed(criterion):
-    print "Criteria enabled:", crit_table.criteria_enabled
+    print "Criterion state changed:", criterion
 
 if __name__ == "__main__":
 
@@ -95,7 +100,7 @@ if __name__ == "__main__":
         from data_ticino_new import *
 
     app = QtGui.QApplication(sys.argv)
-    crit_table = qt_criteria_table(None, c)
+    crit_table = qt_criteria_table(None)
 
     crit_table.connect(crit_table,
                        QtCore.SIGNAL("criterion_state_changed"),
@@ -118,8 +123,7 @@ if __name__ == "__main__":
                               QtCore.SIGNAL("clicked()"),
                               load_from_xmcda)
 
-    print "# of criteria:", crit_table.ncriteria
-    print "Criteria enabled:", crit_table.criteria_enabled
+    crit_table.add_criteria(c, cv)
 
     layout = QtGui.QVBoxLayout()
     layout.addWidget(crit_table)

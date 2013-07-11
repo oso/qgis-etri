@@ -1,11 +1,12 @@
 import os, sys, traceback
 from xml.etree import ElementTree
 from PyQt4 import QtCore, QtGui
-from ui.main_window import Ui_main_window 
+from ui.main_window import Ui_main_window
 from layer import criteria_layer
-from mcda.electre_tri import electre_tri
-from mcda.types import criteria, performance_table, alternatives
-from mcda.types import alternative, alternative_performances
+from mcda.electre_tri import ElectreTri
+from mcda.types import Criteria, CriteriaValues
+from mcda.types import PerformanceTable, Alternatives
+from mcda.types import Alternative, AlternativePerformances
 
 # Method used to update criteria from XMCDA file
 
@@ -45,19 +46,22 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.combo_layer.addItem(layer.name())
 
     def __update_criteria(self, criteria):
-        for c in self.criteria:
-            if criteria.has_criterion(c.id): 
-                c2 = criteria(c.id)
-                c.disabled = c2.disabled
-                c.direction = c2.direction
-                if c2.weight is not None:
-                    c.weight = c2.weight
-                else:
-                    c.weight = 0
-                c.thresholds = c2.thresholds
-            else:
-                c.disabled = True
-                c.weight = 0
+        self.criteria = criteria
+        pass
+#        for c in self.criteria:
+#            if criteria.has_criterion(c.id):
+#            if c.id in self.criteria:
+#                c2 = Criteria(c.id)
+#                c.disabled = c2.disabled
+#                c.direction = c2.direction
+#                if c2.weight is not None:
+#                    c.weight = c2.weight
+#                else:
+#                    c.weight = 0
+#                c.thresholds = c2.thresholds
+#            else:
+#                c.disabled = True
+#                c.weight = 0
 
     def __update_profiles(self, alternatives, pt):
         pass
@@ -72,15 +76,22 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_ptb = root.find('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters')
 
-        c = criteria()
-        c.from_xmcda(xmcda_crit, xmcda_critval)
+        c = Criteria()
+        c.from_xmcda(xmcda_crit)
+        print(c)
         self.__update_criteria(c)
 
-#        b = alternatives()
-#        b.from_xmcda(xmcda_b)
-#
-#        ptb = performance_table()
-#        ptb.from_xmcda(xmcda_ptb)
+        cv = CriteriaValues()
+        cv.from_xmcda(xmcda_critval)
+        self.cv = cv
+
+        b = Alternatives()
+        b.from_xmcda(xmcda_b)
+        print(b)
+
+        ptb = PerformanceTable()
+        ptb.from_xmcda(xmcda_ptb)
+        print(ptb)
 
     def __generate_first_profile(self):
         crit_min = {}
@@ -99,11 +110,11 @@ class main_window(QtGui.QDialog, Ui_main_window):
                 elif crit_max[crit.id]*d < altp(crit.id)*d:
                     crit_max[crit.id] = altp(crit.id)
 
-        b1 = alternative_performances('b1', {})
+        b1 = AlternativePerformances('b1', {})
         for crit in self.criteria:
             b1.performances[crit.id] = (crit_max[crit.id]-crit_min[crit.id])/2
-        self.balternatives = alternatives([alternative('b1', 'b1')])
-        self.bpt = performance_table([b1])
+        self.balternatives = Alternatives([Alternative('b1', 'b1')])
+        self.bpt = PerformanceTable([b1])
 
     def on_button_loadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
@@ -115,7 +126,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.__enable_buttons()
         except:
             traceback.print_exc(sys.stderr)
-            QtGui.QMessageBox.information(None, "Error", "Cannot load specified layer")
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Cannot load specified layer")
             return
 
     def __clear_tables(self):
@@ -137,7 +149,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                         + ".xmcda"
         self.__load_from_xmcda(xmcda_file)
 
-        self.table_criteria.add(self.criteria)
+        self.table_criteria.add_criteria(self.criteria, self.cv)
         self.table_prof.add_criteria(self.criteria)
         self.table_indiff.add_criteria(self.criteria)
         self.table_pref.add_criteria(self.criteria)

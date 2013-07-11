@@ -5,10 +5,11 @@ import copy
 import colors
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda.types import criterion
-from table import qt_criteria_table, qt_performance_table, qt_threshold_table
+from table import qt_criteria_table
+from table import qt_performance_table
+from table import qt_threshold_table
 from xml.etree import ElementTree
-from mcda.electre_tri import electre_tri
+from mcda.electre_tri import ElectreTri
 
 crit_table = None
 prof_table = None
@@ -36,7 +37,8 @@ def criterion_direction_changed(criterion):
     print criterion.id, ":", criterion.direction
 
 def criterion_state_changed(criterion):
-    print "Criteria enabled:", crit_table.criteria_enabled
+    criterion = c[criterion]
+    print "Criteria state changed:", criterion
     for table in [ perf_table, prof_table, indif_table, pref_table, veto_table ]:
         if table != None:
             table.disable_criterion(criterion)
@@ -45,52 +47,52 @@ def same_threshold_changed():
     for crit in c:
         if thresh_cbox.isChecked() is True:
             if crit.thresholds.has_threshold('q1'):
-                q = copy.deepcopy(crit.thresholds('q1'))
+                q = copy.deepcopy(crit.thresholds['q1'])
                 q.id = 'q'
                 q.name = 'q'
             else:
-                q = threshold('q', 'q', constant(None, 0))
+                q = threshold('q', 'q', Constant(None, 0))
 
             if crit.thresholds.has_threshold('p1'):
-                p = copy.deepcopy(crit.thresholds('p1'))
+                p = copy.deepcopy(crit.thresholds['p1'])
                 p.id = 'p'
                 p.name = 'p'
             else:
-                p = threshold('p', 'p', constant(None, 0))
+                p = threshold('p', 'p', Constant(None, 0))
 
             if crit.thresholds.has_threshold('v1'):
-                v = copy.deepcopy(crit.thresholds('v1'))
+                v = copy.deepcopy(crit.thresholds['v1'])
                 v.id = 'v'
                 v.name = 'v'
             else:
-                v = threshold('v', 'v', constant(None, None))
+                v = threshold('v', 'v', Constant(None, None))
 
-            t = thresholds([q, p, v])
+            t = Thresholds([q, p, v])
             crit.thresholds = t
         else:
-            t = thresholds([])
+            t = Thresholds([])
             for i in range(1,len(b)+1):
                 qid = 'q%d' % i
                 pid = 'p%d' % i
                 vid = 'v%d' % i
                 if crit.thresholds.has_threshold('q'):
-                    q = copy.deepcopy(crit.thresholds('q'))
+                    q = copy.deepcopy(crit.thresholds['q'])
                     q.id = qid 
                     q.name = qid
                 else:
-                    q = threshold(qid, qid, constant(None, 0))
+                    q = threshold(qid, qid, Constant(None, 0))
                 if crit.thresholds.has_threshold('p'):
-                    p = copy.deepcopy(crit.thresholds('p'))
+                    p = copy.deepcopy(crit.thresholds['p'])
                     p.id = pid 
                     p.name = pid
                 else:
-                    p = threshold(pid, pid, constant(None, 0))
+                    p = threshold(pid, pid, Constant(None, 0))
                 if crit.thresholds.has_threshold('v'):
-                    v = copy.deepcopy(crit.thresholds('v'))
+                    v = copy.deepcopy(crit.thresholds['v'])
                     v.id = vid
                     v.name = vid
                 else:
-                    v = threshold(vid, vid, constant(None, None))
+                    v = threshold(vid, vid, Constant(None, None))
 
                 t.append(q)
                 t.append(p)
@@ -154,10 +156,10 @@ def save_to_xmcda():
                                             encoding='utf-8', method='xml')
 
 def run_electre_tri():
-    etri = electre_tri(c, pt, ptb, lbda)
-    affectations = etri.pessimist()
+    etri = ElectreTri(c, cv, ptb, lbda, cps)
+    affectations = etri.pessimist(pt)
     cat_colors = colors.ncategories_colors[len(b)+1]
-    perf_table.add_affectations(affectations, cat_colors)
+    perf_table.add_affectations(affectations, None)
 
 if __name__ == "__main__":
 
@@ -168,7 +170,8 @@ if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
     perf_table = qt_performance_table(None, c, a, pt)
-    crit_table = qt_criteria_table(None, c)
+    crit_table = qt_criteria_table(None)
+    crit_table.add_criteria(c, cv)
     prof_table = qt_performance_table(None, c, b, ptb)
 
     thresh_cbox = QtGui.QCheckBox('Use same thresholds for all profiles')
@@ -176,7 +179,10 @@ if __name__ == "__main__":
     pref_table = qt_threshold_table(None, c)
     veto_table = qt_threshold_table(None, c)
 
-    if c[0].thresholds.has_threshold('q'):
+    crit = next(c.itervalues())
+    for thres in crit.thresholds:
+        print thres
+    if crit.thresholds.has_threshold('q'):
         indif_table.add_threshold('q', 'q')
         pref_table.add_threshold('p', 'p')
         veto_table.add_threshold('v', 'v')
@@ -215,9 +221,6 @@ if __name__ == "__main__":
     button_etri.connect(button_etri,
                         QtCore.SIGNAL("clicked()"),
                         run_electre_tri)
-
-    print "# of criteria:", crit_table.ncriteria
-    print "Criteria enabled:", crit_table.criteria_enabled
 
     layout = QtGui.QVBoxLayout()
     layout.addWidget(tabs)
