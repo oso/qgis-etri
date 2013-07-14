@@ -18,14 +18,15 @@ from ui.pwdialog import *
 COL_CRITERIONS = 2
 COL_DIRECTION = 1
 
-class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
+class EtriMainWindow(QtGui.QDialog, Ui_EtriMainWindow):
 
     def __init__(self, iface, map_canvas=None):
         self.map_canvas = map_canvas
         self.iface = iface
         parent = self.iface.mainWindow()
-        QtGui.QMainWindow.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.Window)
 
         self.criteria_activated = []
         self.ncriteria = 0
@@ -42,8 +43,16 @@ class EtriMainWindow(QtGui.QMainWindow, Ui_EtriMainWindow):
         self.table_crit.setColumnWidth(2, 50)
 
     def closeEvent(self, event):
-        if self.isEnabled() == False:
-            event.ignore();
+        val = QtGui.QMessageBox.question(self, "ELECTRE TRI",
+                    "Close ELECTRE TRI?",
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                    QtGui.QMessageBox.No)
+        if val == QtGui.QMessageBox.No:
+            event.ignore()
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Escape:
+            self.close()
 
     def __update_layer_list(self, map_canvas):
         if map_canvas == None:

@@ -27,3 +27,4 @@ class etri_plugin:
     def run(self):
         ui = EtriMainWindow(self.iface, self.iface.mapCanvas())
         ui.show()
+        ui.exec_()
