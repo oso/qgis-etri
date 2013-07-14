@@ -412,14 +412,10 @@ class qt_threshold_table(QtGui.QTableWidget):
             item = QtGui.QTableWidgetItem()
             if crit.thresholds.has_threshold(threshold_id):
                 t = crit.thresholds[threshold_id]
-                # FIXME: handle the points
-                if isinstance(t.values, Constant):
-                    if t.values.value is not None:
-                        item.setText(str(t.values.value))
-                else:
-                    raise TypeError, "Not handled by qt_threshold_table"
-            else:
-                item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+                # FIXME: handle other types
+                if t.values.value is not None:
+                    item.setText(str(t.values.value))
+
             self.setItem(row, col, item)
 
     def __cell_changed(self, row, col):
@@ -430,6 +426,10 @@ class qt_threshold_table(QtGui.QTableWidget):
         crit = self.col_crit[col]
         thresholds = crit.thresholds
         threshold_id = self.row_threshid[row]
+
+        if thresholds.has_threshold(threshold_id) is False:
+            return
+
         threshold = thresholds[threshold_id]
 
         item = self.cellWidget(row, col)

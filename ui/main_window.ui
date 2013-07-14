@@ -111,7 +111,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="threshold_table" name="table_indiff"/>
+            <widget class="qt_threshold_table" name="table_indiff"/>
            </item>
           </layout>
          </widget>
@@ -124,7 +124,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="threshold_table" name="table_pref"/>
+            <widget class="qt_threshold_table" name="table_pref"/>
            </item>
           </layout>
          </widget>
@@ -137,7 +137,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="threshold_table" name="table_veto"/>
+            <widget class="qt_threshold_table" name="table_veto"/>
            </item>
           </layout>
          </widget>
@@ -536,7 +536,7 @@ p, li { white-space: pre-wrap; }
    <header location="global">table</header>
   </customwidget>
   <customwidget>
-   <class>threshold_table</class>
+   <class>qt_threshold_table</class>
    <extends>QTableWidget</extends>
    <header location="global">table</header>
   </customwidget>

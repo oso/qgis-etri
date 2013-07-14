@@ -7,6 +7,7 @@ from mcda.electre_tri import ElectreTri
 from mcda.types import Criteria, CriteriaValues
 from mcda.types import PerformanceTable, Alternatives
 from mcda.types import Alternative, AlternativePerformances
+from mcda.types import Thresholds, Threshold
 
 # Method used to update criteria from XMCDA file
 
@@ -73,25 +74,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')
-        xmcda_ptb = root.find('.//performanceTable')
+        xmcda_bpt = root.find('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters')
 
-        c = Criteria()
-        c.from_xmcda(xmcda_crit)
-        print(c)
-        self.__update_criteria(c)
+        self.criteria = Criteria()
+        self.criteria.from_xmcda(xmcda_crit)
 
-        cv = CriteriaValues()
-        cv.from_xmcda(xmcda_critval)
-        self.cv = cv
+        self.cv = CriteriaValues()
+        self.cv.from_xmcda(xmcda_critval)
 
-        b = Alternatives()
-        b.from_xmcda(xmcda_b)
-        print(b)
+        self.balternatives = Alternatives()
+        self.balternatives.from_xmcda(xmcda_b)
 
-        ptb = PerformanceTable()
-        ptb.from_xmcda(xmcda_ptb)
-        print(ptb)
+        self.bpt = PerformanceTable()
+        self.bpt.from_xmcda(xmcda_bpt)
 
     def __generate_first_profile(self):
         crit_min = {}
@@ -99,7 +95,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         for altp in self.pt:
             for crit in self.criteria:
                 d = crit.direction
-                print altp
+#                print altp
                 if crit_min.has_key(crit.id) is False:
                     crit_min[crit.id] = altp(crit.id)
                 elif crit_min[crit.id]*d > altp(crit.id)*d:
@@ -112,7 +108,13 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         b1 = AlternativePerformances('b1', {})
         for crit in self.criteria:
-            b1.performances[crit.id] = (crit_max[crit.id]-crit_min[crit.id])/2
+            b1.performances[crit.id] = (crit_max[crit.id]
+                                        - crit_min[crit.id]) / 2
+            q = Threshold('q', 'q', Constant(None, 0))
+            p = Threshold('p', 'p', Constant(None, 0))
+            v = Threshold('v', 'v', Constant(None, None))
+            crit.thresholds = Thresholds([q, p, v])
+
         self.balternatives = Alternatives([Alternative('b1', 'b1')])
         self.bpt = PerformanceTable([b1])
 
@@ -143,19 +145,39 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.alternatives = self.layer.alternatives
         self.pt = self.layer.pt
 
-        self.__generate_first_profile()
-
-        xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] \
-                        + ".xmcda"
-        self.__load_from_xmcda(xmcda_file)
+        try:
+            xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] \
+                            + ".xmcda"
+            self.__load_from_xmcda(xmcda_file)
+        except:
+            self.__generate_first_profile()
 
         self.table_criteria.add_criteria(self.criteria, self.cv)
         self.table_prof.add_criteria(self.criteria)
+
         self.table_indiff.add_criteria(self.criteria)
         self.table_pref.add_criteria(self.criteria)
         self.table_veto.add_criteria(self.criteria)
 
         self.table_prof.add_pt(self.balternatives, self.bpt)
+
+        thresholds = next(self.criteria.itervalues()).thresholds
+        if thresholds:
+            if thresholds.has_threshold('v'):
+                self.cbox_samethresholds.setChecked(True)
+                self.table_indiff.add_threshold('q', 'q')
+                self.table_pref.add_threshold('p', 'p')
+                self.table_veto.add_threshold('v', 'v')
+            else:
+                for i in range(1, len(self.balternatives) + 1):
+                    ts_name = "q%d" % (i + 1)
+                    self.table_indiff.add_threshold("q%d" % i , "q%d" % i)
+                    self.table_pref.add_threshold("p%d" % i , "p%d" % i)
+                    self.table_veto.add_threshold("v%d" % i , "v%d" % i)
+        else:
+            self.cbox_samethresholds.setChecked(True)
+            self.cbox_sameqp.setChecked(True)
+            self.cbox_noveto.setChecked(True)
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)
