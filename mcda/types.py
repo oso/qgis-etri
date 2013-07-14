@@ -349,6 +349,10 @@ class Criterion(McdaObject):
         if value is not None:
             self.weight = unmarshal(value.getchildren()[0])
 
+        value = xmcda.find('.//thresholds')
+        if value is not None:
+            self.thresholds = Thresholds().from_xmcda(value)
+
         return self
 
 class CriteriaValues(McdaDict):
@@ -1632,6 +1636,8 @@ class Thresholds(McdaDict):
             t.from_xmcda(tag)
             self.append(t)
 
+        return self
+
 class Threshold(McdaObject):
 
     def __init__(self, id, name=None, values=None):
@@ -1668,6 +1674,9 @@ class Threshold(McdaObject):
         if values.tag == 'constant':
             c = Constant(None, 0)
             c.from_xmcda(values)
+            self.values = c
+
+        return self
 
 class Categories(McdaDict):
 
