@@ -3,6 +3,8 @@ name=Electre Tri
 qgisMinimumVersion=1.8
 description=A decision aid plugin based on ELECTRE TRI
 version=0.3.1
+author=Olivier Sobrie
+email=olivier@sobrie.be
 
 homepage=https://github.com/oso/qgis-etri
 tracker=https://github.com/oso/qgis-etri/issues?direction=desc&sort=created&state=open
