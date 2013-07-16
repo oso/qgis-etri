@@ -12,8 +12,11 @@ def version():
 def qgisMinimumVersion():
     return "1.4"
 
-def authorName():
+def author():
     return "Olivier Sobrie"
+
+def email():
+    return "olivier@sobrie.be"
 
 def classFactory(iface):
     return etri_plugin(iface)
