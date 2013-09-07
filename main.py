@@ -9,8 +9,6 @@ from mcda.types import PerformanceTable, Alternatives
 from mcda.types import Alternative, AlternativePerformances
 from mcda.types import Thresholds, Threshold
 
-# Method used to update criteria from XMCDA file
-
 class main_window(QtGui.QDialog, Ui_main_window):
 
     def __init__(self, iface):
@@ -160,6 +158,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_veto.add_criteria(self.criteria)
 
         self.table_prof.add_pt(self.balternatives, self.bpt)
+        self.label_ncategories.setText("%d" % len(self.bpt))
 
         thresholds = next(self.criteria.itervalues()).thresholds
         if thresholds:

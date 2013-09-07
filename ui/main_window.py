@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Sun Jul 14 15:05:17 2013
+# Created: Sat Sep  7 14:00:37 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -230,11 +230,10 @@ class Ui_main_window(object):
         self.horizontalLayout_2.addWidget(self.button_add_profile)
         self.label_ncategories = QtGui.QLabel(self.group_profiles)
         self.label_ncategories.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_ncategories.setText(_fromUtf8("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">-</span></p></body></html>"))
+        self.label_ncategories.setStyleSheet(_fromUtf8("font: 18pt \"Sans Serif\";"))
+        self.label_ncategories.setText(_fromUtf8("-"))
+        self.label_ncategories.setTextFormat(QtCore.Qt.PlainText)
+        self.label_ncategories.setAlignment(QtCore.Qt.AlignCenter)
         self.label_ncategories.setObjectName(_fromUtf8("label_ncategories"))
         self.horizontalLayout_2.addWidget(self.label_ncategories)
         self.button_del_profile = QtGui.QPushButton(self.group_profiles)
