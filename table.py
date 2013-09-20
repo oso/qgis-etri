@@ -325,6 +325,12 @@ class qt_performance_table(QtGui.QTableWidget):
             self.setItem(row, col, item)
         self.row_altp[row] = alt_perfs
 
+    def remove(self, alternative):
+        row = self.__get_alternative_row_by_id(alternative.id)
+        self.removeRow(row)
+        del self.row_alt[row]
+        del self.row_altp[row]
+
     def __cell_changed(self, row, col):
         if self.col_crit.has_key(col) is False or   \
             self.row_altp.has_key(row) is False:

@@ -191,3 +191,21 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_indiff.disable_criterion(criterion)
         self.table_pref.disable_criterion(criterion)
         self.table_veto.disable_criterion(criterion)
+
+    def on_button_add_profile_pressed(self):
+        name = "b%d" % (len(self.bpt) + 1)
+        b = Alternative(name, name)
+        ap = self.bpt["b%d" % len(self.bpt)].copy()
+        ap.id = name
+        self.balternatives.append(b)
+        self.bpt.append(ap)
+        self.table_prof.add(b, ap)
+        self.label_ncategories.setText("%d" % len(self.bpt))
+
+    def on_button_del_profile_pressed(self):
+        name = "b%d" % len(self.bpt)
+        b = self.balternatives[name]
+        self.table_prof.remove(b)
+        self.balternatives.remove(b.id)
+        self.bpt.remove(b.id)
+        self.label_ncategories.setText("%d" % len(self.bpt))
