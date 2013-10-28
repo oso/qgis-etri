@@ -9,6 +9,7 @@ import sys
 from itertools import product
 from xml.etree import ElementTree
 from copy import deepcopy
+from collections import OrderedDict
 
 type2tag = {
     int: 'integer',
@@ -43,7 +44,7 @@ class McdaDict(object):
            id (str): The identifier of the dictionnary
         """
         self.id = id
-        self._d = dict()
+        self._d = OrderedDict()
         for i in l:
             self._d[i.id] = i
 
@@ -253,6 +254,8 @@ class Criteria(McdaDict):
             elif cols is not None:
                 c = Criterion(row[0])
                 for i in cols.keys():
+                    if cols[i] == 'direction':
+                        row[i] = int(row[i])
                     setattr(c, cols[i], row[i])
                 self.append(c)
 
@@ -287,8 +290,11 @@ class Criterion(McdaObject):
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
-
-        return "%s" % self.id
+        if self.direction == 1:
+            direction = "+"
+        else:
+            direction = "-"
+        return "%s(%s)" % (self.id, direction)
 
     def to_xmcda(self):
         """Convert the MCDA object into XMCDA output"""
@@ -642,6 +648,10 @@ class PerformanceTable(McdaDict):
 
         return self.__mathop(value, "div")
 
+    def get_by_alternative_id(self, alternative_id):
+        d = {ap.altid: ap for ap in self}
+        return d[alternative_id]
+
     def get_criteria_ids(self):
         return next(self.itervalues()).performances.keys()
 
@@ -847,7 +857,7 @@ class PerformanceTable(McdaDict):
 
 class AlternativePerformances(McdaObject):
 
-    def __init__(self, id=None, performances=None):
+    def __init__(self, id=None, performances=None, alternative_id=None):
         """Create a new AlternativePerformances instance
 
         Kwargs:
@@ -857,6 +867,10 @@ class AlternativePerformances(McdaObject):
         """
 
         self.id = id
+        self.altid = alternative_id
+        if self.altid is None:
+            self.altid = id
+
         if performances is None:
             self.performances = {}
         else:
@@ -868,7 +882,6 @@ class AlternativePerformances(McdaObject):
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
-
         return "%s: %s" % (self.id, self.performances)
 
     def __mathop(self, value, op):
@@ -966,8 +979,10 @@ class AlternativePerformances(McdaObject):
         """Convert the MCDA object into XMCDA output"""
 
         xmcda = ElementTree.Element('alternativePerformances')
+        if self.altid is not None:
+            xmcda.set('id', self.id)
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
-        altid.text = self.id
+        altid.text = self.altid
 
         for crit_id, val in self.performances.iteritems():
             perf = ElementTree.SubElement(xmcda, 'performance')
@@ -985,8 +1000,12 @@ class AlternativePerformances(McdaObject):
         if xmcda.tag != 'alternativePerformances':
             raise TypeError('alternativePerformances::invalid tag')
 
+        self.id = xmcda.get('id')
+
         altid = xmcda.find('.//alternativeID')
-        self.id = altid.text
+        self.altid = altid.text
+        if self.id is None:
+            self.id = altid.text
 
         tag_list = xmcda.getiterator('performance')
         for tag in tag_list:
