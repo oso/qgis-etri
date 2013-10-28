@@ -11,7 +11,7 @@ from mcda.types import Thresholds, Threshold
 
 class main_window(QtGui.QDialog, Ui_main_window):
 
-    def __init__(self, iface):
+    def __init__(self, iface = None, layer = None):
         QtGui.QDialog.__init__(self)
         Ui_main_window.__init__(self)
         self.setupUi(self)
@@ -19,7 +19,13 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         self.iface = iface
 
-        self.__update_layer_list(iface.mapCanvas())
+        if iface:
+            self.__update_layer_list(iface.mapCanvas())
+        elif layer:
+            self.layer = criteria_layer(layer)
+            self.__loadlayer()
+            self.__enable_buttons()
+
         self.table_criteria.connect(self.table_criteria,
                                     QtCore.SIGNAL("criterion_state_changed"),
                                     self.__criterion_state_changed)
@@ -69,14 +75,18 @@ class main_window(QtGui.QDialog, Ui_main_window):
         tree = ElementTree.parse(xmcda_file)
         root = tree.getroot()
         ElementTree.dump(root)
+        xmcda_formatversion = root.find('.//formatversion')
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')
         xmcda_bpt = root.find('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters')
 
-        self.criteria = Criteria()
-        self.criteria.from_xmcda(xmcda_crit)
+        criteria = Criteria()
+        criteria.from_xmcda(xmcda_crit)
+        for criterion in criteria:
+            if criterion.id not in self.criteria:
+                pass
 
         self.cv = CriteriaValues()
         self.cv.from_xmcda(xmcda_critval)
@@ -209,3 +219,21 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.balternatives.remove(b.id)
         self.bpt.remove(b.id)
         self.label_ncategories.setText("%d" % len(self.bpt))
+
+if __name__ == "__main__":
+    from PyQt4 import QtGui
+    from qgis.core import *
+
+    QgsApplication.setPrefixPath("/usr/", True)
+    QgsApplication.initQgis()
+
+    layer = QgsVectorLayer('/home/oso/dev/qgis-etri/tests/data/loulouka/criteria.shp',
+                           'criteria', 'ogr')
+    if not layer.isValid():
+        print("Layer failed to load!")
+        sys.exit(1)
+
+    app = QtGui.QApplication(sys.argv)
+    window = main_window(layer = layer)
+    window.show()
+    app.exec_()
