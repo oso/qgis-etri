@@ -161,7 +161,7 @@ class qt_criteria_table(QtGui.QTableWidget):
     def add_criteria(self, cs, cvs = None):
         for c in cs:
             cv = None
-            if cvs is not None:
+            if cvs is not None and c.id in cvs:
                 cv = cvs[c.id]
             self.add_criterion(c, cv)
 
