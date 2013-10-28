@@ -1,3 +1,4 @@
+from PyQt4.QtCore import QVariant
 from qgis.core import QgsVectorLayer, QgsFeature
 from mcda.types import Criteria, Criterion, Alternative, Alternatives
 from mcda.types import PerformanceTable, AlternativePerformances
@@ -16,41 +17,28 @@ class criteria_layer(QgsVectorLayer):
         provider = self.layer.dataProvider()
         fields = provider.fields()
         self.criteria = Criteria([])
-        for id, field in fields.iteritems():
-            name = str(field.name().trimmed())
-            crit = Criterion(str(id), name)
+
+        for field in fields:
+            ftype = field.type()
+            if (ftype != QVariant.Bool) and (ftype != QVariant.Double) \
+                                        and (ftype != QVariant.Int) \
+                                        and (ftype != QVariant.LongLong):
+                continue
+
+            name = str(field.name())
+            crit = Criterion(name, name)
             self.criteria.append(crit)
 
     def get_alternatives_and_pt(self):
         provider = self.layer.dataProvider()
-        attrib_index = provider.attributeIndexes()
-        provider.select(attrib_index)
-        feat = QgsFeature()
-
         self.alternatives = Alternatives([])
         self.pt = PerformanceTable([])
-        while provider.nextFeature(feat):
-            attrs = feat.attributeMap()
+
+        for feat in provider.getFeatures():
+            featid = str(feat.id())
             perfs = {}
-            for (k, attr) in attrs.iteritems():
-                perfs[str(k)] = attr.toDouble()[0]
-            self.alternatives.append(Alternative(str(feat.id()),
-                                                 str(feat.id())))
-            self.pt.append(AlternativePerformances(str(feat.id()), perfs))
+            for criterion in self.criteria:
+                perfs[criterion.id] = float(feat[criterion.id])
 
-def layer_get_attributes(layer):
-    provider = layer.dataProvider()
-    allAttrs = provider.attributeIndexes()
-    provider.select(allAttrs)
-    feat = QgsFeature()
-
-    actions = {}
-    while provider.nextFeature(feat):
-        attrs = feat.attributeMap()
-        attributes = {}
-        for (k, attr) in attrs.iteritems():
-            attributes[k] = attr.toDouble()[0]
-
-        actions[feat.id()] = attributes
-
-    return actions
+            self.alternatives.append(Alternative(featid, featid))
+            self.pt.append(AlternativePerformances(featid, perfs))
