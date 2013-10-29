@@ -99,7 +99,7 @@ class qt_criteria_table(QtGui.QTableWidget):
             c.disabled = False
         else:
             c.disabled = True
-        self.emit(QtCore.SIGNAL("criterion_state_changed"), c.id)
+        self.emit(QtCore.SIGNAL("criterion_state_changed"), c)
 
     def __add_combo_signal(self, combo, row):
         smapper = QtCore.QSignalMapper(self)
