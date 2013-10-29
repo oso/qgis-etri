@@ -79,23 +79,38 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')
-        xmcda_bpt = root.find('.//performanceTable')
+        xmcda_pt = root.findall('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters')
 
-        criteria = Criteria()
-        criteria.from_xmcda(xmcda_crit)
-        for criterion in criteria:
-            if criterion.id not in self.criteria:
-                pass
-
+        # Remove criteria values that are not in the vector layer
         self.cv = CriteriaValues()
         self.cv.from_xmcda(xmcda_critval)
+        for cv in self.cv:
+            if cv.id not in self.criteria:
+                self.cv.remove(cv.id)
+
+        # Disable criteria for which there are no weights
+        for c in self.criteria:
+            if c.id not in self.cv:
+                c.disabled = True
 
         self.balternatives = Alternatives()
         self.balternatives.from_xmcda(xmcda_b)
 
         self.bpt = PerformanceTable()
-        self.bpt.from_xmcda(xmcda_bpt)
+        self.qpt = PerformanceTable()
+        self.ppt = PerformanceTable()
+        self.vpt = PerformanceTable()
+
+        for xmcda in xmcda_pt:
+            if xmcda.get('id') is None:
+                self.bpt.from_xmcda(xmcda)
+            elif xmcda.get('id') == 'q':
+                self.qpt.from_xmcda(xmcda)
+            elif xmcda.get('id') == 'p':
+                self.ppt.from_xmcda(xmcda)
+            elif xmcda.get('id') == 'v':
+                self.vpt.from_xmcda(xmcda)
 
     def __generate_first_profile(self):
         crit_min = {}
@@ -103,7 +118,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
         for altp in self.pt:
             for crit in self.criteria:
                 d = crit.direction
-#                print altp
                 if crit_min.has_key(crit.id) is False:
                     crit_min[crit.id] = altp(crit.id)
                 elif crit_min[crit.id]*d > altp(crit.id)*d:
@@ -170,23 +184,23 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.add_pt(self.balternatives, self.bpt)
         self.label_ncategories.setText("%d" % len(self.bpt))
 
-        thresholds = next(self.criteria.itervalues()).thresholds
-        if thresholds:
-            if thresholds.has_threshold('v'):
-                self.cbox_samethresholds.setChecked(True)
-                self.table_indiff.add_threshold('q', 'q')
-                self.table_pref.add_threshold('p', 'p')
-                self.table_veto.add_threshold('v', 'v')
-            else:
-                for i in range(1, len(self.balternatives) + 1):
-                    ts_name = "q%d" % (i + 1)
-                    self.table_indiff.add_threshold("q%d" % i , "q%d" % i)
-                    self.table_pref.add_threshold("p%d" % i , "p%d" % i)
-                    self.table_veto.add_threshold("v%d" % i , "v%d" % i)
-        else:
-            self.cbox_samethresholds.setChecked(True)
-            self.cbox_sameqp.setChecked(True)
-            self.cbox_noveto.setChecked(True)
+#        thresholds = next(self.criteria.itervalues()).thresholds
+#        if thresholds:
+#            if thresholds.has_threshold('v'):
+#                self.cbox_samethresholds.setChecked(True)
+#                self.table_indiff.add_threshold('q', 'q')
+#                self.table_pref.add_threshold('p', 'p')
+#                self.table_veto.add_threshold('v', 'v')
+#            else:
+#                for i in range(1, len(self.balternatives) + 1):
+#                    ts_name = "q%d" % (i + 1)
+#                    self.table_indiff.add_threshold("q%d" % i , "q%d" % i)
+#                    self.table_pref.add_threshold("p%d" % i , "p%d" % i)
+#                    self.table_veto.add_threshold("v%d" % i , "v%d" % i)
+#        else:
+#            self.cbox_samethresholds.setChecked(True)
+#            self.cbox_sameqp.setChecked(True)
+#            self.cbox_noveto.setChecked(True)
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)
