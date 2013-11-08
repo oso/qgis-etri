@@ -93,11 +93,11 @@ def layer_get_attributes(layer):
 
     return actions
 
-def generate_decision_map(layer_in, affectations, out, out_encoding):
+def generate_decision_map(layer_in, aa, out, out_encoding):
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = {0:QgsField("Category", QVariant.Int)}
+    fields = QgsFields()
+    fields.append(QgsField("Category", QVariant.Int))
 
     try:
         os.unlink(out)
@@ -106,20 +106,20 @@ def generate_decision_map(layer_in, affectations, out, out_encoding):
 
     writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.geometryType(), vprovider.crs())
 
-    inFeat = QgsFeature()
-    outFeat = QgsFeature()
-    inGeom = QgsGeometry()
+    outFeat = QgsFeature(fields)
     nFeat = vprovider.featureCount()
-    while vprovider.nextFeature(inFeat):
-        inGeom = inFeat.geometry()
-        id = inFeat.id()
+
+    for feat in layer_in.getFeatures():
+        inGeom = feat.geometry()
+        id = str(feat.id())
         outFeat.setGeometry(inGeom)
-        outFeat.addAttribute(0, affectations[id])
+        outFeat.setAttribute(0, aa[id].category_id)
         writer.addFeature(outFeat)
+
     del writer
 
 def saveDialog(parent):
-    settings = QSettings() 
+    settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
     filtering = QString( "Shapefiles (*.shp)" )
     encode = settings.value( "/UI/encoding" ).toString()

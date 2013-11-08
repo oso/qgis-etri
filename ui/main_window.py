@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Sat Sep  7 14:00:37 2013
+# Created: Thu Nov  7 21:17:59 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -85,7 +85,7 @@ class Ui_main_window(object):
         self.gridLayout_3 = QtGui.QGridLayout(self.tab_indiff)
         self.gridLayout_3.setMargin(0)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
-        self.table_indiff = qt_threshold_table(self.tab_indiff)
+        self.table_indiff = qt_performance_table(self.tab_indiff)
         self.table_indiff.setObjectName(_fromUtf8("table_indiff"))
         self.table_indiff.setColumnCount(0)
         self.table_indiff.setRowCount(0)
@@ -96,7 +96,7 @@ class Ui_main_window(object):
         self.gridLayout_4 = QtGui.QGridLayout(self.tab_pref)
         self.gridLayout_4.setMargin(0)
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
-        self.table_pref = qt_threshold_table(self.tab_pref)
+        self.table_pref = qt_performance_table(self.tab_pref)
         self.table_pref.setObjectName(_fromUtf8("table_pref"))
         self.table_pref.setColumnCount(0)
         self.table_pref.setRowCount(0)
@@ -107,7 +107,7 @@ class Ui_main_window(object):
         self.gridLayout_7 = QtGui.QGridLayout(self.tab_veto)
         self.gridLayout_7.setMargin(0)
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
-        self.table_veto = qt_threshold_table(self.tab_veto)
+        self.table_veto = qt_performance_table(self.tab_veto)
         self.table_veto.setObjectName(_fromUtf8("table_veto"))
         self.table_veto.setColumnCount(0)
         self.table_veto.setRowCount(0)
@@ -257,9 +257,9 @@ class Ui_main_window(object):
         self.cbox_noveto = QtGui.QCheckBox(self.group_thresholds)
         self.cbox_noveto.setObjectName(_fromUtf8("cbox_noveto"))
         self.formLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.cbox_noveto)
-        self.cbox_sameqp = QtGui.QCheckBox(self.group_thresholds)
-        self.cbox_sameqp.setObjectName(_fromUtf8("cbox_sameqp"))
-        self.formLayout.setWidget(7, QtGui.QFormLayout.LabelRole, self.cbox_sameqp)
+        self.cbox_mrsort = QtGui.QCheckBox(self.group_thresholds)
+        self.cbox_mrsort.setObjectName(_fromUtf8("cbox_mrsort"))
+        self.formLayout.setWidget(7, QtGui.QFormLayout.LabelRole, self.cbox_mrsort)
         self.right_layout.addWidget(self.group_thresholds)
         self.group_affectation = QtGui.QGroupBox(main_window)
         self.group_affectation.setObjectName(_fromUtf8("group_affectation"))
@@ -305,7 +305,7 @@ class Ui_main_window(object):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
-        main_window.setWindowTitle(_translate("main_window", "ELECTRE TRI", None))
+        main_window.setWindowTitle(_translate("main_window", "ELECTRE-TRI", None))
         self.tab_parameters.setTabText(self.tab_parameters.indexOf(self.tab_criteria), _translate("main_window", "Criteria", None))
         self.tab_parameters.setTabText(self.tab_parameters.indexOf(self.tab_profiles), _translate("main_window", "Profiles", None))
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_indiff), _translate("main_window", "Indifference", None))
@@ -334,7 +334,7 @@ class Ui_main_window(object):
         self.group_thresholds.setTitle(_translate("main_window", "Thresholds", None))
         self.cbox_samethresholds.setText(_translate("main_window", "Use same for all profiles", None))
         self.cbox_noveto.setText(_translate("main_window", "No Veto", None))
-        self.cbox_sameqp.setText(_translate("main_window", "Indifference = Preference", None))
+        self.cbox_mrsort.setText(_translate("main_window", "MR-Sort model", None))
         self.group_affectation.setTitle(_translate("main_window", "Affectation", None))
         self.label_cutlevel.setText(_translate("main_window", "Cutting level:", None))
         self.label_procedure.setText(_translate("main_window", "Procedure:", None))
@@ -342,6 +342,6 @@ class Ui_main_window(object):
         self.combo_procedure.setItemText(1, _translate("main_window", "Optimistic", None))
         self.button_generate.setText(_translate("main_window", "Generate Decision Map", None))
 
-from table import qt_performance_table, qt_threshold_table, qt_criteria_table
+from table import qt_performance_table, qt_criteria_table
 from graphic import mygraphicsview
 import resources_rc

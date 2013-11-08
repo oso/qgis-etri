@@ -1,5 +1,6 @@
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from collections import OrderedDict
 from mcda.types import Criteria, Criterion, Constant
 
 COMBO_INDEX_MAX=0
@@ -230,8 +231,8 @@ class qt_performance_table(QtGui.QTableWidget):
         super(qt_performance_table, self).__init__(parent)
         self.parent = parent
         self.col_crit = {}
-        self.row_alt = {}
-        self.row_altp = {}
+        self.row_alt = []
+        self.row_altp = []
 
         self.setItemDelegate(float_delegate(self))
 
@@ -249,8 +250,8 @@ class qt_performance_table(QtGui.QTableWidget):
         self.setRowCount(0)
         self.setColumnCount(0)
         self.col_crit = {}
-        self.row_alt = {}
-        self.row_altp = {}
+        self.row_alt = []
+        self.row_altp = []
 
     def add_criteria(self, criteria):
         for crit in criteria:
@@ -285,13 +286,11 @@ class qt_performance_table(QtGui.QTableWidget):
             self.setItem(row, col, item)
 
     def __get_alternative_row_by_id(self, alternative_id):
-        for row, alt in self.row_alt.iteritems():
+        for i, alt in enumerate(self.row_alt):
             if alt.id == alternative_id:
-                return row
+                return i
 
-    def __get_alternative_row(self, alternative):
-        alt_row = dict([[v,k] for k,v in self.row_alt.items()])
-        return alt_row[alternative]
+        return None
 
     def __get_criterion_col(self, criterion):
         crit_col = dict([[v,k] for k,v in self.col_crit.items()])
@@ -315,7 +314,7 @@ class qt_performance_table(QtGui.QTableWidget):
             self.verticalHeaderItem(row).setText(alternative.name)
         else:
             self.verticalHeaderItem(row).setText(alternative.id)
-        self.row_alt[row] = alternative
+        self.row_alt.append(alternative)
 
         performances = alt_perfs.performances
         for col, crit in self.col_crit.iteritems():
@@ -323,17 +322,23 @@ class qt_performance_table(QtGui.QTableWidget):
             if performances.has_key(crit.id):
                  item.setText(str(performances[crit.id]))
             self.setItem(row, col, item)
-        self.row_altp[row] = alt_perfs
+        self.row_altp.append(alt_perfs)
 
-    def remove(self, alternative):
-        row = self.__get_alternative_row_by_id(alternative.id)
+    def remove_all(self):
+        for i in range(len(self.row_alt)):
+            self.removeRow(0)
+            self.row_alt.pop(0)
+            self.row_altp.pop(0)
+
+    def remove(self, alternative_id):
+        row = self.__get_alternative_row_by_id(alternative_id)
         self.removeRow(row)
-        del self.row_alt[row]
-        del self.row_altp[row]
+        self.row_alt.pop(row)
+        self.row_altp.pop(row)
 
     def __cell_changed(self, row, col):
         if self.col_crit.has_key(col) is False or   \
-            self.row_altp.has_key(row) is False:
+            row >= len(self.row_altp) or row < 0:
             return
 
         alt = self.row_alt[row]

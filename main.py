@@ -8,6 +8,12 @@ from mcda.types import Criteria, CriteriaValues
 from mcda.types import PerformanceTable, Alternatives
 from mcda.types import Alternative, AlternativePerformances
 from mcda.types import Thresholds, Threshold
+from mcda.generate import generate_categories
+from mcda.generate import generate_categories_profiles
+from qgis_utils import generate_decision_map, saveDialog
+
+COMBO_PROC_PESSIMIST = 0
+COMBO_PROC_OPTIMIST = 1
 
 class main_window(QtGui.QDialog, Ui_main_window):
 
@@ -53,20 +59,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def __update_criteria(self, criteria):
         self.criteria = criteria
         pass
-#        for c in self.criteria:
-#            if criteria.has_criterion(c.id):
-#            if c.id in self.criteria:
-#                c2 = Criteria(c.id)
-#                c.disabled = c2.disabled
-#                c.direction = c2.direction
-#                if c2.weight is not None:
-#                    c.weight = c2.weight
-#                else:
-#                    c.weight = 0
-#                c.thresholds = c2.thresholds
-#            else:
-#                c.disabled = True
-#                c.weight = 0
 
     def __update_profiles(self, alternatives, pt):
         pass
@@ -80,7 +72,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')
         xmcda_pt = root.findall('.//performanceTable')
-        xmcda_lbda = root.find('.//methodParameters')
+        xmcda_lbda = root.find('.//methodParameters/parameter/value/real')
 
         # Remove criteria values that are not in the vector layer
         self.cv = CriteriaValues()
@@ -112,6 +104,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
             elif xmcda.get('id') == 'v':
                 self.vpt.from_xmcda(xmcda)
 
+        if len(self.qpt) == 0 and len(self.ppt) > 0:
+            self.qpt = self.ppt.copy()
+            self.qpt.id = "q"
+
+        if len(self.ppt) == 0 and len(self.qpt) > 0:
+            self.ppt = self.qpt.copy()
+            self.ppt.id = "p"
+
+        # Categories Profiles
+        self.categories = generate_categories(len(self.bpt), prefix = "")
+        self.cat_profiles = generate_categories_profiles(self.categories)
+
+        self.lbda = float(xmcda_lbda.text)
+
     def __generate_first_profile(self):
         crit_min = {}
         crit_max = {}
@@ -119,26 +125,30 @@ class main_window(QtGui.QDialog, Ui_main_window):
             for crit in self.criteria:
                 d = crit.direction
                 if crit_min.has_key(crit.id) is False:
-                    crit_min[crit.id] = altp(crit.id)
+                    crit_min[crit.id] = altp.performances[crit.id]
                 elif crit_min[crit.id]*d > altp(crit.id)*d:
-                    crit_min[crit.id] = altp(crit.id)
+                    crit_min[crit.id] = altp.performances[crit.id]
 
                 if crit_max.has_key(crit.id) is False:
-                    crit_max[crit.id] = altp(crit.id)
+                    crit_max[crit.id] = altp.performances[crit.id]
                 elif crit_max[crit.id]*d < altp(crit.id)*d:
-                    crit_max[crit.id] = altp(crit.id)
+                    crit_max[crit.id] = altp.performances[crit.id]
 
         b1 = AlternativePerformances('b1', {})
         for crit in self.criteria:
             b1.performances[crit.id] = (crit_max[crit.id]
                                         - crit_min[crit.id]) / 2
-            q = Threshold('q', 'q', Constant(None, 0))
-            p = Threshold('p', 'p', Constant(None, 0))
-            v = Threshold('v', 'v', Constant(None, None))
-            crit.thresholds = Thresholds([q, p, v])
 
         self.balternatives = Alternatives([Alternative('b1', 'b1')])
         self.bpt = PerformanceTable([b1])
+        self.cbox_mrsort.setChecked(True)
+        self.cbox_noveto.setChecked(True)
+
+        # Categories Profiles
+        self.categories = generate_categories(len(self.bpt), prefix = "")
+        self.cat_profiles = generate_categories_profiles(self.categories)
+
+        self.lbda = 0.75
 
     def on_button_loadlayer_pressed(self):
         index = self.combo_layer.currentIndex()
@@ -160,6 +170,107 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_indiff.reset_table()
         self.table_pref.reset_table()
         self.table_veto.reset_table()
+
+    def same_pq_thresholds_for_all_profiles(self):
+        if self.ppt:
+            p = set(self.ppt.values())
+            if len(p) > 1:
+                return False
+
+        if self.qpt:
+            q = set(self.qpt.values())
+            if len(q) > 1:
+                return False
+
+        return True
+
+    def on_cbox_noveto_stateChanged(self, state):
+        if state == QtCore.Qt.Checked:
+            index = self.tab_thresholds.indexOf(self.tab_veto)
+            self.tab_thresholds.removeTab(index)
+            self.vpt = None
+        else:
+            self.tab_thresholds.insertTab(2, self.tab_veto, "Veto")
+
+            if self.cbox_samethresholds.isChecked() is True:
+                self.set_same_threshold_for_all_profiles(self.vpt,
+                                                         self.table_veto)
+            else:
+                self.set_one_threshold_per_profile(self.vpt,
+                                                   self.table_veto)
+
+    def on_cbox_mrsort_stateChanged(self, state):
+        if state == QtCore.Qt.Checked:
+            index = self.tab_thresholds.indexOf(self.tab_indiff)
+            self.tab_thresholds.removeTab(index)
+            intex = self.tab_thresholds.indexOf(self.tab_pref)
+            self.tab_thresholds.removeTab(index)
+            self.qpt = None
+            self.ppt = None
+        else:
+            self.tab_thresholds.insertTab(0, self.tab_indiff,
+                                          "Indifference")
+            self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
+
+            if self.cbox_samethresholds.isChecked() is True:
+                self.set_same_threshold_for_all_profiles(self.qpt,
+                                                         self.table_indiff)
+                self.set_same_threshold_for_all_profiles(self.ppt,
+                                                         self.table_pref)
+            else:
+                self.set_one_threshold_per_profile(self.qpt,
+                                                   self.table_indiff)
+                self.set_one_threshold_per_profile(self.ppt,
+                                                   self.table_pref)
+
+    def set_same_threshold_for_all_profiles(self, pt, table):
+        table.remove_all()
+
+        if pt and len(pt) > 0:
+            bp = next(pt.itervalues())
+        else:
+            bp = AlternativePerformances('b', {c: None \
+                                               for c in self.criteria})
+
+        bp.id = 'b'
+        pt = PerformanceTable([bp])
+
+        table.add(Alternative('b'), bp)
+
+    def set_one_threshold_per_profile(self, pt, table):
+        table.remove_all()
+
+        if pt and len(pt) > 0:
+            bp = next(pt.itervalues())
+        else:
+            bp = AlternativePerformances('b', {c: None \
+                                               for c in self.criteria})
+
+        pt = PerformanceTable([])
+        for b in self.balternatives:
+            bp2 = bp.copy()
+            bp2.id = b.id
+            pt.append(bp2)
+
+        table.add_pt(self.balternatives, pt)
+
+    def on_cbox_samethresholds_stateChanged(self, state):
+        if state == QtCore.Qt.Checked:
+            self.set_same_threshold_for_all_profiles(self.qpt,
+                                                     self.table_indiff)
+            self.set_same_threshold_for_all_profiles(self.ppt,
+                                                     self.table_pref)
+
+            self.set_same_threshold_for_all_profiles(self.vpt,
+                                                     self.table_veto)
+        else:
+            self.set_one_threshold_per_profile(self.qpt,
+                                               self.table_indiff)
+            self.set_one_threshold_per_profile(self.ppt,
+                                               self.table_pref)
+
+            self.set_one_threshold_per_profile(self.vpt,
+                                               self.table_veto)
 
     def __loadlayer(self):
         # References to map criteria and alternatives
@@ -184,23 +295,24 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.add_pt(self.balternatives, self.bpt)
         self.label_ncategories.setText("%d" % len(self.bpt))
 
-#        thresholds = next(self.criteria.itervalues()).thresholds
-#        if thresholds:
-#            if thresholds.has_threshold('v'):
-#                self.cbox_samethresholds.setChecked(True)
-#                self.table_indiff.add_threshold('q', 'q')
-#                self.table_pref.add_threshold('p', 'p')
-#                self.table_veto.add_threshold('v', 'v')
-#            else:
-#                for i in range(1, len(self.balternatives) + 1):
-#                    ts_name = "q%d" % (i + 1)
-#                    self.table_indiff.add_threshold("q%d" % i , "q%d" % i)
-#                    self.table_pref.add_threshold("p%d" % i , "p%d" % i)
-#                    self.table_veto.add_threshold("v%d" % i , "v%d" % i)
-#        else:
-#            self.cbox_samethresholds.setChecked(True)
-#            self.cbox_sameqp.setChecked(True)
-#            self.cbox_noveto.setChecked(True)
+        if not self.qpt and not self.ppt:
+            self.cbox_mrsort.setChecked(True)
+        elif self.same_pq_thresholds_for_all_profiles():
+            self.cbox_samethresholds.setChecked(True)
+        else:
+            self.table_indiff.add_pt(self.balternatives, self.qpt)
+            self.table_pref.add_pt(self.balternatives, self.ppt)
+
+        if self.vpt:
+            self.table_veto.add_pt(self.balternatives, self.ppt)
+        else:
+            self.cbox_noveto.setChecked(True)
+            self.tab_thresholds.setTabEnabled(2, False)
+
+        if self.same_pq_thresholds_for_all_profiles():
+            self.cbox_samethresholds.setChecked(True)
+
+        self.spinbox_cutlevel.setValue(self.lbda)
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)
@@ -229,10 +341,28 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def on_button_del_profile_pressed(self):
         name = "b%d" % len(self.bpt)
         b = self.balternatives[name]
-        self.table_prof.remove(b)
+        self.table_prof.remove(b.id)
         self.balternatives.remove(b.id)
         self.bpt.remove(b.id)
         self.label_ncategories.setText("%d" % len(self.bpt))
+
+    def on_button_generate_pressed(self):
+        lbda = self.spinbox_cutlevel.value()
+        model = ElectreTri(self.criteria, self.cv, self.bpt, lbda,
+                           self.cat_profiles, self.vpt, self.qpt, self.ppt)
+
+        if self.combo_procedure.currentIndex() == COMBO_PROC_OPTIMIST:
+            aa = model.optimist(self.pt)
+        else:
+            aa = model.pessimist(self.pt)
+
+        print(aa)
+
+        (f, encoding) = saveDialog(self)
+        if f is None or encoding is None:
+            return
+
+        generate_decision_map(self.layer.layer, aa, f, encoding)
 
 if __name__ == "__main__":
     from PyQt4 import QtGui

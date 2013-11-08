@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ELECTRE TRI</string>
+   <string>ELECTRE-TRI</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -111,7 +111,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="qt_threshold_table" name="table_indiff"/>
+            <widget class="qt_performance_table" name="table_indiff"/>
            </item>
           </layout>
          </widget>
@@ -124,7 +124,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="qt_threshold_table" name="table_pref"/>
+            <widget class="qt_performance_table" name="table_pref"/>
            </item>
           </layout>
          </widget>
@@ -137,7 +137,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="qt_threshold_table" name="table_veto"/>
+            <widget class="qt_performance_table" name="table_veto"/>
            </item>
           </layout>
          </widget>
@@ -441,9 +441,9 @@
          </widget>
         </item>
         <item row="7" column="0">
-         <widget class="QCheckBox" name="cbox_sameqp">
+         <widget class="QCheckBox" name="cbox_mrsort">
           <property name="text">
-           <string>Indifference = Preference</string>
+           <string>MR-Sort model</string>
           </property>
          </widget>
         </item>
