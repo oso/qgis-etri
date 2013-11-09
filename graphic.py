@@ -1,61 +1,43 @@
+from __future__ import division
+import os, sys
+import colorsys
+from itertools import combinations
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from mcda.etri import electre_tri
-import colorsys
-import colors
 
-class axis(QtGui.QGraphicsItem):
+class _MyGraphicsview(QtGui.QGraphicsView):
 
-    def __init__(self, x1, y1, x2, y2, direction, parent=None):
-        super(QtGui.QGraphicsItem, self).__init__(parent)
+    def __init__(self, parent = None):
+        super(QtGui.QGraphicsView, self).__init__(parent)
 
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+    def resizeEvent(self, event):
+        scene = self.scene()
+        scene.update(self.size())
+        self.resetCachedContent()
 
-        self.path = QtGui.QPainterPath()
-        self.path.moveTo(x1, y1)
-        self.path.lineTo(x2, y2)
-        self.__set_arrow(direction)
+class QGraphicsSceneEtri(QtGui.QGraphicsScene):
 
-    def boundingRect(self):
-        return self.path.boundingRect()
-
-    def paint(self, painter, option, widget=None):
-        pen = QtGui.QPen()
-        pen.setWidth(2)
-        brush = QtGui.QBrush(QtGui.QColor("black"))
-        painter.setPen(pen)
-        painter.setBrush(brush)
-        painter.drawPath(self.path)
-
-    def __set_arrow(self, direction):
-        if direction == -1:
-            x = self.x1
-            y = self.y1
-        else:
-            x = self.x2
-            y = self.y2
-
-        self.path.moveTo(x, y)
-        self.path.lineTo(x-3, y+direction*6)
-        self.path.lineTo(x+3, y+direction*6)
-        self.path.closeSubpath()
-
-
-class graph_etri(QtGui.QGraphicsScene):
-
-    def __init__(self, model, size, criteria_name=None, parent=None):
-        super(QtGui.QGraphicsScene, self).__init__(parent)
+    def __init__(self, model, worst, best, size, criteria_order = None,
+                 parent = None):
+        super(QGraphicsSceneEtri, self).__init__(parent)
         self.model = model
-        self.criteria_name = None
+        if criteria_order:
+            self.criteria_order = criteria_order
+        else:
+            self.criteria_order = self.model.criteria.keys()
+            self.criteria_order.sort()
+        self.worst = worst
+        self.best = best
+
+        self.ap_items = {}
+
         self.update(size)
 
     def update(self, size):
         self.size = size
-        self.axis_height = self.size.height()-45
-        self.model_height = self.axis_height-25
+        self.axis_height = self.size.height() - 60
+        self.ymax = -self.axis_height + 25 / 2
+        self.ymin = -25 / 2
 
         self.hspacing = size.width()/len(self.model.criteria)
         if self.hspacing < 100:
@@ -64,141 +46,295 @@ class graph_etri(QtGui.QGraphicsScene):
         self.clear()
         self.__plot_axis()
         self.__plot_profiles()
-        self.update_criteria_name(self.criteria_name)
+        self.__plot_categories()
+        self.__higlight_intersections()
+        self.__plot_alternatives()
         self.setSceneRect(self.itemsBoundingRect())
 
-    def update_criteria_name(self, criteria_name):
-        if criteria_name == None:
-            return
+    def __create_axis(self, xmin, xmax, ymin, ymax, direction):
+        item = QtGui.QGraphicsPathItem()
 
-        self.criteria_name = criteria_name
+        path = item.path()
+        path.moveTo(xmin, ymin)
+        path.lineTo(xmax, ymax)
 
-        for criterion, text in self.criteria_text.iteritems():
-            if criteria_name.has_key(criterion) == False:
-                return
+        if direction == -1:
+            x = xmin
+            y = ymin
+        else:
+            x = xmax
+            y = ymax
 
-            oldwidth = text.boundingRect().width()
-            text.setPlainText(criteria_name[criterion])
-            newwidth = text.boundingRect().width()
-            diffwidth = newwidth-oldwidth
-            text.moveBy(-diffwidth/2, 0)
+        path.moveTo(x, y)
+        path.lineTo(x - 3, y + direction * 6)
+        path.lineTo(x + 3, y + direction * 6)
+        path.closeSubpath()
 
-        self.setSceneRect(self.itemsBoundingRect())
+        pen = QtGui.QPen()
+        pen.setWidth(2)
+        item.setPen(pen)
+
+        brush = QtGui.QBrush(QtGui.QColor("black"))
+        item.setBrush(brush)
+
+        item.setPath(path)
+
+        return item
 
     def __plot_axis(self):
-        directions = self.model.directions
-        self.criteria_text = {}
+        self.axis_text_items = {}
+        self.axis_items = {}
 
-        for i, criterion in enumerate(self.model.criteria):
-            x = i*self.hspacing
+        criteria = [c for c in self.criteria_order
+                      if self.model.criteria[c].disabled is False]
+        for i, id in enumerate(criteria):
+            criterion = self.model.criteria[id]
+            x = i * self.hspacing
 
-            line = axis(x, 0, x, -self.axis_height, directions[criterion])
-            line.setZValue(1)
-            self.addItem(line)
+            axis = self.__create_axis(x, x, 0, -self.axis_height,
+                                      criterion.direction)
+            axis.setZValue(1)
+            self.addItem(axis)
+            self.axis_items[id] = axis
 
-            text = self.addText(criterion)
-            font = QtGui.QFont()
-            font.setBold(True)
-            text.setFont(font)
-            text.setZValue(1)
-            text.setPos(x-text.boundingRect().width()/2, 0)
-
-            self.criteria_text[criterion] = text
-
-    def __d_substract(self, a, b):
-        return dict( (n, a.get(n, 0)-b.get(n, 0)) for n in set(a)|set(b) )
-
-    def __profile_get_points(self, profile):
-        minima = self.model.model_min
-        maxima = self.model.model_max
-        diff = self.__d_substract(maxima, minima) 
-
-        axis_unused = self.axis_height-self.model_height
-        limsup = -self.axis_height+axis_unused/2
-        liminf = -axis_unused/2
-
-        n = len(self.model.criteria)
-        points = []
-        for i, criterion in enumerate(self.model.criteria):
-            x = i*self.hspacing
-
-            num = profile[criterion]-minima[criterion]
-            den = diff[criterion] 
-            if den == 0:
-                p = QtCore.QPointF(x, liminf)
-            elif num == 0:
-                p = QtCore.QPointF(x, liminf)
+            if criterion.name:
+                txt = "%s\n(%g)" % (criterion.name, self.model.cv[id].value)
             else:
-                y = liminf+(limsup-liminf)*num/den
-                p = QtCore.QPointF(x, y)
+                txt = "%s (%g)" % (criterion.id, self.model.cv[id].value)
 
-            text = self.addText("%g" % profile[criterion])
+            text = QtGui.QGraphicsTextItem()
+            text.setHtml("<div align=\"center\">%s</div>" % txt)
+            text.setTextWidth(text.boundingRect().width())
             font = QtGui.QFont()
             font.setBold(True)
-            font.setPointSize(6)
             text.setFont(font)
-            text.setPos(p)
-            if i == n-1:
-                text.moveBy(-text.boundingRect().width(), 0)
             text.setZValue(1)
+            text.setPos(x - text.boundingRect().width() / 2, 0)
+            self.addItem(text)
 
-            points.append(p)
+            self.axis_text_items[criterion] = text
 
-        return points
+    def __compute_y(self, ap, id):
+        direction = self.model.criteria[id].direction
+        p = ap.performances[id] * direction
+        best = self.best.performances[id] * direction
+        worst = self.worst.performances[id] * direction
+        if p > best:
+            p = best
+        elif p < worst:
+            p = worst
+        num = p - worst
+        den = best - worst
+        return self.ymin + num / den * (self.ymax - self.ymin)
 
-    def __get_category_brush(self, category):
-        cat_colors = colors.ncategories_colors[len(self.model.profiles)+1]
-        return QtGui.QBrush(cat_colors[category])
-        
+    def __create_text_value(self, value):
+        item = QtGui.QGraphicsTextItem()
+
+        item.setPlainText(value)
+
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPointSize(6)
+        item.setFont(font)
+        item.setZValue(1)
+
+        return item
+
+    def __create_profile(self, ap, print_values = False,
+                         color = QtGui.QColor("red")):
+        item = QtGui.QGraphicsPathItem()
+
+        pen = QtGui.QPen()
+        pen.setBrush(color)
+        item.setPen(pen)
+
+        text_items = []
+
+        path = item.path()
+        criteria = [c for c in self.criteria_order
+                      if self.model.criteria[c].disabled is False]
+        for i, cid in enumerate(criteria):
+            y = self.__compute_y(ap, cid)
+
+            if i == 0:
+                x = 0
+                path.moveTo(0, y)
+            else:
+                x += self.hspacing
+                path.lineTo(x, y)
+
+            if print_values is True:
+                txt = "%g" % ap.performances[cid]
+                txtitem = self.__create_text_value(txt)
+                txtitem.setPos(x, y)
+                text_items.append(txtitem)
+
+        item.setPath(path)
+
+        return item, text_items
+
     def __plot_profiles(self):
-        profiles = self.model.profiles
-        minima = self.model.model_min
-        maxima = self.model.model_max
+        self.profiles_items = {}
+        self.profiles_text_items = {}
 
-        polygon_list = []
-        below = self.__profile_get_points(minima)
-        for i, profile in enumerate(profiles):
-            below.reverse()
-            above = self.__profile_get_points(profile['refs'])
-            ppoints = below + above
-            polygon = QtGui.QPolygonF(ppoints)
-            polygon_list.append(polygon)
-            brush = self.__get_category_brush(i+1)
-            self.addPolygon(polygon, QtGui.QPen(), brush)
-            below = above[:]
+        bpt = self.model.bpt
+        for profile in self.model.profiles:
+            item, text_items = self.__create_profile(bpt[profile], True)
+            self.addItem(item)
+            self.profiles_items[profile] = item
+            self.profiles_text_items[profile] = text_items
+            for txtitem in text_items:
+                self.addItem(txtitem)
 
-        above = self.__profile_get_points(maxima)
-        below.reverse()
-        ppoints = below + above
-        polygon = QtGui.QPolygonF(ppoints)
-        polygon_list.append(polygon)
-        brush = self.__get_category_brush(i+2)
-        self.addPolygon(polygon, QtGui.QPen(), brush)
+        for profile in [self.worst, self.best]:
+            item, text_items = self.__create_profile(profile)
+            self.addItem(item)
+            self.profiles_items[profile.id] = item
+            self.profiles_text_items[profile.id] = text_items
+            for txtitem in text_items:
+                self.addItem(txtitem)
 
-        for i, p in enumerate(polygon_list):
-            for j, q in enumerate(polygon_list):
-                if j >= i:
-                    continue
+    def __get_category_color(self, i):
+        n = len(self.model.categories)
+        g = 255 - 220 * (n - i) / n
+        return QtGui.QColor(0, g, 0)
 
-                u = p.intersected(q)
-                if u == None:
-                    continue
+    def __create_category(self, i, path_below, path_above):
+        item = QtGui.QGraphicsPathItem()
 
-                brush = QtGui.QBrush()
-                brush.setColor(QtGui.QColor("yellow"))
-                brush.setStyle(QtCore.Qt.SolidPattern)
-                self.addPolygon(u, QtGui.QPen(), brush)
+        path = item.path()
+        path.addPath(path_above)
+        path.connectPath(path_below.toReversed())
+        path.closeSubpath()
 
-class mygraphicsview(QtGui.QGraphicsView):
+        color = self.__get_category_color(i)
+        item.setBrush(color)
 
-    def __init__(self, parent = None):
-        super(QtGui.QGraphicsView, self).__init__(parent)
+        item.setPath(path)
 
-    def resizeEvent(self, event):
-        scene = self.scene()
+        return item
 
-        if hasattr(scene, "update") == False:
-            return
+    def __plot_categories(self):
+        self.category_items = {}
+        for i, category in enumerate(self.model.categories):
+            if i == 0:
+                lower = self.profiles_items['worst']
+            else:
+                lower = self.profiles_items[self.model.profiles[i - 1]]
+            if i == len(self.model.profiles):
+                lower = self.profiles_items['best']
+            else:
+                upper = self.profiles_items[self.model.profiles[i]]
 
-        scene.update(self.size())
-        self.resetCachedContent()
+            item = self.__create_category(i, lower.path(), upper.path())
+            self.addItem(item)
+
+            self.category_items[category] = item
+
+    def __clear_intersections(self):
+        for item in self.intersection_items:
+            self.removeItem(item)
+        self.intersection_items = []
+
+    def __higlight_intersections(self):
+        self.intersection_items = []
+        combis = list(combinations(self.category_items.values(), r = 2))
+        for combi in combis:
+            a = combi[0].path()
+            b = combi[1].path()
+            c = a.intersected(b)
+
+            item = QtGui.QGraphicsPathItem(c)
+            brush = QtGui.QBrush(QtGui.QColor("yellow"))
+            item.setBrush(brush)
+            self.addItem(item)
+
+            self.intersection_items.append(item)
+
+    def update_intersections(self):
+        self.__clear_intersections()
+        self.__higlight_intersections()
+
+    def __plot_alternatives(self):
+        for ap, item in self.ap_items.items():
+            item, text_items = self.__create_profile(ap)
+            self.addItem(item)
+
+    def __update_category(self, i, cat, ap_below, ap_above):
+        item = self.category_items[cat]
+        path = item.path()
+
+        criteria = [c for c in self.criteria_order
+                      if self.model.criteria[c].disabled is False]
+        for i, cid in enumerate(criteria):
+            y_above = self.__compute_y(ap_above, cid)
+            y_below = self.__compute_y(ap_below, cid)
+
+            i2 = 2 * len(criteria) - 1 - i
+            if i == 0:
+                x = 0
+            else:
+                x += self.hspacing
+
+            path.setElementPositionAt(i, x, y_above)
+            path.setElementPositionAt(i2, x, y_below)
+
+        item.setPath(path)
+
+    def update_categories(self):
+        ncat = len(self.model.categories)
+        for i, cat in enumerate(self.model.categories):
+            if i == 0:
+                ap_below = self.worst
+            else:
+                ap_below = self.model.bpt[self.model.profiles[i - 1]]
+
+            if i == ncat - 1:
+                ap_above = self.best
+            else:
+                ap_above = self.model.bpt[self.model.profiles[i]]
+
+            self.__update_category(i, cat, ap_below, ap_above)
+
+        self.update_intersections()
+
+    def update_profile(self, profile):
+        item = self.profiles_items[profile]
+        text_items = self.profiles_text_items[profile]
+        if profile == 'worst':
+            ap = self.worst
+        elif profile == 'best':
+            ap = self.best
+        else:
+            ap = self.model.bpt[profile]
+
+        path = item.path()
+
+        criteria = [c for c in self.criteria_order
+                      if self.model.criteria[c].disabled is False]
+        for i, cid in enumerate(criteria):
+            y = self.__compute_y(ap, cid)
+
+            if i == 0:
+                x = 0
+            else:
+                x += self.hspacing
+
+            path.setElementPositionAt(i, x, y)
+
+            if len(text_items) > 0:
+                txtitem = text_items[i]
+                txtitem.setPos(x, y)
+                txtitem.setPlainText("%g" % ap.performances[cid])
+
+        item.setPath(path)
+
+    def update_profiles(self):
+        for profile in self.profiles_items.keys():
+            self.update_profile(profile)
+
+    def plot_alternative_performances(self, ap):
+        item, text_items = self.__create_profile(ap)
+        self.addItem(item)
+
+        self.ap_items[ap] = item

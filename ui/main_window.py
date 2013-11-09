@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Thu Nov  7 21:17:59 2013
+# Created: Sat Nov  9 16:04:04 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,7 +45,7 @@ class Ui_main_window(object):
         self.tab_profiles.setObjectName(_fromUtf8("tab_profiles"))
         self.gridLayout_5 = QtGui.QGridLayout(self.tab_profiles)
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
-        self.graph_plot = mygraphicsview(self.tab_profiles)
+        self.graph_plot = _MyGraphicsview(self.tab_profiles)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(5)
@@ -114,7 +114,7 @@ class Ui_main_window(object):
         self.gridLayout_7.addWidget(self.table_veto, 0, 0, 1, 1)
         self.tab_thresholds.addTab(self.tab_veto, _fromUtf8(""))
         self.verticalLayout_4.addWidget(self.tab_thresholds)
-        self.graph_plot2 = mygraphicsview(self.tab_plot)
+        self.graph_plot2 = _MyGraphicsview(self.tab_plot)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(5)
@@ -343,5 +343,5 @@ class Ui_main_window(object):
         self.button_generate.setText(_translate("main_window", "Generate Decision Map", None))
 
 from table import qt_performance_table, qt_criteria_table
-from graphic import mygraphicsview
+from graphic import _MyGraphicsview
 import resources_rc

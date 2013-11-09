@@ -42,7 +42,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="1" column="0">
-        <widget class="mygraphicsview" name="graph_plot">
+        <widget class="_MyGraphicsview" name="graph_plot">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -144,7 +144,7 @@
         </widget>
        </item>
        <item>
-        <widget class="mygraphicsview" name="graph_plot2">
+        <widget class="_MyGraphicsview" name="graph_plot2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -531,7 +531,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>mygraphicsview</class>
+   <class>_MyGraphicsview</class>
    <extends>QGraphicsView</extends>
    <header location="global">graphic</header>
   </customwidget>

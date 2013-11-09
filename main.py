@@ -10,7 +10,8 @@ from mcda.types import Alternative, AlternativePerformances
 from mcda.types import Thresholds, Threshold
 from mcda.generate import generate_categories
 from mcda.generate import generate_categories_profiles
-from qgis_utils import generate_decision_map, saveDialog
+from qgis_utils import generate_decision_map, saveDialog, addtocDialog
+from graphic import QGraphicsSceneEtri
 
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
@@ -272,7 +273,22 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.set_one_threshold_per_profile(self.vpt,
                                                self.table_veto)
 
+    def __update_graph(self):
+        lbda = self.spinbox_cutlevel.value()
+        model = ElectreTri(self.criteria, self.cv, self.bpt, lbda,
+                           self.cat_profiles, self.vpt, self.qpt, self.ppt)
+        worst = self.pt.get_worst(self.criteria)
+        best = self.pt.get_best(self.criteria)
+        criteria_order = [c.id for c in self.criteria]
+        graph = QGraphicsSceneEtri(model, worst, best,
+                                   self.graph_plot.size(),
+                                   criteria_order)
+        self.graph_plot.setScene(graph)
+        self.graph_plot2.setScene(graph)
+
     def __loadlayer(self):
+        self.layer_loaded = False
+
         # References to map criteria and alternatives
         self.criteria = self.layer.criteria
         self.alternatives = self.layer.alternatives
@@ -313,6 +329,10 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.cbox_samethresholds.setChecked(True)
 
         self.spinbox_cutlevel.setValue(self.lbda)
+
+        self.__update_graph()
+
+        self.layer_loaded = True
 
     def __enable_buttons(self):
         self.button_add_profile.setEnabled(True)
@@ -356,13 +376,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         else:
             aa = model.pessimist(self.pt)
 
-        print(aa)
-
         (f, encoding) = saveDialog(self)
         if f is None or encoding is None:
             return
 
         generate_decision_map(self.layer.layer, aa, f, encoding)
+
+        if self.iface is not None:
+            addtocDialog(self, f, len(model.bpt))
+
+    def on_table_prof_cellChanged(self, row, col):
+        if self.layer_loaded is False:
+            return
+
+        self.__update_graph()
 
 if __name__ == "__main__":
     from PyQt4 import QtGui
