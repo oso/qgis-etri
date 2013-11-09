@@ -4,255 +4,26 @@
 C11(+), C412(+), C310(+), C411(+), C39(+), C12(+), C13(+), C14(+), C27(+), C28(+), C25(+)])
 <criteria>
 	<criterion id="C11">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C412">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C310">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C411">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C39">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C12">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C13">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C14">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C27">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C28">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>2</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>2</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>2</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 	<criterion id="C25">
-		<thresholds>
-			<threshold id="q1" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q2" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="q3" name="indifference" mcdaConcept="indifference">
-				<constant><real>0</real></constant>
-			</threshold>
-			<threshold id="p1" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p2" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="p3" name="preference" mcdaConcept="preference">
-				<constant><real>1</real></constant>
-			</threshold>
-			<threshold id="v1" name="veto" mcdaConcept="veto">
-				<constant><real>4</real></constant>
-			</threshold>
-			<threshold id="v2" name="veto" mcdaConcept="veto">
-				<constant><real>4</real></constant>
-			</threshold>
-			<threshold id="v3" name="veto" mcdaConcept="veto">
-				<constant><real>4</real></constant>
-			</threshold>
-		</thresholds>
 	</criterion>
 </criteria>
 <alternatives>
@@ -420,141 +191,433 @@ C11(+), C412(+), C310(+), C411(+), C39(+), C12(+), C13(+), C14(+), C27(+), C28(+
 		<alternativeID>b1</alternativeID>
 		<performance>
 			<criterionID>C11</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C412</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C310</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C411</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C39</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C12</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C13</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C14</criterionID>
-			<value><real>4.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C27</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C28</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C25</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 	</alternativePerformances>
 	<alternativePerformances>
 		<alternativeID>b2</alternativeID>
 		<performance>
 			<criterionID>C11</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C412</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C310</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C411</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C39</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C12</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C13</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C14</criterionID>
-			<value><real>4.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C27</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C28</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C25</criterionID>
-			<value><real>4.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 	</alternativePerformances>
 	<alternativePerformances>
 		<alternativeID>b3</alternativeID>
 		<performance>
 			<criterionID>C11</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C412</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C310</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C411</criterionID>
-			<value><real>2.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C39</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C12</criterionID>
-			<value><real>1.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C13</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C14</criterionID>
-			<value><real>5.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C27</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C28</criterionID>
-			<value><real>3.0</real></value>
+			<value><real>0</real></value>
 		</performance>
 		<performance>
 			<criterionID>C25</criterionID>
-			<value><real>5.0</real></value>
+			<value><real>0</real></value>
+		</performance>
+	</alternativePerformances>
+</performanceTable>
+<performanceTable id="p">
+	<description>
+		<title>Preference table of reference alternatives</title>
+	</description>
+	<alternativePerformances>
+		<alternativeID>b1</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value><real>2</real></value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>1</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b2</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value><real>2</real></value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>1</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b3</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value><real>1</real></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value><real>2</real></value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>1</real></value>
+		</performance>
+	</alternativePerformances>
+</performanceTable>
+<performanceTable id="v">
+	<description>
+		<title>Preference table of reference alternatives</title>
+	</description>
+	<alternativePerformances>
+		<alternativeID>b1</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value>None></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>4</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b2</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value>None></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>4</real></value>
+		</performance>
+	</alternativePerformances>
+	<alternativePerformances>
+		<alternativeID>b3</alternativeID>
+		<performance>
+			<criterionID>C11</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C412</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C310</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C411</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C39</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C12</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C13</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C14</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C27</criterionID>
+			<value>None></value>
+		</performance>
+		<performance>
+			<criterionID>C28</criterionID>
+			<value>None</value>
+		</performance>
+		<performance>
+			<criterionID>C25</criterionID>
+			<value><real>4</real></value>
 		</performance>
 	</alternativePerformances>
 </performanceTable>

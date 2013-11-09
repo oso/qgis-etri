@@ -233,6 +233,7 @@ class qt_performance_table(QtGui.QTableWidget):
         self.col_crit = {}
         self.row_alt = []
         self.row_altp = []
+        self.allownovalue = True
 
         self.setItemDelegate(float_delegate(self))
 
@@ -319,7 +320,8 @@ class qt_performance_table(QtGui.QTableWidget):
         performances = alt_perfs.performances
         for col, crit in self.col_crit.iteritems():
             item = QtGui.QTableWidgetItem()
-            if performances.has_key(crit.id):
+            if performances.has_key(crit.id) and \
+               performances[crit.id] is not None:
                  item.setText(str(performances[crit.id]))
             self.setItem(row, col, item)
         self.row_altp.append(alt_perfs)
@@ -351,6 +353,9 @@ class qt_performance_table(QtGui.QTableWidget):
 
         try:
             value = str(item.text())
+            if len(value) == 0 and self.allownovalue:
+                return
+
             if value.find('.') == -1:
                altp.performances[crit.id] = int(value)
             else:

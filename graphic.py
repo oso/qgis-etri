@@ -12,6 +12,9 @@ class _MyGraphicsview(QtGui.QGraphicsView):
 
     def resizeEvent(self, event):
         scene = self.scene()
+        if scene is None:
+            return
+
         scene.update(self.size())
         self.resetCachedContent()
 

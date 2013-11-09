@@ -872,7 +872,7 @@ class AlternativePerformances(McdaObject):
             self.altid = id
 
         if performances is None:
-            self.performances = {}
+            self.performances = OrderedDict()
         else:
             self.performances = performances
 
@@ -1010,8 +1010,11 @@ class AlternativePerformances(McdaObject):
         tag_list = xmcda.getiterator('performance')
         for tag in tag_list:
             crit_id = tag.find('.//criterionID').text
-            value = tag.find('.//value')
-            crit_val = unmarshal(value.getchildren()[0])
+            value = tag.find('.//value').getchildren()
+            if len(value) > 0:
+                crit_val = unmarshal(value[0])
+            else:
+                crit_val = None
             self.performances[crit_id] = crit_val
 
         return self

@@ -67,7 +67,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def __load_from_xmcda(self, xmcda_file):
         tree = ElementTree.parse(xmcda_file)
         root = tree.getroot()
-        ElementTree.dump(root)
+#        ElementTree.dump(root)
         xmcda_formatversion = root.find('.//formatversion')
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
@@ -114,7 +114,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.ppt.id = "p"
 
         # Categories Profiles
-        self.categories = generate_categories(len(self.bpt), prefix = "")
+        self.categories = generate_categories(len(self.bpt) + 1, prefix = "")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
         self.lbda = float(xmcda_lbda.text)
@@ -261,7 +261,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                                      self.table_indiff)
             self.set_same_threshold_for_all_profiles(self.ppt,
                                                      self.table_pref)
-
             self.set_same_threshold_for_all_profiles(self.vpt,
                                                      self.table_veto)
         else:
@@ -269,7 +268,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                                self.table_indiff)
             self.set_one_threshold_per_profile(self.ppt,
                                                self.table_pref)
-
             self.set_one_threshold_per_profile(self.vpt,
                                                self.table_veto)
 
@@ -299,6 +297,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                             + ".xmcda"
             self.__load_from_xmcda(xmcda_file)
         except:
+            traceback.print_exc(sys.stderr)
             self.__generate_first_profile()
 
         self.table_criteria.add_criteria(self.criteria, self.cv)
@@ -320,7 +319,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.table_pref.add_pt(self.balternatives, self.ppt)
 
         if self.vpt:
-            self.table_veto.add_pt(self.balternatives, self.ppt)
+            self.table_veto.add_pt(self.balternatives, self.vpt)
         else:
             self.cbox_noveto.setChecked(True)
             self.tab_thresholds.setTabEnabled(2, False)
