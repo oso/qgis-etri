@@ -1,8 +1,7 @@
 import os
 import colorsys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtGui, QtCore
 from qgis.core import *
 from qgis.gui import *
 
@@ -72,7 +71,10 @@ def layer_get_feature_attribute(layer, featid):
 
     attributes = {}
     for (k, attr) in attrs.iteritems():
-        attributes[k] = attr.toString().trimmed()
+        try:
+            attributes[k] = str(attr.toString()).trimmed()
+        except:
+            attributes[k] = attr.toString().trimmed()
 
     return attributes
 
@@ -97,7 +99,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
-    fields.append(QgsField("Category", QVariant.Int))
+    fields.append(QgsField("Category", QtCore.QVariant.Int))
 
     try:
         os.unlink(out)
@@ -119,24 +121,42 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
     del writer
 
 def saveDialog(parent):
-    settings = QSettings()
-    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
-    filtering = QString( "Shapefiles (*.shp)" )
-    encode = settings.value( "/UI/encoding" ).toString()
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
-    fileDialog.setDefaultSuffix( QString( "shp" ) )
-    fileDialog.setFileMode( QFileDialog.AnyFile )
-    fileDialog.setAcceptMode( QFileDialog.AcceptSave )
-    fileDialog.setConfirmOverwrite( True )
-    if not fileDialog.exec_() == QDialog.Accepted:
+    settings = QtCore.QSettings()
+
+    try:
+        dirName = settings.value("/UI/lastShapefileDir").toString()
+    except:
+        dirName = str(settings.value("/UI/lastShapefileDir"))
+
+    filtering = "Shapefiles (*.shp)"
+
+    try:
+        encode = settings.value("/UI/encoding").toString()
+    except:
+        encode = str(settings.value("/UI/encoding"))
+
+    fileDialog = QgsEncodingFileDialog(parent, "Save output shapefile",
+                                       dirName, filtering, encode)
+    fileDialog.setDefaultSuffix("shp")
+    fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
+    fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
+    fileDialog.setConfirmOverwrite(True)
+    if not fileDialog.exec_() == QtGui.QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastShapefileDir",
+                      QtCore.QFileInfo(unicode(files[0])).absolutePath())
+
+    return (unicode(files[0]), unicode(fileDialog.encoding()))
 
 def addtocDialog(parent, filename, nprofils):
-    addToTOC = QMessageBox.question(parent, "Decision MAP layer created", "Would you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-    if addToTOC == QMessageBox.Yes:
+    addToTOC = QtGui.QMessageBox.question(parent,
+                    "Decision MAP layer created",
+                    "Would you like to add the new layer to the TOC?",
+                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No,
+                    QtGui.QMessageBox.NoButton)
+
+    if addToTOC == QtGui.QMessageBox.Yes:
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         vlayer = QgsVectorLayer(filename, name, "ogr")
@@ -144,36 +164,21 @@ def addtocDialog(parent, filename, nprofils):
 
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
 
-def render_decision_map_old(layer, nprofils):
-    sr = QgsUniqueValueRenderer(layer.geometryType())
-    sr.setClassificationField(0)
-
-    for i in range(1, nprofils+2):
-        s = QgsSymbol(layer.geometryType())
-        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
-        s.setBrush(QBrush(QColor(r*255, g*255, b*255)))
-        label = 'Category %d' % i
-        s.setLabel(label)
-        s.setLowerValue(str(i))
-        s.setUpperValue(str(i))
-        sr.insertValue(str(i), s)
-
-    layer.setRenderer(sr)
-
 def render_decision_map_new(layer, nprofils):
     cat_list = []
-    for i in range(1, nprofils+2):
+    nclasses = nprofils + 1
+    for i in range(nclasses):
         s = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        r, g, b = colorsys.hls_to_rgb(1-float(i-1)/(nprofils+1), 0.5, 0.5)
-        s.setColor(QColor(r*255, g*255, b*255))
-        cat_list.append(QgsRendererCategoryV2(i, s, 'Category %d' % i))
+        color = QtGui.QColor(0,
+                             255 - 220 * (nclasses - 1 - i) / nclasses,
+                             0)
+        s.setColor(color)
+        cat_list.append(QgsRendererCategoryV2(i + 1, s,
+                                              "Category %d" % (i + 1)))
 
     sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
     sr.setClassAttribute("category")
     layer.setRendererV2(sr)
 
 def render_decision_map(layer, nprofils):
-    if layer.isUsingRendererV2():
-        render_decision_map_new(layer, nprofils)
-    else:
-        render_decision_map_old(layer, nprofils)
+    render_decision_map_new(layer, nprofils)
