@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Sat Nov  9 16:04:04 2013
+# Created: Sat Nov  9 23:42:22 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,11 +71,6 @@ class Ui_main_window(object):
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.tab_plot)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
         self.tab_thresholds = QtGui.QTabWidget(self.tab_plot)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(3)
-        sizePolicy.setHeightForWidth(self.tab_thresholds.sizePolicy().hasHeightForWidth())
-        self.tab_thresholds.setSizePolicy(sizePolicy)
         self.tab_thresholds.setTabPosition(QtGui.QTabWidget.North)
         self.tab_thresholds.setTabShape(QtGui.QTabWidget.Rounded)
         self.tab_thresholds.setDocumentMode(False)
