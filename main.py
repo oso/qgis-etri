@@ -366,6 +366,11 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.label_ncategories.setText("%d" % len(self.bpt))
 
     def on_button_generate_pressed(self):
+        if self.bpt.is_complete(self.criteria.get_active()) is False:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Profile table is incomplete")
+            return
+
         lbda = self.spinbox_cutlevel.value()
         model = ElectreTri(self.criteria, self.cv, self.bpt, lbda,
                            self.cat_profiles, self.vpt, self.qpt, self.ppt)
