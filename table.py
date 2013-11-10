@@ -64,6 +64,10 @@ class qt_criteria_table(QtGui.QTableWidget):
                                           "Criterion [%s] %s"
                                           % (c.id, c.name),
                                           "Invalid weight value")
+                item = QtGui.QTableWidgetItem()
+                item.setText("0")
+                item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+                self.setItem(row, COL_WEIGHT, item)
 
     def reset_table(self):
         self.clearContents()
