@@ -658,6 +658,16 @@ class PerformanceTable(McdaDict):
     def get_criteria_ids(self):
         return next(self.itervalues()).performances.keys()
 
+    def is_complete(self, cids):
+        """Check if the alternatives are evaluated on all the criteria"""
+
+        for ap in self:
+            for cid in cids:
+                if cid not in ap.performances:
+                    return False
+
+        return True
+
     def update_direction(self, c):
         """Multiply all performances by -1 if the criterion is to
         minimize"""
