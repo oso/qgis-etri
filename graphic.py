@@ -119,10 +119,14 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
 
     def __compute_y(self, ap, id):
         direction = self.model.criteria[id].direction
-        p = ap.performances[id] * direction
+        if id in ap.performances:
+            p = ap.performances[id] * direction
+        else:
+            p = None
+
         best = self.best.performances[id] * direction
         worst = self.worst.performances[id] * direction
-        if p > best:
+        if p is None or p > best:
             p = best
         elif p < worst:
             p = worst
@@ -166,7 +170,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
                 x += self.hspacing
                 path.lineTo(x, y)
 
-            if print_values is True:
+            if print_values is True and cid in ap.performances:
                 txt = "%g" % ap.performances[cid]
                 txtitem = self.__create_text_value(txt)
                 txtitem.setPos(x, y)
