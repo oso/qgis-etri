@@ -60,13 +60,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
             layer = map_canvas.layer(i)
             self.combo_layer.addItem(layer.name())
 
-    def __update_criteria(self, criteria):
-        self.criteria = criteria
-        pass
-
-    def __update_profiles(self, alternatives, pt):
-        pass
-
     def __check_params_consistency(self, bpt, qpt, ppt, vpt):
         if len(bpt) < 1:
             raise Exception("Preference table has an invalid size")
@@ -106,6 +99,13 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_pt = root.findall('.//performanceTable')
         xmcda_lbda = root.find('.//methodParameters/parameter/value/real')
 
+        # Update criteria direction
+        criteria = Criteria().from_xmcda(xmcda_crit)
+        for c in criteria:
+            if c.id in self.criteria:
+                self.criteria[c.id].disabled = c.disabled
+                self.criteria[c.id].direction = c.direction
+
         # Remove criteria values that are not in the vector layer
         cvs = CriteriaValues()
         cvs.from_xmcda(xmcda_critval)
@@ -113,10 +113,11 @@ class main_window(QtGui.QDialog, Ui_main_window):
             if cv.id not in self.criteria:
                 cvs.remove(cv.id)
 
-        # Disable criteria for which there are no weights
         for c in self.criteria:
+            # Disable criteria for which there are no weights
             if c.id not in cvs:
                 c.disabled = True
+                cvs.append(CriterionValue(c.id, 0))
 
         balternatives = Alternatives()
         balternatives.from_xmcda(xmcda_b)
