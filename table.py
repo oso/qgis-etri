@@ -119,7 +119,7 @@ class qt_criteria_table(QtGui.QTableWidget):
         QtCore.QObject.connect(smapper, QtCore.SIGNAL("mapped(int)"),
                                 self.__on_criterion_state_changed)
 
-    def add_criterion(self, c, cv = None):
+    def add_criterion(self, c, cv):
         row = self.rowCount()
         self.insertRow(row)
 
@@ -155,15 +155,13 @@ class qt_criteria_table(QtGui.QTableWidget):
         # Add weight column
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-        if cv is not None:
+        if c.disabled is not True:
             item.setText(str(cv.value))
         self.setItem(row, COL_WEIGHT, item)
 
-    def add_criteria(self, cs, cvs = None):
+    def add_criteria(self, cs, cvs):
         for c in cs:
-            cv = None
-            if cvs is not None and c.id in cvs:
-                cv = cvs[c.id]
+            cv = cvs[c.id]
             self.add_criterion(c, cv)
 
 class profiles_table(QtGui.QTableWidget):
