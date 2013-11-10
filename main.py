@@ -4,7 +4,7 @@ from PyQt4 import QtCore, QtGui
 from ui.main_window import Ui_main_window
 from layer import criteria_layer
 from mcda.electre_tri import ElectreTri
-from mcda.types import Criteria, CriteriaValues
+from mcda.types import Criteria, CriteriaValues, CriterionValue
 from mcda.types import PerformanceTable, Alternatives
 from mcda.types import Alternative, AlternativePerformances
 from mcda.types import Thresholds, Threshold
@@ -67,6 +67,34 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def __update_profiles(self, alternatives, pt):
         pass
 
+    def __check_params_consistency(self, bpt, qpt, ppt, vpt):
+        if len(bpt) < 1:
+            raise Exception("Preference table has an invalid size")
+
+        for i in range(1, len(bpt) + 1):
+            altid = "b%d" % i
+
+            if altid not in bpt.keys():
+                raise Exception("Invalid profiles performance table")
+
+            if qpt and len(qpt) > 1 and altid not in qpt:
+                raise Exception("Invalid indifference performance table")
+
+            if ppt and len(ppt) > 1 and altid not in ppt:
+                raise Exception("Invalid preference performance table")
+
+            if vpt and len(vpt) > 1 and altid not in vpt:
+                raise Exception("Invalid veto performance table")
+
+        if qpt and len(qpt) == 1 and "b" not in qpt:
+            raise Exception("Invalid indifference performance table")
+
+        if ppt and len(ppt) == 1 and "b" not in ppt:
+            raise Exception("Invalid preference performance table")
+
+        if vpt and len(vpt) == 1 and "b" not in vpt:
+            raise Exception("Invalid veto performance table")
+
     def __load_from_xmcda(self, xmcda_file):
         tree = ElementTree.parse(xmcda_file)
         root = tree.getroot()
@@ -116,20 +144,25 @@ class main_window(QtGui.QDialog, Ui_main_window):
             ppt = qpt.copy()
             ppt.id = "p"
 
+        lbda = float(xmcda_lbda.text)
+
+        self.__check_params_consistency(bpt, qpt, ppt, vpt)
+
+        # Everything is fine
         self.cv = cvs
         self.balternatives = balternatives
         self.bpt = bpt
         self.qpt = qpt
         self.ppt = ppt
         self.vpt = vpt
+        self.lbda = lbda
 
         # Categories Profiles
-        self.categories = generate_categories(len(self.bpt) + 1, prefix = "")
+        self.categories = generate_categories(len(self.bpt) + 1,
+                                              prefix = "")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
-        self.lbda = float(xmcda_lbda.text)
-
-    def __generate_first_profile(self):
+    def __generate_initial_model(self):
         crit_min = {}
         crit_max = {}
         for altp in self.pt:
@@ -145,10 +178,13 @@ class main_window(QtGui.QDialog, Ui_main_window):
                 elif crit_max[crit.id]*d < altp(crit.id)*d:
                     crit_max[crit.id] = altp.performances[crit.id]
 
+        self.cv = CriteriaValues()
         b1 = AlternativePerformances('b1', {})
         for crit in self.criteria:
             b1.performances[crit.id] = (crit_max[crit.id]
                                         - crit_min[crit.id]) / 2
+            cv = CriterionValue(crit.id, 1)
+            self.cv.append(cv)
 
         self.balternatives = Alternatives([Alternative('b1', 'b1')])
         self.bpt = PerformanceTable([b1])
@@ -156,7 +192,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.cbox_noveto.setChecked(True)
 
         # Categories Profiles
-        self.categories = generate_categories(len(self.bpt), prefix = "")
+        self.categories = generate_categories(len(self.bpt) + 1,
+                                              prefix = "")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
         self.lbda = 0.75
@@ -308,7 +345,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.__load_from_xmcda(xmcda_file)
         except:
             traceback.print_exc(sys.stderr)
-            self.__generate_first_profile()
+            self.__generate_initial_model()
 
         self.__fill_model_tables()
 
