@@ -13,6 +13,9 @@ from mcda.generate import generate_categories_profiles
 from qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from graphic import QGraphicsSceneEtri
 
+XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.1.0'
+ElementTree.register_namespace('xmcda', XMCDA_URL)
+
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
 
@@ -76,42 +79,49 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda_lbda = root.find('.//methodParameters/parameter/value/real')
 
         # Remove criteria values that are not in the vector layer
-        self.cv = CriteriaValues()
-        self.cv.from_xmcda(xmcda_critval)
-        for cv in self.cv:
+        cvs = CriteriaValues()
+        cvs.from_xmcda(xmcda_critval)
+        for cv in cvs:
             if cv.id not in self.criteria:
-                self.cv.remove(cv.id)
+                cvs.remove(cv.id)
 
         # Disable criteria for which there are no weights
         for c in self.criteria:
-            if c.id not in self.cv:
+            if c.id not in cvs:
                 c.disabled = True
 
-        self.balternatives = Alternatives()
-        self.balternatives.from_xmcda(xmcda_b)
+        balternatives = Alternatives()
+        balternatives.from_xmcda(xmcda_b)
 
-        self.bpt = PerformanceTable()
-        self.qpt = PerformanceTable()
-        self.ppt = PerformanceTable()
-        self.vpt = PerformanceTable()
+        bpt = PerformanceTable()
+        qpt = PerformanceTable()
+        ppt = PerformanceTable()
+        vpt = PerformanceTable()
 
         for xmcda in xmcda_pt:
             if xmcda.get('id') is None:
-                self.bpt.from_xmcda(xmcda)
+                bpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'q':
-                self.qpt.from_xmcda(xmcda)
+                qpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'p':
-                self.ppt.from_xmcda(xmcda)
+                ppt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'v':
-                self.vpt.from_xmcda(xmcda)
+                vpt.from_xmcda(xmcda)
 
-        if len(self.qpt) == 0 and len(self.ppt) > 0:
-            self.qpt = self.ppt.copy()
-            self.qpt.id = "q"
+        if len(qpt) == 0 and len(ppt) > 0:
+            qpt = ppt.copy()
+            qpt.id = "q"
 
-        if len(self.ppt) == 0 and len(self.qpt) > 0:
-            self.ppt = self.qpt.copy()
-            self.ppt.id = "p"
+        if len(ppt) == 0 and len(qpt) > 0:
+            ppt = qpt.copy()
+            ppt.id = "p"
+
+        self.cv = cvs
+        self.balternatives = balternatives
+        self.bpt = bpt
+        self.qpt = qpt
+        self.ppt = ppt
+        self.vpt = vpt
 
         # Categories Profiles
         self.categories = generate_categories(len(self.bpt) + 1, prefix = "")
@@ -300,6 +310,9 @@ class main_window(QtGui.QDialog, Ui_main_window):
             traceback.print_exc(sys.stderr)
             self.__generate_first_profile()
 
+        self.__fill_model_tables()
+
+    def __fill_model_tables(self):
         self.table_criteria.add_criteria(self.criteria, self.cv)
         self.table_prof.add_criteria(self.criteria)
 
@@ -366,7 +379,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.label_ncategories.setText("%d" % len(self.bpt))
 
     def on_button_generate_pressed(self):
-        if self.bpt.is_complete(self.criteria.get_active()) is False:
+        active_criteria = self.criteria.get_active()
+        if self.bpt.is_complete(active_criteria.keys()) is False:
             QtGui.QMessageBox.information(None, "Error",
                                           "Profile table is incomplete")
             return
@@ -380,7 +394,9 @@ class main_window(QtGui.QDialog, Ui_main_window):
         else:
             aa = model.pessimist(self.pt)
 
-        (f, encoding) = saveDialog(self)
+        (f, encoding) = saveDialog(self, "Save output shapefile",
+                                   "Shapefiles (*.shp)", "shp",
+                                   QtGui.QFileDialog.AcceptSave)
         if f is None or encoding is None:
             return
 
@@ -394,6 +410,63 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         self.__update_graph()
+
+    def lambda_to_xmcda(self, lbda):
+        root = ElementTree.Element('methodParameters')
+        xmcda = ElementTree.SubElement(root, 'parameter')
+        xmcda.set('name', 'lambda')
+        xmcda = ElementTree.SubElement(xmcda, 'value')
+        xmcda = ElementTree.SubElement(xmcda, 'real')
+        xmcda.text = str(lbda)
+        return root
+
+    def on_button_savexmcda_pressed(self):
+        (f, encoding) = saveDialog(self, "Save MCDA model",
+                                   "XMCDA files (*.xmcda)", "xmcda",
+                                   QtGui.QFileDialog.AcceptSave)
+        if f is None:
+            return
+
+        self.save_to_xmcda(f)
+
+    def save_to_xmcda(self, filepath):
+        xmcda = ElementTree.Element("{%s}XMCDA" % XMCDA_URL)
+        xmcda.append(self.criteria.to_xmcda())
+        xmcda.append(self.cv.to_xmcda())
+        xmcda.append(self.balternatives.to_xmcda())
+        xmcda.append(self.bpt.to_xmcda())
+        xmcda.append(self.lambda_to_xmcda(self.spinbox_cutlevel.value()))
+
+        if self.qpt:
+            xmcda.append(self.qpt.to_xmcda())
+
+        if self.ppt:
+            xmcda.append(self.ppt.to_xmcda())
+
+        if self.vpt:
+            xmcda.append(self.vpt.to_xmcda())
+
+        f = open(filepath, "w")
+        buf = ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
+        f.write(buf)
+        f.close()
+
+    def on_button_loadxmcda_pressed(self):
+        (f, encoding) = saveDialog(self, "Load MCDA model",
+                                   "XMCDA files (*.xmcda)", "xmcda",
+                                   QtGui.QFileDialog.AcceptOpen)
+        if f is None:
+            return
+
+        try:
+            self.__load_from_xmcda(f)
+        except:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Cannot load XMCDA data")
+            return
+
+        self.__clear_tables()
+        self.__fill_model_tables()
 
 if __name__ == "__main__":
     from PyQt4 import QtGui

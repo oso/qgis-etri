@@ -120,7 +120,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
 
     del writer
 
-def saveDialog(parent):
+def saveDialog(parent, title, filtering, extension, acceptmode):
     settings = QtCore.QSettings()
 
     try:
@@ -128,18 +128,16 @@ def saveDialog(parent):
     except:
         dirName = str(settings.value("/UI/lastShapefileDir"))
 
-    filtering = "Shapefiles (*.shp)"
-
     try:
         encode = settings.value("/UI/encoding").toString()
     except:
         encode = str(settings.value("/UI/encoding"))
 
-    fileDialog = QgsEncodingFileDialog(parent, "Save output shapefile",
-                                       dirName, filtering, encode)
-    fileDialog.setDefaultSuffix("shp")
+    fileDialog = QgsEncodingFileDialog(parent, title, dirName,
+                                       filtering, encode)
+    fileDialog.setDefaultSuffix(extension)
     fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-    fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
+    fileDialog.setAcceptMode(acceptmode)
     fileDialog.setConfirmOverwrite(True)
     if not fileDialog.exec_() == QtGui.QDialog.Accepted:
             return None, None
