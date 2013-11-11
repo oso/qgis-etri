@@ -303,11 +303,11 @@ class qt_performance_table(QtGui.QTableWidget):
         self.setColumnHidden(self.__get_criterion_col(criterion),
                              criterion.disabled)
 
-    def add_pt(self, alternatives, pt):
+    def add_pt(self, alternatives, pt, editable = True):
         for alternative in alternatives:
-            self.add(alternative, pt[alternative.id])
+            self.add(alternative, pt[alternative.id], editable)
 
-    def add(self, alternative, alt_perfs):
+    def add(self, alternative, alt_perfs, editable = True):
         row = self.rowCount()
         self.insertRow(row)
 
@@ -325,6 +325,8 @@ class qt_performance_table(QtGui.QTableWidget):
             if performances.has_key(crit.id) and \
                performances[crit.id] is not None:
                  item.setText(str(performances[crit.id]))
+            if editable is False:
+                 item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.setItem(row, col, item)
         self.row_altp.append(alt_perfs)
 
