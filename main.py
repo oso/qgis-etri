@@ -13,12 +13,18 @@ from mcda.generate import generate_categories
 from mcda.generate import generate_categories_profiles
 from qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from graphic import QGraphicsSceneEtri
+from xmcda import submit_problem, request_solution
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.1.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
+XMCDA_ETRIBMINFERENCE_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
+
+COMBO_INFERENCE_GLOBAL = 0
+COMBO_INFERENCE_PROFILES = 1
+COMBO_INFERENCE_WEIGHTS = 2
 
 class main_window(QtGui.QDialog, Ui_main_window):
 
@@ -35,7 +41,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         elif layer:
             self.layer = criteria_layer(layer)
             self.__loadlayer()
-            self.__enable_buttons()
+            self.__reset_buttons()
 
         self.table_criteria.connect(self.table_criteria,
                                     QtCore.SIGNAL("criterion_state_changed"),
@@ -207,7 +213,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.layer = criteria_layer(map_canvas.layer(index))
             self.__clear_tables()
             self.__loadlayer()
-            self.__enable_buttons()
+            self.__reset_buttons()
         except:
             traceback.print_exc(sys.stderr)
             QtGui.QMessageBox.information(None, "Error",
@@ -386,13 +392,14 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         self.layer_loaded = True
 
-    def __enable_buttons(self):
+    def __reset_buttons(self):
         self.button_add_profile.setEnabled(True)
         self.button_del_profile.setEnabled(True)
         self.button_generate.setEnabled(True)
         self.button_chooseassign.setEnabled(True)
         self.button_loadxmcda.setEnabled(True)
         self.button_savexmcda.setEnabled(True)
+        self.button_infer.setEnabled(False)
 
     def __criterion_state_changed(self, criterion):
         self.table_prof.disable_criterion(criterion)
@@ -514,7 +521,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         ncat = len(self.bpt) + 1
         for i in range(1, ncat + 1):
             color = QtGui.QColor(0, 255 - 220 * (ncat - i) / ncat, 0)
-            self.category_colors[i] = color
+            self.category_colors[str(i)] = color
 
     def on_button_chooseassign_pressed(self):
         items = [c.id for c in self.criteria if c.disabled is True]
@@ -540,7 +547,16 @@ class main_window(QtGui.QDialog, Ui_main_window):
             perf =  int(ap.performances[cid])
             if perf > 0 and perf < ncat:
                 pt.append(ap)
-                aa.append(AlternativeAssignment(ap.id, perf))
+                aa.append(AlternativeAssignment(ap.id, str(perf)))
+
+        if len(pt) < 1:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "No assignments examples found")
+            return
+
+        self.a_ref = Alternatives([Alternative(a.id) for a in aa])
+        self.pt_ref = pt
+        self.aa_ref = aa
 
         a = Alternatives([Alternative(aid) for aid in pt.keys()])
 
@@ -550,6 +566,112 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_refs.add_pt(a, pt, False)
         self.__generate_category_colors()
         self.table_refs.add_assignments(aa, self.category_colors, True)
+
+        self.button_infer.setEnabled(True)
+
+    def on_inference_thread_finished(self, completed):
+        try:
+            self.cancelbox.close()
+        except:
+            pass
+
+        if completed is False:
+            return
+
+        solution = self.inference_thread.solution
+
+        msg = str(solution.messages)
+        xmcda_msg = ElementTree.ElementTree(ElementTree.fromstring(msg))
+        if xmcda_msg.find(".//methodMessages") is None:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Invalid reply received")
+            return
+
+        error = xmcda_msg.find(".//methodMessages/errorMessage/text")
+        if error is not None:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Webservice replied:\n" +
+                                          error.text)
+            return
+
+    def on_cancelbox_button_clicked(self, button):
+        self.inference_thread.stop()
+
+    def on_button_infer_pressed(self):
+        xmcda = {}
+        xmcda['alternatives'] = ElementTree.tostring(self.a_ref.to_xmcda())
+        xmcda['criteria'] = ElementTree.tostring(self.criteria.to_xmcda())
+        xmcda['categories'] = ElementTree.tostring(
+                                            self.categories.to_xmcda())
+        xmcda['perfs_table'] = ElementTree.tostring(self.pt_ref.to_xmcda())
+        xmcda['assign'] = ElementTree.tostring(self.aa_ref.to_xmcda())
+
+        index = self.combo_inference.currentIndex()
+        if index == COMBO_INFERENCE_PROFILES:
+            lbda = self.spinbox_cutlevel.value()
+            xmcda['crit_weights'] = self.cv.to_xmcda()
+            xmcda['lambda'] = self.lambda_to_xmcda(lbda)
+        elif index == COMBO_INFERENCE_WEIGHTS:
+            xmcda['cat_profiles'] = self.cat_profiles.to_xmcda()
+            xmcda['reference_alts'] = self.bpt.to_xmcda()
+
+        self.inference_thread = InferenceThread(xmcda, self)
+        self.connect(self.inference_thread,
+                     QtCore.SIGNAL("finished(bool)"),
+                     self.on_inference_thread_finished)
+        self.inference_thread.start()
+
+        self.cancelbox = QtGui.QMessageBox(self)
+        self.cancelbox.setWindowTitle('Please wait...')
+        self.cancelbox.setText('Press cancel to stop inference')
+        self.cancelbox.setStandardButtons(QtGui.QMessageBox.Cancel)
+        self.cancelbox.setModal(True)
+        self.connect(self.cancelbox,
+                     QtCore.SIGNAL("buttonClicked(QAbstractButton *)"),
+                     self.on_cancelbox_button_clicked)
+        self.cancelbox.show()
+
+class InferenceThread(QtCore.QThread):
+
+    def __init__(self, xmcda_input, parent = None):
+        super(InferenceThread, self).__init__(parent)
+        self.stopped = False
+        self.mutex = QtCore.QMutex()
+        self.completed = False
+        self.xmcda_input = xmcda_input
+
+    def stop(self):
+        try:
+            self.mutex.lock()
+            self.stopped = True
+        finally:
+            self.mutex.unlock()
+
+    def is_stopped(self):
+        try:
+            self.mutex.lock()
+            return self.stopped
+        finally:
+            self.mutex.unlock()
+
+    def run(self):
+        ticket = submit_problem(XMCDA_ETRIBMINFERENCE_URL,
+                                self.xmcda_input)
+        while True:
+            solution = request_solution(XMCDA_ETRIBMINFERENCE_URL,
+                                        ticket, 0)
+            if self.is_stopped():
+                break
+
+            if solution:
+                self.solution = solution
+                self.completed = True
+                break
+
+            time.sleep(1)
+
+        self.stop()
+        self.emit(QtCore.SIGNAL("finished(bool)"), self.completed)
 
 if __name__ == "__main__":
     from PyQt4 import QtGui
@@ -561,7 +683,7 @@ if __name__ == "__main__":
     layer = QgsVectorLayer('/home/oso/dev/qgis-etri/tests/data/loulouka/criteria.shp',
                            'criteria', 'ogr')
     if not layer.isValid():
-        print("Layer failed to load!")
+        print("Failed to load layer!")
         sys.exit(1)
 
     app = QtGui.QApplication(sys.argv)
