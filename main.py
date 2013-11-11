@@ -7,6 +7,7 @@ from mcda.electre_tri import ElectreTri
 from mcda.types import Criteria, CriteriaValues, CriterionValue
 from mcda.types import PerformanceTable, Alternatives
 from mcda.types import Alternative, AlternativePerformances
+from mcda.types import AlternativeAssignment, AlternativesAssignments
 from mcda.types import Thresholds, Threshold
 from mcda.generate import generate_categories
 from mcda.generate import generate_categories_profiles
@@ -219,6 +220,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_indiff.reset_table()
         self.table_pref.reset_table()
         self.table_veto.reset_table()
+        self.table_refs.reset_table()
 
     def same_pq_thresholds_for_all_profiles(self):
         if self.ppt:
@@ -388,7 +390,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.button_add_profile.setEnabled(True)
         self.button_del_profile.setEnabled(True)
         self.button_generate.setEnabled(True)
-        self.button_chooserefs.setEnabled(True)
+        self.button_chooseassign.setEnabled(True)
         self.button_loadxmcda.setEnabled(True)
         self.button_savexmcda.setEnabled(True)
 
@@ -505,6 +507,49 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         self.__clear_tables()
         self.__fill_model_tables()
+
+    def __generate_category_colors(self):
+        self.category_colors = {}
+
+        ncat = len(self.bpt) + 1
+        for i in range(1, ncat + 1):
+            color = QtGui.QColor(0, 255 - 220 * (ncat - i) / ncat, 0)
+            self.category_colors[i] = color
+
+    def on_button_chooseassign_pressed(self):
+        items = [c.id for c in self.criteria if c.disabled is True]
+        if len(items) < 1:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "No assignment column")
+            return
+
+        item, ok = QtGui.QInputDialog.getItem(self,
+                                              "Select assignments column",
+                                              "Column:", items, 0, False)
+        if ok is False:
+            return
+
+        try:
+            cid = item.toString()
+        except:
+            cid = str(item)
+
+        ncat = len(self.bpt) + 1
+        pt, aa = PerformanceTable(), AlternativesAssignments()
+        for ap in self.pt:
+            perf =  int(ap.performances[cid])
+            if perf > 0 and perf < ncat:
+                pt.append(ap)
+                aa.append(AlternativeAssignment(ap.id, perf))
+
+        a = Alternatives([Alternative(aid) for aid in pt.keys()])
+
+        self.table_refs.reset_table()
+
+        self.table_refs.add_criteria(self.criteria)
+        self.table_refs.add_pt(a, pt, False)
+        self.__generate_category_colors()
+        self.table_refs.add_assignments(aa, self.category_colors, True)
 
 if __name__ == "__main__":
     from PyQt4 import QtGui

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Sat Nov  9 23:42:22 2013
+# Created: Mon Nov 11 13:54:49 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -133,21 +133,17 @@ class Ui_main_window(object):
         self.group_refs.setObjectName(_fromUtf8("group_refs"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.group_refs)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.table_refs = QtGui.QTableWidget(self.group_refs)
-        self.table_refs.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table_refs = qt_performance_table(self.group_refs)
         self.table_refs.setObjectName(_fromUtf8("table_refs"))
-        self.table_refs.setColumnCount(1)
+        self.table_refs.setColumnCount(0)
         self.table_refs.setRowCount(0)
-        item = QtGui.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-        self.table_refs.setHorizontalHeaderItem(0, item)
         self.verticalLayout_3.addWidget(self.table_refs)
         self.layout_choose = QtGui.QHBoxLayout()
         self.layout_choose.setObjectName(_fromUtf8("layout_choose"))
-        self.button_chooserefs = QtGui.QPushButton(self.group_refs)
-        self.button_chooserefs.setEnabled(False)
-        self.button_chooserefs.setObjectName(_fromUtf8("button_chooserefs"))
-        self.layout_choose.addWidget(self.button_chooserefs)
+        self.button_chooseassign = QtGui.QPushButton(self.group_refs)
+        self.button_chooseassign.setEnabled(False)
+        self.button_chooseassign.setObjectName(_fromUtf8("button_chooseassign"))
+        self.layout_choose.addWidget(self.button_chooseassign)
         self.button_infer = QtGui.QPushButton(self.group_refs)
         self.button_infer.setEnabled(False)
         self.button_infer.setObjectName(_fromUtf8("button_infer"))
@@ -308,9 +304,7 @@ class Ui_main_window(object):
         self.tab_thresholds.setTabText(self.tab_thresholds.indexOf(self.tab_veto), _translate("main_window", "Veto", None))
         self.tab_parameters.setTabText(self.tab_parameters.indexOf(self.tab_plot), _translate("main_window", "Thresholds", None))
         self.group_refs.setTitle(_translate("main_window", "Reference actions", None))
-        item = self.table_refs.horizontalHeaderItem(0)
-        item.setText(_translate("main_window", "Category", None))
-        self.button_chooserefs.setText(_translate("main_window", "Choose reference actions", None))
+        self.button_chooseassign.setText(_translate("main_window", "Choose assignment column", None))
         self.button_infer.setText(_translate("main_window", "Infer parameters", None))
         self.group_infparams.setTitle(_translate("main_window", "Parameters", None))
         self.label_combo.setText(_translate("main_window", "Electre Tri model:", None))

@@ -182,29 +182,17 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QTableWidget" name="table_refs">
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <column>
-             <property name="text">
-              <string>Category</string>
-             </property>
-             <property name="textAlignment">
-              <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-             </property>
-            </column>
-           </widget>
+           <widget class="qt_performance_table" name="table_refs"/>
           </item>
           <item>
            <layout class="QHBoxLayout" name="layout_choose">
             <item>
-             <widget class="QPushButton" name="button_chooserefs">
+             <widget class="QPushButton" name="button_chooseassign">
               <property name="enabled">
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Choose reference actions</string>
+               <string>Choose assignment column</string>
               </property>
              </widget>
             </item>
