@@ -15,7 +15,7 @@ from qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from graphic import QGraphicsSceneEtri
 from xmcda import submit_problem, request_solution
 
-XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.1.0'
+XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
 XMCDA_ETRIBMINFERENCE_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 
@@ -569,6 +569,17 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         self.button_infer.setEnabled(True)
 
+    def __parse_xmcda_object(self, xmcda, tag, object_type):
+        e = ElementTree.fromstring(str(xmcda))
+        t = ElementTree.ElementTree(e)
+        return object_type().from_xmcda(t.find(".//%s" % tag))
+
+    def __parse_xmcda_lambda(self, xmcda):
+        e = ElementTree.fromstring(str(xmcda))
+        t = ElementTree.ElementTree(e)
+        value = t.find('.//methodParameters/parameter/value/real')
+        return float(value.text)
+
     def on_inference_thread_finished(self, completed):
         try:
             self.cancelbox.close()
@@ -594,17 +605,45 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                           error.text)
             return
 
+
+        cv = self.__parse_xmcda_object(solution.crit_weights,
+                                       "criteriaValues", CriteriaValues)
+        bpt = self.__parse_xmcda_object(solution.reference_alts,
+                                        "performanceTable",
+                                        PerformanceTable)
+        lbda = self.__parse_xmcda_lambda(getattr(solution, 'lambda'))
+        a = self.__parse_xmcda_object(solution.compatible_alts,
+                                      "alternatives", Alternatives)
+
     def on_cancelbox_button_clicked(self, button):
         self.inference_thread.stop()
 
-    def on_button_infer_pressed(self):
+    def __xmcda_input(self, obj):
+        xmcda = ElementTree.Element("{%s}XMCDA" % XMCDA_URL)
+        xmcda.append(obj)
+        return ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
+
+    def __generate_xmcda_input(self):
+        # This ugly part is needed for the old version of the webservice
+        # that doesn't handle correctly deactivated criteria
+        criteria = self.criteria.get_active()
+        pt_ref = self.pt_ref.copy()
+        bpt = self.bpt.copy()
+        for ap in pt_ref:
+            for crit, value in ap.performances.items():
+                if crit not in criteria.keys():
+                    del ap.performances[crit]
+        for ap in bpt:
+            for crit, value in ap.performances.items():
+                if crit not in criteria.keys():
+                    del ap.performances[crit]
+
         xmcda = {}
-        xmcda['alternatives'] = ElementTree.tostring(self.a_ref.to_xmcda())
-        xmcda['criteria'] = ElementTree.tostring(self.criteria.to_xmcda())
-        xmcda['categories'] = ElementTree.tostring(
-                                            self.categories.to_xmcda())
-        xmcda['perfs_table'] = ElementTree.tostring(self.pt_ref.to_xmcda())
-        xmcda['assign'] = ElementTree.tostring(self.aa_ref.to_xmcda())
+        xmcda['alternatives'] = self.__xmcda_input(self.a_ref.to_xmcda())
+        xmcda['criteria'] = self.__xmcda_input(criteria.to_xmcda())
+        xmcda['categories'] = self.__xmcda_input(self.categories.to_xmcda())
+        xmcda['perfs_table'] = self.__xmcda_input(pt_ref.to_xmcda())
+        xmcda['assign'] = self.__xmcda_input(self.aa_ref.to_xmcda())
 
         index = self.combo_inference.currentIndex()
         if index == COMBO_INFERENCE_PROFILES:
@@ -613,7 +652,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
             xmcda['lambda'] = self.lambda_to_xmcda(lbda)
         elif index == COMBO_INFERENCE_WEIGHTS:
             xmcda['cat_profiles'] = self.cat_profiles.to_xmcda()
-            xmcda['reference_alts'] = self.bpt.to_xmcda()
+            xmcda['reference_alts'] = bpt.to_xmcda()
+
+        return xmcda
+
+    def on_button_infer_pressed(self):
+        xmcda = self.__generate_xmcda_input()
 
         self.inference_thread = InferenceThread(xmcda, self)
         self.connect(self.inference_thread,
