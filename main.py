@@ -2,6 +2,7 @@ import os, sys, traceback
 from xml.etree import ElementTree
 from PyQt4 import QtCore, QtGui
 from ui.main_window import Ui_main_window
+from ui.inference_results import Ui_inference_results
 from layer import criteria_layer
 from mcda.electre_tri import ElectreTri
 from mcda.types import Criteria, CriteriaValues, CriterionValue
@@ -25,6 +26,12 @@ COMBO_PROC_OPTIMIST = 1
 COMBO_INFERENCE_GLOBAL = 0
 COMBO_INFERENCE_PROFILES = 1
 COMBO_INFERENCE_WEIGHTS = 2
+
+class InferenceDialog(QtGui.QDialog, Ui_inference_results):
+
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
 
 class main_window(QtGui.QDialog, Ui_main_window):
 
@@ -367,7 +374,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_veto.add_criteria(self.criteria)
 
         self.table_prof.add_pt(self.balternatives, self.bpt)
-        self.label_ncategories.setText("%d" % len(self.bpt))
+        self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
         if not self.qpt and not self.ppt:
             self.cbox_mrsort.setChecked(True)
@@ -415,7 +422,24 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.balternatives.append(b)
         self.bpt.append(ap)
         self.table_prof.add(b, ap)
-        self.label_ncategories.setText("%d" % len(self.bpt))
+
+        if self.cbox_samethresholds.isChecked() is False:
+            qp.id, pp.id, vp.id = name, name, name, name
+            qp = self.qpt["b%d" % len(self.qpt)].copy()
+            pp = self.ppt["b%d" % len(self.ppt)].copy()
+            vp = self.vpt["b%d" % len(self.vpt)].copy()
+            self.qpt.append(qp)
+            self.ppt.append(pp)
+            self.vpt.append(vp)
+            self.table_indiff.add(b, qp)
+            self.table_pref.add(b, pp)
+            self.table_veto.add(b, vp)
+
+        self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
+
+        self.categories = generate_categories(len(self.bpt) + 1,
+                                              prefix = "")
+        self.cat_profiles = generate_categories_profiles(self.categories)
 
     def on_button_del_profile_pressed(self):
         name = "b%d" % len(self.bpt)
@@ -423,7 +447,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.remove(b.id)
         self.balternatives.remove(b.id)
         self.bpt.remove(b.id)
-        self.label_ncategories.setText("%d" % len(self.bpt))
+
+        if self.cbox_samethresholds.isChecked() is False:
+            self.table_indiff.remove(b.id)
+            self.table_pref.remove(b.id)
+            self.table_veto.remove(b.id)
+            self.qpt.remove(b.id)
+            self.ppt.remove(b.id)
+            self.vpt.remove(b.id)
+
+        self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
+        self.categories = generate_categories(len(self.bpt) + 1,
+                                              prefix = "")
+        self.cat_profiles = generate_categories_profiles(self.categories)
+        self.__update_graph()
 
     def on_button_generate_pressed(self):
         active_criteria = self.criteria.get_active()
@@ -545,7 +582,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         pt, aa = PerformanceTable(), AlternativesAssignments()
         for ap in self.pt:
             perf =  int(ap.performances[cid])
-            if perf > 0 and perf < ncat:
+            if perf > 0 and perf < (ncat + 1):
                 pt.append(ap)
                 aa.append(AlternativeAssignment(ap.id, str(perf)))
 
@@ -580,6 +617,49 @@ class main_window(QtGui.QDialog, Ui_main_window):
         value = t.find('.//methodParameters/parameter/value/real')
         return float(value.text)
 
+    def on_model_learned_accepted(self):
+        for cid, cv in self.cv_learned.items():
+            self.cv[cid].value = cv.value
+        for bid, bp in self.bpt.items():
+            bp.performances.update(self.bpt_learned[bid].performances)
+        self.lbda = self.lbda_learned
+
+        self.__clear_tables()
+        self.__fill_model_tables()
+        self.cbox_samethresholds.setChecked(True)
+        self.cbox_mrsort.setChecked(True)
+        self.cbox_noveto.setChecked(True)
+
+    def __show_model_learned(self, cv, bpt, lbda, a):
+        dialog = InferenceDialog(self)
+        dialog.setModal(True)
+        self.connect(dialog,
+                     QtCore.SIGNAL("accepted()"),
+                     self.on_model_learned_accepted)
+        dialog.show()
+
+        model = ElectreTri(self.criteria, cv, bpt, lbda, self.cat_profiles)
+        worst = self.pt.get_worst(self.criteria)
+        best = self.pt.get_best(self.criteria)
+        criteria_order = [c.id for c in self.criteria]
+        graph = QGraphicsSceneEtri(model, worst, best,
+                                   self.graph_plot.size(),
+                                   criteria_order)
+        dialog.graph_model.setScene(graph)
+        dialog.label_lambda.setText("Lambda: %s" % str(lbda))
+
+        a_incomp = Alternatives([aref for aref in self.a_ref
+                                      if aref.id not in a.keys()])
+        pt_incomp = PerformanceTable([ap for ap in self.pt_ref
+                                      if ap.id in a_incomp.keys()])
+        pt_comp = PerformanceTable([ap for ap in self.pt_ref
+                                    if ap.id in a.keys()])
+
+        dialog.table_comp.add_criteria(self.criteria)
+        dialog.table_comp.add_pt(a, pt_comp)
+        dialog.table_incomp.add_criteria(self.criteria)
+        dialog.table_incomp.add_pt(a_incomp, pt_incomp)
+
     def on_inference_thread_finished(self, completed):
         try:
             self.cancelbox.close()
@@ -590,6 +670,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         solution = self.inference_thread.solution
+        print(solution)
 
         msg = str(solution.messages)
         xmcda_msg = ElementTree.ElementTree(ElementTree.fromstring(msg))
@@ -615,6 +696,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         a = self.__parse_xmcda_object(solution.compatible_alts,
                                       "alternatives", Alternatives)
 
+        self.cv_learned = cv
+        self.bpt_learned = bpt
+        self.lbda_learned = lbda
+
+        self.__show_model_learned(cv, bpt, lbda, a)
+
     def on_cancelbox_button_clicked(self, button):
         self.inference_thread.stop()
 
@@ -622,6 +709,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda = ElementTree.Element("{%s}XMCDA" % XMCDA_URL)
         xmcda.append(obj)
         return ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
+
+    def __save_xmcda_files(self, xmcda):
+        for name, xm in xmcda.items():
+            f = open("/tmp/%s.xml" % name, "w")
+            f.write(xm)
+            f.close()
 
     def __generate_xmcda_input(self):
         # This ugly part is needed for the old version of the webservice
@@ -644,6 +737,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda['categories'] = self.__xmcda_input(self.categories.to_xmcda())
         xmcda['perfs_table'] = self.__xmcda_input(pt_ref.to_xmcda())
         xmcda['assign'] = self.__xmcda_input(self.aa_ref.to_xmcda())
+        self.__save_xmcda_files(xmcda)
 
         index = self.combo_inference.currentIndex()
         if index == COMBO_INFERENCE_PROFILES:
