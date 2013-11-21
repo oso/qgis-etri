@@ -136,19 +136,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         balternatives = Alternatives()
         balternatives.from_xmcda(xmcda_b)
 
-        bpt = PerformanceTable()
-        qpt = PerformanceTable()
-        ppt = PerformanceTable()
-        vpt = PerformanceTable()
+        bpt, qpt, ppt, vpt = None, None, None, None
 
         for xmcda in xmcda_pt:
             if xmcda.get('id') is None:
+                bpt = PerformanceTable()
                 bpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'q':
+                qpt = PerformanceTable()
                 qpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'p':
+                ppt = PerformanceTable()
                 ppt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'v':
+                vpt = PerformanceTable()
                 vpt.from_xmcda(xmcda)
 
         if len(qpt) == 0 and len(ppt) > 0:
