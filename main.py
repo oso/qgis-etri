@@ -301,7 +301,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         if pt and len(pt) > 0:
             bp = next(pt.itervalues())
         else:
-            bp = AlternativePerformances('b', {c: None \
+            bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
 
         bp.id = 'b'
@@ -319,7 +319,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         if pt and len(pt) > 0:
             bp = next(pt.itervalues())
         else:
-            bp = AlternativePerformances('b', {c: None \
+            bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
 
         pt.clear()
@@ -436,16 +436,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.add(b, ap)
 
         if self.cbox_samethresholds.isChecked() is False:
-            qp.id, pp.id, vp.id = name, name, name, name
-            qp = self.qpt["b%d" % len(self.qpt)].copy()
-            pp = self.ppt["b%d" % len(self.ppt)].copy()
-            vp = self.vpt["b%d" % len(self.vpt)].copy()
-            self.qpt.append(qp)
-            self.ppt.append(pp)
-            self.vpt.append(vp)
-            self.table_indiff.add(b, qp)
-            self.table_pref.add(b, pp)
-            self.table_veto.add(b, vp)
+            if self.cbox_mrsort.isChecked() is False:
+                qp = self.qpt["b%d" % len(self.qpt)].copy()
+                pp = self.ppt["b%d" % len(self.ppt)].copy()
+                qp.id, pp.id = name, name
+                self.qpt.append(qp)
+                self.ppt.append(pp)
+                self.table_indiff.add(b, qp)
+                self.table_pref.add(b, pp)
+
+            if self.cbox_noveto.isChecked() is False:
+                vp = self.vpt["b%d" % len(self.vpt)].copy()
+                vp.id = name
+                self.vpt.append(vp)
+                self.table_veto.add(b, vp)
 
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
@@ -454,6 +458,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.cat_profiles = generate_categories_profiles(self.categories)
 
     def on_button_del_profile_pressed(self):
+        if len(self.bpt) == 1:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Molel should have at least " \
+                                          "2 categories")
+            return
+
         name = "b%d" % len(self.bpt)
         b = self.balternatives[name]
         self.table_prof.remove(b.id)
@@ -708,9 +718,15 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         solution = self.inference_thread.solution
-        print(solution)
 
-        msg = str(solution.messages)
+        try:
+            msg = str(solution.messages)
+        except:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Invalid reply received, " \
+                                          "nothing received!")
+            return
+
         xmcda_msg = ElementTree.ElementTree(ElementTree.fromstring(msg))
         if xmcda_msg.find(".//methodMessages") is None:
             QtGui.QMessageBox.information(None, "Error",
@@ -725,14 +741,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
 
-        cv = self.__parse_xmcda_object(solution.crit_weights,
-                                       "criteriaValues", CriteriaValues)
-        bpt = self.__parse_xmcda_object(solution.reference_alts,
-                                        "performanceTable",
-                                        PerformanceTable)
-        lbda = self.__parse_xmcda_lambda(getattr(solution, 'lambda'))
-        a = self.__parse_xmcda_object(solution.compatible_alts,
-                                      "alternatives", Alternatives)
+        try:
+            cv = self.__parse_xmcda_object(solution.crit_weights,
+                                           "criteriaValues",
+                                           CriteriaValues)
+            bpt = self.__parse_xmcda_object(solution.reference_alts,
+                                            "performanceTable",
+                                            PerformanceTable)
+            lbda = self.__parse_xmcda_lambda(getattr(solution, 'lambda'))
+            a = self.__parse_xmcda_object(solution.compatible_alts,
+                                          "alternatives", Alternatives)
+        except:
+            QtGui.QMessageBox.information(None, "Error",
+                                          "Cannot parse reply")
+            return
 
         self.cv_learned = cv
         self.bpt_learned = bpt
