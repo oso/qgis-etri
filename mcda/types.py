@@ -85,6 +85,11 @@ class McdaDict(object):
 
         self._d[mcda_object.id] = mcda_object
 
+    def clear(self):
+        """Remove all elements from the dictionnary"""
+
+        return self._d.clear()
+
     def copy(self):
         """Perform a full copy of the MCDA dictionnary"""
 
