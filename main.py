@@ -252,10 +252,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         if state == QtCore.Qt.Checked:
             index = self.tab_thresholds.indexOf(self.tab_veto)
             self.tab_thresholds.removeTab(index)
+            self.table_veto.remove_all()
             self.vpt = None
         else:
             self.tab_thresholds.insertTab(2, self.tab_veto, "Veto")
 
+            self.vpt = PerformanceTable()
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.vpt,
                                                          self.table_veto)
@@ -269,6 +271,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.tab_thresholds.removeTab(index)
             intex = self.tab_thresholds.indexOf(self.tab_pref)
             self.tab_thresholds.removeTab(index)
+            self.table_indiff.remove_all()
+            self.table_pref.remove_all()
             self.qpt = None
             self.ppt = None
         else:
@@ -276,6 +280,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                           "Indifference")
             self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
 
+            self.qpt, self.ppt = PerformanceTable(), PerformanceTable()
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.qpt,
                                                          self.table_indiff)
@@ -288,6 +293,9 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                                    self.table_pref)
 
     def set_same_threshold_for_all_profiles(self, pt, table):
+        if pt is None:
+            return
+
         table.remove_all()
 
         if pt and len(pt) > 0:
@@ -297,11 +305,15 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                                for c in self.criteria})
 
         bp.id = 'b'
-        pt = PerformanceTable([bp])
+        pt.clear()
+        pt.append(bp)
 
         table.add(Alternative('b'), bp)
 
     def set_one_threshold_per_profile(self, pt, table):
+        if pt is None:
+            return
+
         table.remove_all()
 
         if pt and len(pt) > 0:
@@ -310,7 +322,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             bp = AlternativePerformances('b', {c: None \
                                                for c in self.criteria})
 
-        pt = PerformanceTable([])
+        pt.clear()
         for b in self.balternatives:
             bp2 = bp.copy()
             bp2.id = b.id
@@ -469,9 +481,35 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                           "Profile table is incomplete")
             return
 
+        if self.cbox_samethresholds.isChecked() is True:
+            if self.cbox_mrsort.isChecked() is False:
+                qpt, ppt = PerformanceTable(), PerformanceTable()
+                for i in range(len(self.bpt)):
+                    qp = next(self.qpt.itervalues()).copy()
+                    pp = next(self.ppt.itervalues()).copy()
+                    name = "b%d" % (i + 1)
+                    qp.id, pp.id = name, name
+                    qpt.append(qp), ppt.append(pp)
+            else:
+                qpt = None
+                ppt = None
+
+            if self.cbox_noveto.isChecked() is False:
+                vpt = PerformanceTable()
+                for i in range(len(self.bpt)):
+                    vp = next(self.vpt.itervalues()).copy()
+                    vp.id = "b%d" % (i + 1)
+                    vpt.append(vp)
+            else:
+                vpt = None
+        else:
+            qpt = self.qpt
+            ppt = self.ppt
+            vpt = self.vpt
+
         lbda = self.spinbox_cutlevel.value()
         model = ElectreTri(self.criteria, self.cv, self.bpt, lbda,
-                           self.cat_profiles, self.vpt, self.qpt, self.ppt)
+                           self.cat_profiles, vpt, qpt, ppt)
 
         if self.combo_procedure.currentIndex() == COMBO_PROC_OPTIMIST:
             aa = model.optimist(self.pt)
