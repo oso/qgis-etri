@@ -533,6 +533,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         generate_decision_map(self.layer.layer, aa, f, encoding)
+        self.save_to_xmcda(os.path.splitext(f)[0] + ".xmcda")
 
         if self.iface is not None:
             addtocDialog(self, f, len(model.bpt))
