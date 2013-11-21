@@ -50,7 +50,7 @@ class qt_criteria_table(QtGui.QTableWidget):
 
             c, cv = self.row_crit[row]
             item = self.cellWidget(row, col)
-            if item == None:
+            if item is None:
                 return
 
             try:
@@ -99,11 +99,14 @@ class qt_criteria_table(QtGui.QTableWidget):
 
     def __on_criterion_state_changed(self, row):
         c, cv = self.row_crit[row]
-        item = self.cellWidget(row, 0)
-        if item.isChecked() == 1:
+        item = self.cellWidget(row, COL_NAME)
+        item_cv = self.item(row, COL_WEIGHT)
+        if item.isChecked() is True:
             c.disabled = False
+            item_cv.setText("0")
         else:
             c.disabled = True
+            item_cv.setText("")
         self.emit(QtCore.SIGNAL("criterion_state_changed"), c)
 
     def __add_combo_signal(self, combo, row):
