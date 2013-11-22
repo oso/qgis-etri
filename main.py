@@ -225,6 +225,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         try:
             self.layer = criteria_layer(map_canvas.layer(index))
             self.__clear_tables()
+            self.button_infer.setEnabled(False)
             self.__loadlayer()
             self.__reset_buttons()
         except:
@@ -613,6 +614,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         self.__clear_tables()
+        self.button_infer.setEnabled(False)
         self.__fill_model_tables()
 
     def __generate_category_colors(self):
@@ -688,6 +690,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.lbda = self.lbda_learned
 
         self.__clear_tables()
+        self.button_infer.setEnabled(False)
         self.__fill_model_tables()
         self.cbox_samethresholds.setChecked(True)
         self.cbox_mrsort.setChecked(True)
