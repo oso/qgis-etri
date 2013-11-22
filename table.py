@@ -100,13 +100,18 @@ class qt_criteria_table(QtGui.QTableWidget):
     def __on_criterion_state_changed(self, row):
         c, cv = self.row_crit[row]
         item = self.cellWidget(row, COL_NAME)
+        combo_dir = self.cellWidget(row, COL_DIRECTION)
         item_cv = self.item(row, COL_WEIGHT)
         if item.isChecked() is True:
             c.disabled = False
             item_cv.setText("0")
+            combo_dir.setDisabled(False)
+            item_cv.setFlags(item_cv.flags() | QtCore.Qt.ItemIsEnabled)
         else:
             c.disabled = True
             item_cv.setText("")
+            combo_dir.setDisabled(True)
+            item_cv.setFlags(item_cv.flags() & ~QtCore.Qt.ItemIsEnabled)
         self.emit(QtCore.SIGNAL("criterion_state_changed"), c)
 
     def __add_combo_signal(self, combo, row):
@@ -156,13 +161,17 @@ class qt_criteria_table(QtGui.QTableWidget):
         combo.addItem("Min")
         if c.direction == -1:
             combo.setCurrentIndex(1)
+        if c.disabled is True:
+            combo.setDisabled(True)
         self.__add_combo_signal(combo, row)
         self.setCellWidget(row, COL_DIRECTION, combo)
 
         # Add weight column
         item = QtGui.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-        if c.disabled is not True:
+        if c.disabled is True:
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEnabled)
+        else:
             item.setText(str(cv.value))
         self.setItem(row, COL_WEIGHT, item)
 
