@@ -165,14 +165,13 @@ def addtocDialog(parent, filename, nprofils):
 def render_decision_map_new(layer, nprofils):
     cat_list = []
     nclasses = nprofils + 1
-    for i in range(nclasses):
+    for i in range(1, nclasses + 1):
         s = QgsSymbolV2.defaultSymbol(layer.geometryType())
         color = QtGui.QColor(0,
                              255 - 220 * i / nclasses,
                              0)
         s.setColor(color)
-        cat_list.append(QgsRendererCategoryV2(i + 1, s,
-                                              "Category %d" % (i + 1)))
+        cat_list.append(QgsRendererCategoryV2(i, s, "Category %d" % i))
 
     sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
     sr.setClassAttribute("category")

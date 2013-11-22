@@ -622,7 +622,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         ncat = len(self.bpt) + 1
         for i in range(1, ncat + 1):
-            color = QtGui.QColor(0, 255 - 220 * (ncat - i) / ncat, 0)
+            color = QtGui.QColor(0, 255 - 220 * i / ncat, 0)
             self.category_colors[str(i)] = color
 
     def on_button_chooseassign_pressed(self):
