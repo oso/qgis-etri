@@ -306,7 +306,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                                    self.table_pref)
 
     def set_same_threshold_for_all_profiles(self, pt, table):
-        if pt is None:
+        if pt is None or self.layer_loaded is False:
             return
 
         table.remove_all()
@@ -324,7 +324,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         table.add(Alternative('b'), bp)
 
     def set_one_threshold_per_profile(self, pt, table):
-        if pt is None:
+        if pt is None or self.layer_loaded is False:
             return
 
         table.remove_all()
@@ -373,8 +373,6 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.graph_plot2.setScene(graph)
 
     def __loadlayer(self):
-        self.layer_loaded = False
-
         # References to map criteria and alternatives
         self.criteria = self.layer.criteria
         self.alternatives = self.layer.alternatives
@@ -391,6 +389,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.__fill_model_tables()
 
     def __fill_model_tables(self):
+        self.layer_loaded = False
+
         self.table_criteria.add_criteria(self.criteria, self.cv)
         self.table_prof.add_criteria(self.criteria)
 
@@ -401,22 +401,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.add_pt(self.balternatives, self.bpt)
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
+        if self.same_pqv_thresholds_for_all_profiles() is True:
+            self.cbox_samethresholds.setChecked(True)
+            balternatives = Alternatives([Alternative('b')])
+
         if self.qpt is None and self.ppt is None:
             self.cbox_mrsort.setChecked(True)
-        elif self.same_pqv_thresholds_for_all_profiles():
-            self.cbox_samethresholds.setChecked(True)
         else:
-            self.table_indiff.add_pt(self.balternatives, self.qpt)
-            self.table_pref.add_pt(self.balternatives, self.ppt)
+            self.table_indiff.add_pt(balternatives, self.qpt)
+            self.table_pref.add_pt(balternatives, self.ppt)
 
-        if self.vpt is not None:
-            self.table_veto.add_pt(self.balternatives, self.vpt)
+        if self.vpt is None:
+           self.cbox_noveto.setChecked(True)
         else:
-            self.cbox_noveto.setChecked(True)
-            self.tab_thresholds.setTabEnabled(2, False)
-
-        if self.same_pqv_thresholds_for_all_profiles():
-            self.cbox_samethresholds.setChecked(True)
+            self.table_veto.add_pt(balternatives, self.vpt)
 
         self.spinbox_cutlevel.setValue(self.lbda)
 
