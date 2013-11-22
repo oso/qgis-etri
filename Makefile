@@ -1,30 +1,25 @@
 RSFILES :=	ui/resources_rc.py
 
-UIFILES :=	ui/etrimain.ui
-UIFILES +=	ui/main_window.ui
-UIFILES +=	ui/refsdialog.ui
-UIFILES +=	ui/infdialog.ui
-UIFILES +=	ui/pwdialog.ui
+UIFILES :=	ui/main_window.ui
 UIFILES +=	ui/inference_results.ui
 
-PKG_FILES :=	etrimain.py
 PKG_FILES +=	__init__.py
 PKG_FILES +=	etri_plugin.py
-PKG_FILES +=	pwdialog.py
-PKG_FILES +=	ui_utils.py
-PKG_FILES +=	etri.py
+PKG_FILES +=	graphic.py
+PKG_FILES +=	layer.py
+PKG_FILES +=	main.py
 PKG_FILES +=	qgis_utils.py
+PKG_FILES +=	ui_utils.py
 PKG_FILES +=	xmcda.py
-PKG_FILES +=	infdialog.py
-PKG_FILES +=	refsdialog.py
+
+PKG_FILES +=	mcda/__init__.py
+PKG_FILES +=	mcda/electre_tri.py
+PKG_FILES +=	mcda/generate.py
+PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
-PKG_FILES +=	ui/etrimain.py
-PKG_FILES +=	ui/refsdialog.py
-PKG_FILES +=	ui/infdialog.py
-PKG_FILES +=	ui/pwdialog.py
-PKG_FILES +=	ui/pwdialog.py
-PKG_FILES +=	ui/resources_rc.py
+PKG_FILES +=	$(UIFILES:%.ui=%.py)
+PKG_FILES +=	$(RSFILES:%.ui=%.py)
 
 PKG_FILES +=	pysimplesoap/__init__.py
 PKG_FILES +=	pysimplesoap/client.py
@@ -35,15 +30,15 @@ PKG_FILES +=	README
 
 TARGETS := $(UIFILES:%.ui=%.py) $(RSFILES)
 
-all: $(TARGETS) 
+all: $(TARGETS)
 
 ui/resources_rc.py: ui/resources.qrc
 	pyrcc4 -o $@ $<
 
-ui/%.py: ui/%.ui 
+ui/%.py: ui/%.ui
 	pyuic4 -o $@ $<
 
-clean: 
+clean:
 	rm -f pysimplesoap/*.pyc
 	rm -f mcda/*.pyc
 	rm -f tests/*.pyc
