@@ -168,7 +168,7 @@ def render_decision_map_new(layer, nprofils):
     for i in range(nclasses):
         s = QgsSymbolV2.defaultSymbol(layer.geometryType())
         color = QtGui.QColor(0,
-                             255 - 220 * (nclasses - 1 - i) / nclasses,
+                             255 - 220 * i / nclasses,
                              0)
         s.setColor(color)
         cat_list.append(QgsRendererCategoryV2(i + 1, s,
