@@ -404,6 +404,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         if self.same_pqv_thresholds_for_all_profiles() is True:
             self.cbox_samethresholds.setChecked(True)
             balternatives = Alternatives([Alternative('b')])
+        else:
+            balternatives = self.balternatives
 
         if self.qpt is None and self.ppt is None:
             self.cbox_mrsort.setChecked(True)
