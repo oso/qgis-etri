@@ -1,6 +1,7 @@
 import os, sys, traceback
 from xml.etree import ElementTree
 from PyQt4 import QtCore, QtGui
+from itertools import product
 from ui.main_window import Ui_main_window
 from ui.inference_results import Ui_inference_results
 from layer import criteria_layer
@@ -136,27 +137,31 @@ class main_window(QtGui.QDialog, Ui_main_window):
         balternatives = Alternatives()
         balternatives.from_xmcda(xmcda_b)
 
-        bpt, qpt, ppt, vpt = None, None, None, None
+        bpt = PerformanceTable()
+        qpt, ppt, vpt = None, None, None
 
         for xmcda in xmcda_pt:
             if xmcda.get('id') is None:
-                bpt = PerformanceTable()
                 bpt.from_xmcda(xmcda)
+                for bp, c in product(bpt, self.criteria.get_active()):
+                    perfs = bp.performances
+                    if c.id not in perfs or perfs[c.id] is None:
+                        perfs[c.id] = 0
             elif xmcda.get('id') == 'q':
-                qpt = PerformanceTable()
+                qpt = PerformanceTable(id = 'q')
                 qpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'p':
-                ppt = PerformanceTable()
+                ppt = PerformanceTable(id = 'p')
                 ppt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'v':
-                vpt = PerformanceTable()
+                vpt = PerformanceTable(id = 'v')
                 vpt.from_xmcda(xmcda)
 
-        if len(qpt) == 0 and len(ppt) > 0:
+        if qpt is not None and len(qpt) == 0 and len(ppt) > 0:
             qpt = ppt.copy()
             qpt.id = "q"
 
-        if len(ppt) == 0 and len(qpt) > 0:
+        if ppt is not None and len(ppt) == 0 and len(qpt) > 0:
             ppt = qpt.copy()
             ppt.id = "p"
 
@@ -236,15 +241,20 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_veto.reset_table()
         self.table_refs.reset_table()
 
-    def same_pq_thresholds_for_all_profiles(self):
-        if self.ppt:
+    def same_pqv_thresholds_for_all_profiles(self):
+        if self.ppt is not None:
             p = set(self.ppt.values())
             if len(p) > 1:
                 return False
 
-        if self.qpt:
+        if self.qpt is not None:
             q = set(self.qpt.values())
             if len(q) > 1:
+                return False
+
+        if self.vpt is not None:
+            v = set(self.vpt.values())
+            if len(v) > 1:
                 return False
 
         return True
@@ -258,7 +268,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         else:
             self.tab_thresholds.insertTab(2, self.tab_veto, "Veto")
 
-            self.vpt = PerformanceTable()
+            self.vpt = PerformanceTable(id = 'v')
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.vpt,
                                                          self.table_veto)
@@ -281,7 +291,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
                                           "Indifference")
             self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
 
-            self.qpt, self.ppt = PerformanceTable(), PerformanceTable()
+            self.qpt = PerformanceTable(id = 'q')
+            self.ppt = PerformanceTable(id = 'p')
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.qpt,
                                                          self.table_indiff)
@@ -389,21 +400,21 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.table_prof.add_pt(self.balternatives, self.bpt)
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
-        if not self.qpt and not self.ppt:
+        if self.qpt is None and self.ppt is None:
             self.cbox_mrsort.setChecked(True)
-        elif self.same_pq_thresholds_for_all_profiles():
+        elif self.same_pqv_thresholds_for_all_profiles():
             self.cbox_samethresholds.setChecked(True)
         else:
             self.table_indiff.add_pt(self.balternatives, self.qpt)
             self.table_pref.add_pt(self.balternatives, self.ppt)
 
-        if self.vpt:
+        if self.vpt is not None:
             self.table_veto.add_pt(self.balternatives, self.vpt)
         else:
             self.cbox_noveto.setChecked(True)
             self.tab_thresholds.setTabEnabled(2, False)
 
-        if self.same_pq_thresholds_for_all_profiles():
+        if self.same_pqv_thresholds_for_all_profiles():
             self.cbox_samethresholds.setChecked(True)
 
         self.spinbox_cutlevel.setValue(self.lbda)
@@ -494,7 +505,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         if self.cbox_samethresholds.isChecked() is True:
             if self.cbox_mrsort.isChecked() is False:
-                qpt, ppt = PerformanceTable(), PerformanceTable()
+                qpt = PerformanceTable(id = 'q')
+                ppt = PerformanceTable(id = 'p')
                 for i in range(len(self.bpt)):
                     qp = next(self.qpt.itervalues()).copy()
                     pp = next(self.ppt.itervalues()).copy()
@@ -506,7 +518,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                 ppt = None
 
             if self.cbox_noveto.isChecked() is False:
-                vpt = PerformanceTable()
+                vpt = PerformanceTable(id = 'v')
                 for i in range(len(self.bpt)):
                     vp = next(self.vpt.itervalues()).copy()
                     vp.id = "b%d" % (i + 1)
@@ -595,6 +607,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         try:
             self.__load_from_xmcda(f)
         except:
+            traceback.print_exc(sys.stderr)
             QtGui.QMessageBox.information(None, "Error",
                                           "Cannot load XMCDA data")
             return
