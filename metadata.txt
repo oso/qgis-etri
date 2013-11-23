@@ -4,7 +4,7 @@ email=olivier@sobrie.be
 author=Olivier Sobrie
 qgisMinimumVersion=2.0
 description=A decision aid plugin based on ELECTRE-TRI
-version=0.4
+version=0.4.1
 category=Vector
 tags=vector,electre,decision aid
 
