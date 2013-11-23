@@ -890,8 +890,17 @@ class InferenceThread(QtCore.QThread):
         self.emit(QtCore.SIGNAL("finished(bool)"), self.completed)
 
 if __name__ == "__main__":
+    import sys
     from PyQt4 import QtGui
     from qgis.core import *
+
+    if len(sys.argv) != 2:
+        print("usage: %s map.shp" % sys.argv[0])
+        sys.exit(1)
+
+    if os.path.isfile(sys.argv[1]) is False:
+        print("file %s, doesn't exist" % sys.argv[1])
+        sys.exit(1)
 
     QgsApplication.setPrefixPath("/usr/", True)
     QgsApplication.initQgis()
