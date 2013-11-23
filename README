@@ -46,3 +46,13 @@ and the direction (if its a criterion to maximize or to minimize).
 thresholds of the ELECTRE TRI model in the second tab.
 4. Finally choose a cut level in the box on the right and then you can
 generate the decision map by clicking on the corresponding button.
+
+Reference
+---------
+If you want to cite this plugin in a publication, please use this
+citation:
+
+ Olivier Sobrie, Marc Pirlot, Florent Joerin: Intégration de la méthode
+ d'aide à la décision ELECTRE TRI dans un système d'information
+ géographique open source. Revue Internationale de Géomatique 23(1):
+ 13-38 (2013)
