@@ -10,6 +10,7 @@ PKG_FILES +=	graphic.py
 PKG_FILES +=	layer.py
 PKG_FILES +=	main.py
 PKG_FILES +=	qgis_utils.py
+PKG_FILES +=	table.py
 PKG_FILES +=	ui_utils.py
 PKG_FILES +=	xmcda.py
 
