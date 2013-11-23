@@ -2,7 +2,6 @@
 import sys
 sys.path.insert(0, "..")
 import copy
-import colors
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from table import qt_criteria_table
