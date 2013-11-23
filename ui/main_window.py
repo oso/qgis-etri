@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/main_window.ui'
 #
-# Created: Mon Nov 11 13:54:49 2013
+# Created: Sat Nov 23 15:56:32 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -138,17 +138,25 @@ class Ui_main_window(object):
         self.table_refs.setColumnCount(0)
         self.table_refs.setRowCount(0)
         self.verticalLayout_3.addWidget(self.table_refs)
-        self.layout_choose = QtGui.QHBoxLayout()
-        self.layout_choose.setObjectName(_fromUtf8("layout_choose"))
+        self.gridLayout = QtGui.QGridLayout()
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.button_chooseassign = QtGui.QPushButton(self.group_refs)
         self.button_chooseassign.setEnabled(False)
         self.button_chooseassign.setObjectName(_fromUtf8("button_chooseassign"))
-        self.layout_choose.addWidget(self.button_chooseassign)
+        self.gridLayout.addWidget(self.button_chooseassign, 0, 0, 1, 1)
         self.button_infer = QtGui.QPushButton(self.group_refs)
         self.button_infer.setEnabled(False)
         self.button_infer.setObjectName(_fromUtf8("button_infer"))
-        self.layout_choose.addWidget(self.button_infer)
-        self.verticalLayout_3.addLayout(self.layout_choose)
+        self.gridLayout.addWidget(self.button_infer, 0, 2, 1, 1)
+        self.button_show = QtGui.QPushButton(self.group_refs)
+        self.button_show.setEnabled(False)
+        self.button_show.setObjectName(_fromUtf8("button_show"))
+        self.gridLayout.addWidget(self.button_show, 1, 0, 1, 1)
+        self.button_zoom = QtGui.QPushButton(self.group_refs)
+        self.button_zoom.setEnabled(False)
+        self.button_zoom.setObjectName(_fromUtf8("button_zoom"))
+        self.gridLayout.addWidget(self.button_zoom, 1, 2, 1, 1)
+        self.verticalLayout_3.addLayout(self.gridLayout)
         self.gridLayout_6.addWidget(self.group_refs, 1, 0, 1, 1)
         self.group_infparams = QtGui.QGroupBox(self.tab_inference)
         self.group_infparams.setObjectName(_fromUtf8("group_infparams"))
@@ -306,6 +314,8 @@ class Ui_main_window(object):
         self.group_refs.setTitle(_translate("main_window", "Reference actions", None))
         self.button_chooseassign.setText(_translate("main_window", "Choose assignment column", None))
         self.button_infer.setText(_translate("main_window", "Infer parameters", None))
+        self.button_show.setText(_translate("main_window", "Show selection on map", None))
+        self.button_zoom.setText(_translate("main_window", "Zoom to selection", None))
         self.group_infparams.setTitle(_translate("main_window", "Parameters", None))
         self.label_combo.setText(_translate("main_window", "Electre Tri model:", None))
         self.combo_model.setItemText(0, _translate("main_window", "Bouyssou-Marchant (Pessimistic)", None))

@@ -44,12 +44,14 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         self.iface = iface
 
-        if iface:
+        if iface is not None:
             self.__update_layer_list(iface.mapCanvas())
         elif layer:
             self.layer = criteria_layer(layer)
             self.__loadlayer()
             self.__reset_buttons()
+            self.button_show.setVisible(False)
+            self.button_zoom.setVisible(False)
 
         self.table_criteria.connect(self.table_criteria,
                                     QtCore.SIGNAL("criterion_state_changed"),
@@ -225,6 +227,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         try:
             self.layer = criteria_layer(map_canvas.layer(index))
             self.__clear_tables()
+            self.button_zoom.setEnabled(False)
+            self.button_show.setEnabled(False)
             self.button_infer.setEnabled(False)
             self.__loadlayer()
             self.__reset_buttons()
@@ -432,6 +436,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.button_loadxmcda.setEnabled(True)
         self.button_savexmcda.setEnabled(True)
         self.button_infer.setEnabled(False)
+        self.button_zoom.setEnabled(False)
+        self.button_show.setEnabled(False)
 
     def __criterion_state_changed(self, criterion):
         self.table_prof.disable_criterion(criterion)
@@ -614,6 +620,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         self.__clear_tables()
+        self.button_zoom.setEnabled(False)
+        self.button_show.setEnabled(False)
         self.button_infer.setEnabled(False)
         self.__fill_model_tables()
 
@@ -669,6 +677,9 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.__generate_category_colors()
         self.table_refs.add_assignments(aa, self.category_colors, True)
 
+        self.button_zoom.setEnabled(True)
+        self.button_show.setEnabled(True)
+
         self.button_infer.setEnabled(True)
 
     def __parse_xmcda_object(self, xmcda, tag, object_type):
@@ -690,6 +701,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.lbda = self.lbda_learned
 
         self.__clear_tables()
+        self.button_zoom.setEnabled(False)
+        self.button_show.setEnabled(False)
         self.button_infer.setEnabled(False)
         self.__fill_model_tables()
         self.cbox_samethresholds.setChecked(True)
@@ -846,6 +859,25 @@ class main_window(QtGui.QDialog, Ui_main_window):
                      QtCore.SIGNAL("buttonClicked(QAbstractButton *)"),
                      self.on_cancelbox_button_clicked)
         self.cancelbox.show()
+
+    def on_button_zoom_pressed(self):
+        if len(self.a_ref) < 1:
+            return
+
+        features = self.layer.get_features_ids(self.a_ref.keys())
+        self.layer.layer.setSelectedFeatures(features)
+        mc = self.iface.mapCanvas()
+        rect = self.layer.layer.boundingBoxOfSelected()
+        rect.scale(2)
+        mc.setExtent(rect)
+        mc.refresh()
+
+    def on_button_show_pressed(self):
+        if len(self.a_ref) < 1:
+            return
+
+        features = self.layer.get_features_ids(self.a_ref.keys())
+        self.layer.layer.setSelectedFeatures(features)
 
 class InferenceThread(QtCore.QThread):
 

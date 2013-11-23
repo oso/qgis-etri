@@ -185,8 +185,8 @@
            <widget class="qt_performance_table" name="table_refs"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="layout_choose">
-            <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
              <widget class="QPushButton" name="button_chooseassign">
               <property name="enabled">
                <bool>false</bool>
@@ -196,13 +196,33 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item row="0" column="2">
              <widget class="QPushButton" name="button_infer">
               <property name="enabled">
                <bool>false</bool>
               </property>
               <property name="text">
                <string>Infer parameters</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="button_show">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Show selection on map</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPushButton" name="button_zoom">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Zoom to selection</string>
               </property>
              </widget>
             </item>
@@ -519,11 +539,6 @@
   </customwidget>
   <customwidget>
    <class>qt_criteria_table</class>
-   <extends>QTableWidget</extends>
-   <header location="global">table</header>
-  </customwidget>
-  <customwidget>
-   <class>qt_threshold_table</class>
    <extends>QTableWidget</extends>
    <header location="global">table</header>
   </customwidget>

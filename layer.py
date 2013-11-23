@@ -1,5 +1,5 @@
 from PyQt4.QtCore import QVariant
-from qgis.core import QgsVectorLayer, QgsFeature
+from qgis.core import QgsVectorLayer
 from mcda.types import Criteria, Criterion, Alternative, Alternatives
 from mcda.types import PerformanceTable, AlternativePerformances
 
@@ -45,3 +45,16 @@ class criteria_layer(QgsVectorLayer):
 
             self.alternatives.append(Alternative(featid, featid))
             self.pt.append(AlternativePerformances(featid, perfs))
+
+    def get_features_ids(self, aids):
+        provider = self.layer.dataProvider()
+        self.alternatives = Alternatives([])
+        self.pt = PerformanceTable([])
+
+        features = []
+        for feat in provider.getFeatures():
+            featid = str(feat.id())
+            if featid in aids:
+                features.append(feat.id())
+
+        return features
