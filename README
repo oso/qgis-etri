@@ -26,9 +26,9 @@ Installation
    folder on Windows)
 2) Start Quantum GIS
 3) Go to Plugins -> Manage Plugins
-4) Check the Electre Tri plugin
+4) Check the ELECTRE-TRI plugin
 5) After this step an icon should appear in the plugin bar.
-   To use it click on the icon and the ELECTRE TRI window should
+   To use it click on the icon and the ELECTRE-TRI window should
    appear...
 
 Usage
