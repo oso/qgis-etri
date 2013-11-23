@@ -3,6 +3,7 @@ RSFILES :=	ui/resources_rc.py
 UIFILES :=	ui/main_window.ui
 UIFILES +=	ui/inference_results.ui
 
+PKG_FILES +=	metadata.txt
 PKG_FILES +=	__init__.py
 PKG_FILES +=	etri_plugin.py
 PKG_FILES +=	graphic.py
