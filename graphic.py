@@ -130,8 +130,13 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
             p = best
         elif p < worst:
             p = worst
+
         num = p - worst
         den = best - worst
+
+        if num == 0 or den == 0:
+            return self.ymin
+
         return self.ymin + num / den * (self.ymax - self.ymin)
 
     def __create_text_value(self, value):
