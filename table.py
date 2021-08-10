@@ -1,7 +1,7 @@
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
 from collections import OrderedDict
-from mcda.types import Criteria, Criterion, Constant
+from .mcda.types import Criteria, Criterion, Constant
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1
@@ -45,7 +45,7 @@ class qt_criteria_table(QtGui.QTableWidget):
 
     def __cell_changed(self, row, col):
         if col == COL_WEIGHT:
-            if self.row_crit.has_key(row) is False:
+            if (row in self.row_crit) is False:
                 return
 
             c, cv = self.row_crit[row]
@@ -222,9 +222,9 @@ class profiles_table(QtGui.QTableWidget):
     def add(self, profile):
         row = self.rowCount()
         self.insertRow(row)
-        for col, crit in self.col_crit.iteritems():
+        for col, crit in self.col_crit.items():
             item = QtGui.QTableWidgetItem()
-            if profile.performances.has_key(crit):
+            if crit in profile.performances:
                 item.setText(str(profile.performances[crit]))
             self.setItem(row, col, item)
 
@@ -336,9 +336,9 @@ class qt_performance_table(QtGui.QTableWidget):
         self.row_alt.append(alternative)
 
         performances = alt_perfs.performances
-        for col, crit in self.col_crit.iteritems():
+        for col, crit in self.col_crit.items():
             item = QtGui.QTableWidgetItem()
-            if performances.has_key(crit.id) and \
+            if crit.id in performances and \
                performances[crit.id] is not None:
                  item.setText(str(performances[crit.id]))
             if editable is False:
@@ -359,7 +359,7 @@ class qt_performance_table(QtGui.QTableWidget):
         self.row_altp.pop(row)
 
     def __cell_changed(self, row, col):
-        if self.col_crit.has_key(col) is False or   \
+        if (col in self.col_crit) is False or   \
             row >= len(self.row_altp) or row < 0:
             return
 
@@ -444,7 +444,7 @@ class qt_threshold_table(QtGui.QTableWidget):
             self.verticalHeaderItem(row).setText(threshold_id)
         self.row_threshid[row] = threshold_id
 
-        for col, crit in self.col_crit.iteritems():
+        for col, crit in self.col_crit.items():
             item = QtGui.QTableWidgetItem()
             if crit.thresholds.has_threshold(threshold_id):
                 t = crit.thresholds[threshold_id]
@@ -455,8 +455,8 @@ class qt_threshold_table(QtGui.QTableWidget):
             self.setItem(row, col, item)
 
     def __cell_changed(self, row, col):
-        if self.col_crit.has_key(col) is False or   \
-            self.row_threshid.has_key(row) is False:
+        if (col in self.col_crit) is False or   \
+            (row in self.row_threshid) is False:
             return
 
         crit = self.col_crit[col]

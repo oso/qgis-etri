@@ -1,12 +1,11 @@
-from __future__ import division
 import math
 from copy import deepcopy
 from itertools import product
-from types import AlternativeAssignment, AlternativesAssignments
-from types import Criteria, CriteriaValues, PerformanceTable
-from types import CategoriesProfiles
-from types import McdaObject
-from types import marshal, unmarshal
+from .types import AlternativeAssignment, AlternativesAssignments
+from .types import Criteria, CriteriaValues, PerformanceTable
+from .types import CategoriesProfiles
+from .types import McdaObject
+from .types import marshal, unmarshal
 from xml.etree import ElementTree
 
 def eq(a, b, eps=10e-10):

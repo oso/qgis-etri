@@ -7,7 +7,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+
+from qgis.PyQt import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -343,4 +344,4 @@ class Ui_main_window(object):
 
 from table import qt_performance_table, qt_criteria_table
 from graphic import _MyGraphicsview
-import resources_rc
+from . import resources_rc

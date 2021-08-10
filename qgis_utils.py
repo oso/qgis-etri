@@ -1,7 +1,7 @@
 import os
 import colorsys
 
-from PyQt4 import QtGui, QtCore
+from qgis.PyQt import QtGui, QtCore
 from qgis.core import *
 from qgis.gui import *
 
@@ -14,7 +14,7 @@ def layer_get_criteria(layer):
     fields = provider.fields()
     i = 0
     criteria = []
-    for (id, field) in fields.iteritems():
+    for (id, field) in fields.items():
         #FIXME: Check the type to only include numbers
         criterion = {}
         str = '%s' % field.name().trimmed()
@@ -39,7 +39,7 @@ def layer_get_minmax(layer):
     maxs = {}
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
-        for (k, attr) in attrs.iteritems():
+        for (k, attr) in attrs.items():
             value = attr.toDouble()[0]
             if first == True:
                 mins[k] = value
@@ -58,7 +58,7 @@ def layer_load(path, name):
     layerProvider = "ogr"
     layer = QgsVectorLayer(path, name, layerProvider)
     if not layer.isValid():
-        raise NameError,"Layer failed to load!"
+        raise NameError("Layer failed to load!")
 
     return layer
 
@@ -70,7 +70,7 @@ def layer_get_feature_attribute(layer, featid):
     attrs = feat.attributeMap()
 
     attributes = {}
-    for (k, attr) in attrs.iteritems():
+    for (k, attr) in attrs.items():
         try:
             attributes[k] = str(attr.toString()).trimmed()
         except:
@@ -88,7 +88,7 @@ def layer_get_attributes(layer):
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
         attributes = {}
-        for (k, attr) in attrs.iteritems():
+        for (k, attr) in attrs.items():
             attributes[k] = attr.toDouble()[0]
 
         actions[feat.id()] = attributes
@@ -143,9 +143,9 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",
-                      QtCore.QFileInfo(unicode(files[0])).absolutePath())
+                      QtCore.QFileInfo(str(files[0])).absolutePath())
 
-    return (unicode(files[0]), unicode(fileDialog.encoding()))
+    return (str(files[0]), str(fileDialog.encoding()))
 
 def addtocDialog(parent, filename, nprofils):
     addToTOC = QtGui.QMessageBox.question(parent,

@@ -1,6 +1,6 @@
-from types import Categories, Category
-from types import CategoriesProfiles, CategoryProfile
-from types import Limits
+from .types import Categories, Category
+from .types import CategoriesProfiles, CategoryProfile
+from .types import Limits
 
 def generate_categories(number, prefix='cat'):
     cats = Categories()

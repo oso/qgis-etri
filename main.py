@@ -1,21 +1,21 @@
 import os, sys, traceback
 from xml.etree import ElementTree
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt import QtCore, QtGui
 from itertools import product
-from ui.main_window import Ui_main_window
-from ui.inference_results import Ui_inference_results
-from layer import criteria_layer
-from mcda.electre_tri import ElectreTri
-from mcda.types import Criteria, CriteriaValues, CriterionValue
-from mcda.types import PerformanceTable, Alternatives
-from mcda.types import Alternative, AlternativePerformances
-from mcda.types import AlternativeAssignment, AlternativesAssignments
-from mcda.types import Thresholds, Threshold
-from mcda.generate import generate_categories
-from mcda.generate import generate_categories_profiles
-from qgis_utils import generate_decision_map, saveDialog, addtocDialog
-from graphic import QGraphicsSceneEtri
-from xmcda import submit_problem, request_solution
+from .ui.main_window import Ui_main_window
+from .ui.inference_results import Ui_inference_results
+from .layer import criteria_layer
+from .mcda.electre_tri import ElectreTri
+from .mcda.types import Criteria, CriteriaValues, CriterionValue
+from .mcda.types import PerformanceTable, Alternatives
+from .mcda.types import Alternative, AlternativePerformances
+from .mcda.types import AlternativeAssignment, AlternativesAssignments
+from .mcda.types import Thresholds, Threshold
+from .mcda.generate import generate_categories
+from .mcda.generate import generate_categories_profiles
+from .qgis_utils import generate_decision_map, saveDialog, addtocDialog
+from .graphic import QGraphicsSceneEtri
+from .xmcda import submit_problem, request_solution
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
@@ -191,12 +191,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         for altp in self.pt:
             for crit in self.criteria:
                 d = crit.direction
-                if crit_min.has_key(crit.id) is False:
+                if (crit.id in crit_min) is False:
                     crit_min[crit.id] = altp.performances[crit.id]
                 elif crit_min[crit.id]*d > altp(crit.id)*d:
                     crit_min[crit.id] = altp.performances[crit.id]
 
-                if crit_max.has_key(crit.id) is False:
+                if (crit.id in crit_max) is False:
                     crit_max[crit.id] = altp.performances[crit.id]
                 elif crit_max[crit.id]*d < altp(crit.id)*d:
                     crit_max[crit.id] = altp.performances[crit.id]
@@ -316,7 +316,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.itervalues())
+            bp = next(pt.values())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -334,7 +334,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.itervalues())
+            bp = next(pt.values())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -515,8 +515,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
                 qpt = PerformanceTable(id = 'q')
                 ppt = PerformanceTable(id = 'p')
                 for i in range(len(self.bpt)):
-                    qp = next(self.qpt.itervalues()).copy()
-                    pp = next(self.ppt.itervalues()).copy()
+                    qp = next(self.qpt.values()).copy()
+                    pp = next(self.ppt.values()).copy()
                     name = "b%d" % (i + 1)
                     qp.id, pp.id = name, name
                     qpt.append(qp), ppt.append(pp)
@@ -527,7 +527,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             if self.cbox_noveto.isChecked() is False:
                 vpt = PerformanceTable(id = 'v')
                 for i in range(len(self.bpt)):
-                    vp = next(self.vpt.itervalues()).copy()
+                    vp = next(self.vpt.values()).copy()
                     vp.id = "b%d" % (i + 1)
                     vpt.append(vp)
             else:
@@ -923,7 +923,7 @@ class InferenceThread(QtCore.QThread):
 
 if __name__ == "__main__":
     import sys
-    from PyQt4 import QtGui
+    from qgis.PyQt import QtGui
     from qgis.core import *
 
     if len(sys.argv) != 2:

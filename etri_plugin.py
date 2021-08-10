@@ -1,13 +1,13 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
 from qgis.core import *
 
 import ui.resources_rc
 import sys, os
 
-from main import main_window
+from .main import main_window
 
-class etri_plugin:
+class etri_plugin(object):
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -17,7 +17,7 @@ class etri_plugin:
         # Create action that will start plugin configuration
         self.action = QAction(QIcon(":/plugins/etri/images/etri.png"), "Electre Tri Plugin", self.iface.mainWindow())
         # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        self.action.triggered.connect(self.run)
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
 

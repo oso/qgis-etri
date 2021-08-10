@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 import sys 
 sys.path.append("..")
 import xmcda
@@ -41,11 +42,11 @@ affect_o = {'a1': 2, 'a2': 3, 'a3': 2, 'a4': 3, 'a5': 2, 'a6': 2, 'a7':2 }
 # Categories
 categories = [ 1, 2, 3 ]
 
-xmcda_alternatives = xmcda.format_alternatives(a.keys())
+xmcda_alternatives = xmcda.format_alternatives(list(a.keys()))
 xmcda_affectation = xmcda.format_affectations(affect_p)
 xmcda_criteria = xmcda.format_criteria(criteria)
 xmcda_categories = xmcda.format_categories(categories)
 xmcda_perfs = xmcda.format_performances_table(a)
 
 xmcda_data = xmcda.add_xmcda_tags(xmcda_alternatives + xmcda_affectation + xmcda_criteria + xmcda_categories + xmcda_perfs)
-print xmcda_data
+print(xmcda_data)

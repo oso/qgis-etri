@@ -2,8 +2,8 @@
 import sys
 sys.path.insert(0, "..")
 import copy
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
 from table import qt_criteria_table
 from table import qt_performance_table
 from table import qt_threshold_table
@@ -33,11 +33,11 @@ def indent(elem, level=0):
             elem.tail = i
 
 def criterion_direction_changed(criterion):
-    print criterion.id, ":", criterion.direction
+    print(criterion.id, ":", criterion.direction)
 
 def criterion_state_changed(criterion):
     criterion = c[criterion]
-    print "Criteria state changed:", criterion
+    print("Criteria state changed:", criterion)
     for table in [ perf_table, prof_table, indif_table, pref_table, veto_table ]:
         if table != None:
             table.disable_criterion(criterion)
@@ -132,7 +132,7 @@ def save_dialog_box():
     fname = QtGui.QFileDialog.getSaveFileName(None,
                                               "Save XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
-    fname = unicode(fname)
+    fname = str(fname)
     if fname:
         if "." not in fname:
             fname += ".xmcda"
@@ -178,9 +178,9 @@ if __name__ == "__main__":
     pref_table = qt_threshold_table(None, c)
     veto_table = qt_threshold_table(None, c)
 
-    crit = next(c.itervalues())
+    crit = next(c.values())
     for thres in crit.thresholds:
-        print thres
+        print(thres)
     if crit.thresholds.has_threshold('q'):
         indif_table.add_threshold('q', 'q')
         pref_table.add_threshold('p', 'p')

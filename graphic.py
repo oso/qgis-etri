@@ -1,9 +1,9 @@
-from __future__ import division
+
 import os, sys
 import colorsys
 from itertools import combinations
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
 
 class _MyGraphicsview(QtGui.QGraphicsView):
 
@@ -27,7 +27,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         if criteria_order:
             self.criteria_order = criteria_order
         else:
-            self.criteria_order = self.model.criteria.keys()
+            self.criteria_order = list(self.model.criteria.keys())
             self.criteria_order.sort()
         self.worst = worst
         self.best = best

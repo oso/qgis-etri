@@ -10,10 +10,10 @@ if __name__ == "__main__":
 
     layer = QgsVectorLayer("./data/ticino/criteria.shp", "criteria", "ogr")
     if not layer.isValid():
-        raise NameError, "Layer failed to load!"
+        raise NameError("Layer failed to load!")
 
     layer = criteria_layer(layer)
 
-    print layer.criteria
+    print(layer.criteria)
 
     QgsApplication.exitQgis()

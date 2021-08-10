@@ -34,7 +34,7 @@ time_m = lambda d: d.strftime("%H%M%S")
 bool_u = lambda s: {'0':False, 'false': False, '1': True, 'true': True}[s]
 
 # aliases:
-class Alias():
+class Alias(object):
     def __init__(self, py_type, xml_type):
         self.py_type, self.xml_type = py_type, xml_type
     def __call__(self, value):
@@ -45,15 +45,15 @@ class Alias():
 byte = Alias(str,'byte')
 short = Alias(int,'short')
 double = Alias(float,'double')
-integer = Alias(long,'integer')
+integer = Alias(int,'integer')
 DateTime = datetime.datetime
 Date = datetime.date
 Time = datetime.time
 
 # Define convertion function (python type): xml schema type
-TYPE_MAP = {str:'string',unicode:'string',
+TYPE_MAP = {str:'string',str:'string',
             bool:'boolean', short:'short', byte:'byte',
-            int:'int', long:'long', integer:'integer', 
+            int:'int', int:'long', integer:'integer', 
             float:'float', double:'double',
             Decimal:'decimal',
             datetime.datetime:'dateTime', datetime.date:'date',
@@ -111,7 +111,7 @@ class SimpleXMLElement(object):
             try:
                 self.__document = xml.dom.minidom.parseString(text)
             except:
-                if DEBUG: print text
+                if DEBUG: print(text)
                 raise
             self.__elements = [self.__document.documentElement]
         else:
@@ -121,16 +121,16 @@ class SimpleXMLElement(object):
     def add_child(self,name,text=None,ns=True):
         "Adding a child tag to a node"
         if not ns or not self.__ns:
-            if DEBUG: print "adding %s" % (name)
+            if DEBUG: print("adding %s" % (name))
             element = self.__document.createElement(name)
         else:
-            if DEBUG: print "adding %s ns %s %s" % (name, self.__ns,ns)
+            if DEBUG: print("adding %s ns %s %s" % (name, self.__ns,ns))
             if self.__prefix:
                 element = self.__document.createElementNS(self.__ns, "%s:%s" % (self.__prefix, name))
             else:
                 element = self.__document.createElementNS(self.__ns, name)
         if text is not None:
-            if isinstance(text, unicode):
+            if isinstance(text, str):
                 element.appendChild(self.__document.createTextNode(text))
             else:
                 element.appendChild(self.__document.createTextNode(str(text)))
@@ -146,7 +146,7 @@ class SimpleXMLElement(object):
         if tag.startswith("_"):
             object.__setattr__(self, tag, text)
         else:
-            if DEBUG: print "__setattr__(%s,%s)" % (tag, text)
+            if DEBUG: print("__setattr__(%s,%s)" % (tag, text))
             self.add_child(tag,text)
 
     def add_comment(self, data):
@@ -189,13 +189,13 @@ class SimpleXMLElement(object):
 
     def __getitem__(self, item):
         "Return xml tag attribute value or a slice of attributes (iter)"
-        if DEBUG: print "__getitem__(%s)" % item 
-        if isinstance(item,basestring):
+        if DEBUG: print("__getitem__(%s)" % item) 
+        if isinstance(item,str):
             if self._element.hasAttribute(item):
                 return self._element.attributes[item].value
         elif isinstance(item, slice):
             # return a list with name:values
-            return self._element.attributes.items()[item]
+            return list(self._element.attributes.items())[item]
         else:
             # return element by index (position)
             element = self.__elements[item]
@@ -211,7 +211,7 @@ class SimpleXMLElement(object):
  
     def __setitem__(self, item, value):
         "Set an attribute value"
-        if isinstance(item,basestring):
+        if isinstance(item,str):
             self.add_attribute(item, value)
         elif isinstance(item, slice):
             # set multiple attributes at once
@@ -233,18 +233,18 @@ class SimpleXMLElement(object):
                 elements=[self.__elements[tag]]
             if ns and not elements:
                 for ns_uri in isinstance(ns, (tuple, list)) and ns or (ns, ):
-                    if DEBUG: print "searching %s by ns=%s" % (tag,ns_uri)
+                    if DEBUG: print("searching %s by ns=%s" % (tag,ns_uri))
                     elements = self._element.getElementsByTagNameNS(ns_uri, tag)
                     if elements: 
                         break
             if self.__ns and not elements:
-                if DEBUG: print "searching %s by ns=%s" % (tag, self.__ns)
+                if DEBUG: print("searching %s by ns=%s" % (tag, self.__ns))
                 elements = self._element.getElementsByTagNameNS(self.__ns, tag)
             if not elements:
-                if DEBUG: print "searching %s " % (tag)
+                if DEBUG: print("searching %s " % (tag))
                 elements = self._element.getElementsByTagName(tag)
             if not elements:
-                if DEBUG: print self._element.toxml()
+                if DEBUG: print(self._element.toxml())
                 if error:
                     raise AttributeError("No elements found")
                 else:
@@ -254,7 +254,7 @@ class SimpleXMLElement(object):
                 document=self.__document,
                 namespace=self.__ns,
                 prefix=self.__prefix)
-        except AttributeError, e:
+        except AttributeError as e:
             raise AttributeError("Tag not found: %s (%s)" % (tag, str(e)))
 
     def __getattr__(self, tag):
@@ -312,7 +312,7 @@ class SimpleXMLElement(object):
     
     def __str__(self):
         "Returns the str text nodes of the current element"
-        return unicode(self).encode("utf8","ignore")
+        return str(self).encode("utf8","ignore")
 
     def __int__(self):
         "Returns the integer value of the current element"
@@ -338,7 +338,7 @@ class SimpleXMLElement(object):
             name = str(node.get_local_name())
             try:
                 fn = types[name]
-            except (KeyError, ), e:
+            except (KeyError, ) as e:
                 raise TypeError("Tag: %s invalid" % (name,))
             if isinstance(fn,list):
                 value = []
@@ -355,9 +355,9 @@ class SimpleXMLElement(object):
                     try:
                         # get special desserialization function (if any)
                         fn = TYPE_UNMARSHAL_FN.get(fn,fn) 
-                        value = fn(unicode(node))
-                    except (ValueError, TypeError), e:
-                        raise ValueError("Tag: %s: %s" % (name, unicode(e)))
+                        value = fn(str(node))
+                    except (ValueError, TypeError) as e:
+                        raise ValueError("Tag: %s: %s" % (name, str(e)))
                 else:
                     value = None
             d[name] = value
@@ -379,7 +379,7 @@ class SimpleXMLElement(object):
                 child.add_comment("Repetitive array of:")
             for t in value:
                 child.marshall(name,t, False, add_comments=add_comments, ns=ns)
-        elif isinstance(value, basestring): # do not convert strings or unicodes
+        elif isinstance(value, str): # do not convert strings or unicodes
             self.add_child(name,value,ns=ns)
         elif value is None: # sent a empty tag?
             self.add_child(name,ns=ns)
@@ -409,7 +409,7 @@ if __name__ == "__main__":
     d = {'href':'http://www.bing.com/', 'alt': 'Bing'} 
     span1.b[:] = d
     assert sorted([(k,v) for k,v in span1.b[:]]) == sorted(d.items())
-    print span1.as_xml()
+    print(span1.as_xml())
     assert 'b' in span1
     span.import_node(span1)
-    print span.as_xml()
+    print(span.as_xml())

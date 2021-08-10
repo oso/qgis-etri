@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
 from mcda.types import Criterion
 from table import qt_criteria_table
 from xml.etree import ElementTree
@@ -31,7 +31,7 @@ def save_dialog_box():
     fname = QtGui.QFileDialog.getSaveFileName(None,
                                               "Save XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
-    fname = unicode(fname)
+    fname = str(fname)
     if fname:
         if "." not in fname:
             fname += ".xmcda"
@@ -42,7 +42,7 @@ def load_dialog_box():
     fname = QtGui.QFileDialog.getOpenFileName(None,
                                               "Load XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
-    return unicode(fname)
+    return str(fname)
 
 def save_to_xmcda():
     if not crit_table:
@@ -87,10 +87,10 @@ def add_criterion():
         c.append(crit)
 
 def criterion_direction_changed(criterion):
-    print "Criterion direction changed:", criterion
+    print("Criterion direction changed:", criterion)
 
 def criterion_state_changed(criterion):
-    print "Criterion state changed:", criterion
+    print("Criterion state changed:", criterion)
 
 if __name__ == "__main__":
 

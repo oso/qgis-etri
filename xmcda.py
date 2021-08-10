@@ -1,7 +1,7 @@
 import sys #FIXME: useless
 import time
-from pysimplesoap.client import SoapClient
-from pysimplesoap.simplexml import SimpleXMLElement, TYPE_MAP
+from .pysimplesoap.client import SoapClient
+from .pysimplesoap.simplexml import SimpleXMLElement, TYPE_MAP
 
 ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 
@@ -16,7 +16,7 @@ def format_alternatives(alts):
 
 def format_affectations(affectations):
     output = "<alternativesAffectations>\n"
-    for alternative, category in affectations.iteritems():
+    for alternative, category in affectations.items():
         output += "\t<alternativeAffectation>\n"
         output += "\t\t<alternativeID>%s</alternativeID>\n" % alternative
         output += "\t\t<categoryID>%s</categoryID>\n" % category
@@ -52,7 +52,7 @@ def format_criteria(criteria, directions=None, q_thresholds=None, p_thresholds=N
                     output += "\t\t\t</threshold>\n"
             if v_thresholds:
                 for i, v in enumerate(v_thresholds):
-                    if v.has_key(criterion):
+                    if criterion in v:
                         output += "\t\t\t<threshold id=\"v%d\" name=\"veto\" mcdaConcept=\"veto\">\n" % (i+1)
                         output += "\t\t\t\t<constant><real>%f</real></constant>\n" % v[criterion]
                         output += "\t\t\t</threshold>\n"
@@ -73,10 +73,10 @@ def format_categories(categories):
 
 def format_performances_table(perfs_table):
     output = "<performanceTable>\n"
-    for alternative, perfs in perfs_table.iteritems():
+    for alternative, perfs in perfs_table.items():
         output += "\t<alternativePerformances>\n"
         output += "\t\t<alternativeID>%s</alternativeID>\n" % alternative
-        for criterion, value in perfs.iteritems():
+        for criterion, value in perfs.items():
             output += "\t\t<performance>\n"
             output += "\t\t\t<criterionID>%s</criterionID>\n" % criterion
             output += "\t\t\t<value><real>%s</real></value>\n" % value
@@ -87,7 +87,7 @@ def format_performances_table(perfs_table):
 
 def format_criteria_weights(weights):
     output = "<criteriaValues>\n"
-    for crit, weight in weights.iteritems():
+    for crit, weight in weights.items():
         output += "\t<criterionValue>\n"
         output += "\t\t<criterionID>%s</criterionID>\n" % crit
         output += "\t\t<value><real>%s</real></value>\n" % weight
