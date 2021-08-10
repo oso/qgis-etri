@@ -1,7 +1,9 @@
 import os
 import colorsys
 
-from qgis.PyQt import QtGui, QtCore
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 from qgis.core import *
 from qgis.gui import *
 
@@ -106,7 +108,9 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
     except:
         pass
 
-    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.geometryType(), vprovider.crs())
+    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.wkbType(), vprovider.crs(), 'ESRI Shapefile')
+    if writer.hasError():
+        raise Exception(f"Problem creating file writer: {writer.errorMessage()}")
 
     outFeat = QgsFeature(fields)
     nFeat = vprovider.featureCount()
@@ -136,10 +140,11 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
     fileDialog = QgsEncodingFileDialog(parent, title, dirName,
                                        filtering, encode)
     fileDialog.setDefaultSuffix(extension)
-    fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
+    fileDialog.setFileMode(QFileDialog.AnyFile)
     fileDialog.setAcceptMode(acceptmode)
-    fileDialog.setConfirmOverwrite(True)
-    if not fileDialog.exec_() == QtGui.QDialog.Accepted:
+    # this is the default value, it is just repeated to be more explicit
+    fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
+    if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",
@@ -147,35 +152,36 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
 
     return (str(files[0]), str(fileDialog.encoding()))
 
-def addtocDialog(parent, filename, nprofils):
-    addToTOC = QtGui.QMessageBox.question(parent,
-                    "Decision MAP layer created",
-                    "Would you like to add the new layer to the TOC?",
-                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No,
-                    QtGui.QMessageBox.NoButton)
 
-    if addToTOC == QtGui.QMessageBox.Yes:
+def addtocDialog(parent, filename, nprofils):
+    addToTOC = QMessageBox.question(
+        parent,
+        "Decision MAP layer created",
+        "Would you like to add the new layer to the TOC?",
+        QMessageBox.Yes | QMessageBox.No,
+        QMessageBox.NoButton
+    )
+
+    if addToTOC == QMessageBox.Yes:
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         vlayer = QgsVectorLayer(filename, name, "ogr")
         render_decision_map(vlayer, nprofils)
 
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        QgsProject.instance().addMapLayer(vlayer)
 
 def render_decision_map_new(layer, nprofils):
     cat_list = []
     nclasses = nprofils + 1
     for i in range(1, nclasses + 1):
-        s = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        color = QtGui.QColor(0,
-                             255 - 220 * i / nclasses,
-                             0)
+        s = QgsSymbol.defaultSymbol(layer.geometryType())
+        color = QColor(0, 255 - 220 * i / nclasses, 0)
         s.setColor(color)
-        cat_list.append(QgsRendererCategoryV2(i, s, "Category %d" % i))
+        cat_list.append(QgsRendererCategory(i, s, "Category %d" % i))
 
-    sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
+    sr = QgsCategorizedSymbolRenderer("categories", cat_list)
     sr.setClassAttribute("category")
-    layer.setRendererV2(sr)
+    layer.setRenderer(sr)
 
 def render_decision_map(layer, nprofils):
     render_decision_map_new(layer, nprofils)

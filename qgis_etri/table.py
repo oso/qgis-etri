@@ -227,8 +227,8 @@ class profiles_table(QTableWidget):
             self.setItem(row, col, item)
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
-        return crit_col[criterion]
+        crit_col = dict([[str(v), k] for k, v in self.col_crit.items()])
+        return crit_col[str(criterion)]
 
     def disable_criterion(self, criterion):
         self.setColumnHidden(self.__get_criterion_col(criterion),
@@ -309,8 +309,8 @@ class qt_performance_table(QTableWidget):
         return None
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
-        return crit_col[criterion]
+        crit_col = dict([[str(v),k] for k,v in self.col_crit.items()])
+        return crit_col[str(criterion)]
 
     def disable_criterion(self, criterion):
         self.setColumnHidden(self.__get_criterion_col(criterion),

@@ -1,6 +1,7 @@
 import os, sys, traceback
 from xml.etree import ElementTree
 from qgis.PyQt import QtCore
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
 from itertools import product
 from .ui.main_window import Ui_main_window
@@ -57,10 +58,12 @@ class main_window(QDialog, Ui_main_window):
         self.table_criteria.criterion_state_changed.connect(self.__criterion_state_changed)
 
     def closeEvent(self, event):
-        val = QMessageBox.question(self, "ELECTRE TRI",
-                    "Close ELECTRE TRI?",
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+        val = QMessageBox.question(
+            self, "ELECTRE TRI",
+            "Close ELECTRE TRI?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
         if val == QMessageBox.No:
             event.ignore()
 
@@ -505,7 +508,7 @@ class main_window(QDialog, Ui_main_window):
     def on_button_generate_pressed(self):
         active_criteria = self.criteria.get_active()
         if self.bpt.is_complete(active_criteria.keys()) is False:
-            QtGui.QMessageBox.information(None, "Error",
+            QMessageBox.information(None, "Error",
                                           "Profile table is incomplete")
             return
 
@@ -547,7 +550,7 @@ class main_window(QDialog, Ui_main_window):
 
         (f, encoding) = saveDialog(self, "Save output shapefile",
                                    "Shapefiles (*.shp)", "shp",
-                                   QtGui.QFileDialog.AcceptSave)
+                                   QFileDialog.AcceptSave)
         if f is None or encoding is None:
             return
 
@@ -598,7 +601,7 @@ class main_window(QDialog, Ui_main_window):
         if self.vpt:
             xmcda.append(self.vpt.to_xmcda())
 
-        f = open(filepath, "w")
+        f = open(filepath, "wb")
         buf = ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
         f.write(buf)
         f.close()
@@ -629,7 +632,7 @@ class main_window(QDialog, Ui_main_window):
 
         ncat = len(self.bpt) + 1
         for i in range(1, ncat + 1):
-            color = QtGui.QColor(0, 255 - 220 * i / ncat, 0)
+            color = QColor(0, 255 - 220 * i / ncat, 0)
             self.category_colors[str(i)] = color
 
     def on_button_chooseassign_pressed(self):

@@ -117,7 +117,7 @@ class QGraphicsSceneEtri(QGraphicsScene):
             text.setPos(x - text.boundingRect().width() / 2, 0)
             self.addItem(text)
 
-            self.axis_text_items[criterion] = text
+            self.axis_text_items[str(criterion)] = text
 
     def __compute_y(self, ap, id):
         direction = self.model.criteria[id].direction
