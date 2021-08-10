@@ -26,8 +26,8 @@ except ImportError:
             f = urllib2.urlopen(urllib2.Request(url, body, headers))
             return f.info(), f.read()
 
-    
-from simplexml import SimpleXMLElement, TYPE_MAP, OrderedDict
+
+from .simplexml import SimpleXMLElement, TYPE_MAP, OrderedDict
 
 class SoapFault(RuntimeError):
     def __init__(self,faultcode,faultstring):

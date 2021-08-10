@@ -1,5 +1,6 @@
 from qgis.PyQt import QtCore
-from qgis.PyQt import QtGui
+from qgis.PyQt.QtGui import QRegExpValidator
+from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
 from collections import OrderedDict
 from .mcda.types import Criteria, Criterion, Constant
 
@@ -9,7 +10,7 @@ COL_NAME = 0
 COL_DIRECTION = 1
 COL_WEIGHT = 2
 
-class float_delegate(QtGui.QItemDelegate):
+class float_delegate(QItemDelegate):
 
     def __init__(self, parent=None, columns=None):
         super(float_delegate, self).__init__(parent)
@@ -17,14 +18,17 @@ class float_delegate(QtGui.QItemDelegate):
 
     def createEditor(self, parent, option, index):
         if self.columns == None or index.column() in self.columns:
-            line = QtGui.QLineEdit(parent)
+            line = QLineEdit(parent)
             expr = QtCore.QRegExp("[0-9]*\.?[0-9]*")
-            line.setValidator(QtGui.QRegExpValidator(expr, self))
+            line.setValidator(QRegExpValidator(expr, self))
             return line
         else:
-            QtGui.QItemDelegate.createEditor(self, parent, option, index)
+            QItemDelegate.createEditor(self, parent, option, index)
 
-class qt_criteria_table(QtGui.QTableWidget):
+class qt_criteria_table(QTableWidget):
+
+    criterion_direction_changed = QtCore.pyqtSignal(str)
+    criterion_state_changed = QtCore.pyqtSignal(Criterion)
 
     def __init__(self, parent = None):
         super(qt_criteria_table, self).__init__(parent)
@@ -39,8 +43,7 @@ class qt_criteria_table(QtGui.QTableWidget):
         self.verticalHeader().setSortIndicatorShown(False)
         self.horizontalHeader().setHighlightSections(False)
 
-        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
-                     self.__cell_changed)
+        self.cellChanged.connect(self.__cell_changed)
         self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
 
     def __cell_changed(self, row, col):
@@ -60,11 +63,11 @@ class qt_criteria_table(QtGui.QTableWidget):
                 else:
                     cv.value = float(value)
             except:
-                QtGui.QMessageBox.warning(self,
-                                          "Criterion [%s] %s"
-                                          % (c.id, c.name),
-                                          "Invalid weight value")
-                item = QtGui.QTableWidgetItem()
+                QMessageBox.warning(self,
+                                    "Criterion [%s] %s"
+                                    % (c.id, c.name),
+                                    "Invalid weight value")
+                item = QTableWidgetItem()
                 item.setText("0")
                 item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
                 self.setItem(row, COL_WEIGHT, item)
@@ -75,15 +78,15 @@ class qt_criteria_table(QtGui.QTableWidget):
         self.row_crit = {}
 
     def __add_headers(self):
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setText("Criterion")
         item.setTextAlignment(QtCore.Qt.AlignLeft)
         self.setHorizontalHeaderItem(COL_NAME, item)
 
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setHorizontalHeaderItem(COL_DIRECTION, item)
 
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setText("Weight")
         item.setTextAlignment(QtCore.Qt.AlignRight)
         self.setHorizontalHeaderItem(COL_WEIGHT, item)
@@ -95,7 +98,7 @@ class qt_criteria_table(QtGui.QTableWidget):
             c.direction = 1
         else:
             c.direction = -1
-        self.emit(QtCore.SIGNAL("criterion_direction_changed"), c.id)
+        self.criterion_direction_changed.emit(c.id)
 
     def __on_criterion_state_changed(self, row):
         c, cv = self.row_crit[row]
@@ -112,24 +115,19 @@ class qt_criteria_table(QtGui.QTableWidget):
             item_cv.setText("")
             combo_dir.setDisabled(True)
             item_cv.setFlags(item_cv.flags() & ~QtCore.Qt.ItemIsEnabled)
-        self.emit(QtCore.SIGNAL("criterion_state_changed"), c)
+        self.criterion_state_changed.emit(c)
 
     def __add_combo_signal(self, combo, row):
         smapper = QtCore.QSignalMapper(self)
-        QtCore.QObject.connect(combo,
-                               QtCore.SIGNAL("currentIndexChanged(int)"),
-                               smapper, QtCore.SLOT("map()"))
+        combo.currentIndexChanged.connect(smapper.map)
         smapper.setMapping(combo, row)
-        QtCore.QObject.connect(smapper, QtCore.SIGNAL("mapped(int)"),
-                               self.__on_criterion_direction_changed)
+        smapper.mapped.connect(self.__on_criterion_direction_changed)
 
     def __add_cbox_signal(self, cbox, row):
         smapper = QtCore.QSignalMapper(self)
-        QtCore.QObject.connect(cbox, QtCore.SIGNAL("stateChanged(int)"),
-                                smapper, QtCore.SLOT("map()"))
+        cbox.stateChanged.connect(smapper.map)
         smapper.setMapping(cbox, row)
-        QtCore.QObject.connect(smapper, QtCore.SIGNAL("mapped(int)"),
-                                self.__on_criterion_state_changed)
+        smapper.mapped.connect(self.__on_criterion_state_changed)
 
     def add_criterion(self, c, cv):
         row = self.rowCount()
@@ -138,11 +136,11 @@ class qt_criteria_table(QtGui.QTableWidget):
         self.row_crit[row] = (c, cv)
 
         # Add first cell with name and checkbox
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsTristate)
         self.setItem(row, COL_NAME, item)
 
-        cbox = QtGui.QCheckBox(self)
+        cbox = QCheckBox(self)
         if c.disabled is not True:
             cbox.setCheckState(QtCore.Qt.Checked)
         if c.name:
@@ -153,10 +151,10 @@ class qt_criteria_table(QtGui.QTableWidget):
         self.setCellWidget(row, COL_NAME, cbox)
 
         # Add direction cell
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsTristate)
         self.setItem(row, COL_DIRECTION, item)
-        combo = QtGui.QComboBox(self)
+        combo = QComboBox(self)
         combo.addItem("Max")
         combo.addItem("Min")
         if c.direction == -1:
@@ -167,7 +165,7 @@ class qt_criteria_table(QtGui.QTableWidget):
         self.setCellWidget(row, COL_DIRECTION, combo)
 
         # Add weight column
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
         if c.disabled is True:
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEnabled)
@@ -180,7 +178,7 @@ class qt_criteria_table(QtGui.QTableWidget):
             cv = cvs[c.id]
             self.add_criterion(c, cv)
 
-class profiles_table(QtGui.QTableWidget):
+class profiles_table(QTableWidget):
 
     def __init__(self, parent=None, criteria=None, profiles=None):
         super(profiles_table, self).__init__(parent)
@@ -209,7 +207,7 @@ class profiles_table(QtGui.QTableWidget):
     def add_criterion(self, criterion):
         col = self.columnCount()
         self.insertColumn(col)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setHorizontalHeaderItem(col, item)
         if criterion.name:
             self.horizontalHeaderItem(col).setText(criterion.name)
@@ -223,7 +221,7 @@ class profiles_table(QtGui.QTableWidget):
         row = self.rowCount()
         self.insertRow(row)
         for col, crit in self.col_crit.items():
-            item = QtGui.QTableWidgetItem()
+            item = QTableWidgetItem()
             if crit in profile.performances:
                 item.setText(str(profile.performances[crit]))
             self.setItem(row, col, item)
@@ -239,7 +237,7 @@ class profiles_table(QtGui.QTableWidget):
 class threshold_table(profiles_table):
     pass
 
-class qt_performance_table(QtGui.QTableWidget):
+class qt_performance_table(QTableWidget):
 
     def __init__(self, parent=None, criteria=None, alternatives=None, pt=None):
         super(qt_performance_table, self).__init__(parent)
@@ -257,8 +255,7 @@ class qt_performance_table(QtGui.QTableWidget):
         if alternatives is not None and pt is not None:
             self.add_pt(alternatives, pt)
 
-        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
-                     self.__cell_changed)
+        self.cellChanged.connect(self.__cell_changed)
 
     def reset_table(self):
         self.clear()
@@ -275,7 +272,7 @@ class qt_performance_table(QtGui.QTableWidget):
     def add_criterion(self, criterion):
         col = self.columnCount()
         self.insertColumn(col)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setHorizontalHeaderItem(col, item)
         if criterion.name:
             self.horizontalHeaderItem(col).setText(criterion.name)
@@ -292,11 +289,11 @@ class qt_performance_table(QtGui.QTableWidget):
         else:
             col = self.columnCount()
         self.insertColumn(col)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setHorizontalHeaderItem(col, item)
         self.horizontalHeaderItem(col).setText('Category')
         for aa in assignments:
-            item = QtGui.QTableWidgetItem()
+            item = QTableWidgetItem()
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             item.setText(str(aa.category_id))
             row = self.__get_alternative_row_by_id(aa.id)
@@ -327,7 +324,7 @@ class qt_performance_table(QtGui.QTableWidget):
         row = self.rowCount()
         self.insertRow(row)
 
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setVerticalHeaderItem(row, item)
         if alternative.name:
             self.verticalHeaderItem(row).setText(alternative.name)
@@ -337,7 +334,7 @@ class qt_performance_table(QtGui.QTableWidget):
 
         performances = alt_perfs.performances
         for col, crit in self.col_crit.items():
-            item = QtGui.QTableWidgetItem()
+            item = QTableWidgetItem()
             if crit.id in performances and \
                performances[crit.id] is not None:
                  item.setText(str(performances[crit.id]))
@@ -381,12 +378,12 @@ class qt_performance_table(QtGui.QTableWidget):
             else:
                altp.performances[crit.id] = float(value)
         except:
-            QtGui.QMessageBox.warning(self,
-                                      "Alternative [%s] %s"
-                                      % (alt.id, alt.name),
-                                      "Invalid evaluation")
+            QMessageBox.warning(self,
+                                "Alternative [%s] %s"
+                                % (alt.id, alt.name),
+                                "Invalid evaluation")
 
-class qt_threshold_table(QtGui.QTableWidget):
+class qt_threshold_table(QTableWidget):
 
     def __init__(self, parent=None, criteria=None):
         super(qt_threshold_table, self).__init__(parent)
@@ -394,13 +391,12 @@ class qt_threshold_table(QtGui.QTableWidget):
         self.col_crit = {}
         self.row_threshid = {}
 
-        self.setItemDelegate(float_delegate(self)) 
+        self.setItemDelegate(float_delegate(self))
 
         if criteria is not None:
             self.add_criteria(criteria)
 
-        self.connect(self, QtCore.SIGNAL("cellChanged(int,int)"),
-                     self.__cell_changed)
+        self.cellChanged.connect(self.__cell_changed)
 
     def reset_table(self):
         self.clear()
@@ -414,7 +410,7 @@ class qt_threshold_table(QtGui.QTableWidget):
     def add_criterion(self, criterion):
         col = self.columnCount()
         self.insertColumn(col)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setHorizontalHeaderItem(col, item)
         if criterion.name:
             self.horizontalHeaderItem(col).setText(criterion.name)
@@ -425,7 +421,7 @@ class qt_threshold_table(QtGui.QTableWidget):
         self.col_crit[col] = criterion
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        crit_col = dict([[v, k] for k, v in self.col_crit.items()])
         return crit_col[criterion]
 
     def disable_criterion(self, criterion):
@@ -436,7 +432,7 @@ class qt_threshold_table(QtGui.QTableWidget):
         row = self.rowCount()
         self.insertRow(row)
 
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.setVerticalHeaderItem(row, item)
         if threshold_name:
             self.verticalHeaderItem(row).setText(threshold_name)
@@ -445,7 +441,7 @@ class qt_threshold_table(QtGui.QTableWidget):
         self.row_threshid[row] = threshold_id
 
         for col, crit in self.col_crit.items():
-            item = QtGui.QTableWidgetItem()
+            item = QTableWidgetItem()
             if crit.thresholds.has_threshold(threshold_id):
                 t = crit.thresholds[threshold_id]
                 # FIXME: handle other types
@@ -469,7 +465,7 @@ class qt_threshold_table(QtGui.QTableWidget):
         threshold = thresholds[threshold_id]
 
         item = self.cellWidget(row, col)
-        if item == None:
+        if item is None:
             return
 
         # FIXME: Handle other types than constant
@@ -482,7 +478,7 @@ class qt_threshold_table(QtGui.QTableWidget):
             else:
                 threshold.values.value = float(value)
         except:
-            QtGui.QMessageBox.warning(self,
-                                          "Criterion [%s] %s"
-                                          % (crit.id, crit.name),
-                                          "Invalid threshold value")
+            QMessageBox.warning(self,
+                                "Criterion [%s] %s"
+                                % (crit.id, crit.name),
+                                "Invalid threshold value")

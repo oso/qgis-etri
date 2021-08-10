@@ -1,8 +1,9 @@
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QAction
 from qgis.core import *
 
-import ui.resources_rc
+import qgis_etri.ui.resources_rc
 import sys, os
 
 from .main import main_window

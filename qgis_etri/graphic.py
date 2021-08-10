@@ -1,14 +1,15 @@
-
 import os, sys
 import colorsys
 from itertools import combinations
 from qgis.PyQt import QtCore
-from qgis.PyQt import QtGui
+from qgis.PyQt.QtGui import QBrush, QColor, QFont, QPen
+from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsTextItem, QGraphicsView
 
-class _MyGraphicsview(QtGui.QGraphicsView):
 
-    def __init__(self, parent = None):
-        super(QtGui.QGraphicsView, self).__init__(parent)
+class _MyGraphicsview(QGraphicsView):
+
+    def __init__(self, parent=None):
+        super(QGraphicsView, self).__init__(parent)
 
     def resizeEvent(self, event):
         scene = self.scene()
@@ -18,10 +19,11 @@ class _MyGraphicsview(QtGui.QGraphicsView):
         scene.update(self.size())
         self.resetCachedContent()
 
-class QGraphicsSceneEtri(QtGui.QGraphicsScene):
 
-    def __init__(self, model, worst, best, size, criteria_order = None,
-                 parent = None):
+class QGraphicsSceneEtri(QGraphicsScene):
+
+    def __init__(self, model, worst, best, size, criteria_order=None,
+                 parent=None):
         super(QGraphicsSceneEtri, self).__init__(parent)
         self.model = model
         if criteria_order:
@@ -55,7 +57,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         self.setSceneRect(self.itemsBoundingRect())
 
     def __create_axis(self, xmin, xmax, ymin, ymax, direction):
-        item = QtGui.QGraphicsPathItem()
+        item = QGraphicsPathItem()
 
         path = item.path()
         path.moveTo(xmin, ymin)
@@ -73,11 +75,11 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         path.lineTo(x + 3, y + direction * 6)
         path.closeSubpath()
 
-        pen = QtGui.QPen()
+        pen = QPen()
         pen.setWidth(2)
         item.setPen(pen)
 
-        brush = QtGui.QBrush(QtGui.QColor("black"))
+        brush = QBrush(QColor("black"))
         item.setBrush(brush)
 
         item.setPath(path)
@@ -89,7 +91,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         self.axis_items = {}
 
         criteria = [c for c in self.criteria_order
-                      if self.model.criteria[c].disabled is False]
+                    if self.model.criteria[c].disabled is False]
         for i, id in enumerate(criteria):
             criterion = self.model.criteria[id]
             x = i * self.hspacing
@@ -105,10 +107,10 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
             else:
                 txt = "%s (%g)" % (criterion.id, self.model.cv[id].value)
 
-            text = QtGui.QGraphicsTextItem()
+            text = QGraphicsTextItem()
             text.setHtml("<div align=\"center\">%s</div>" % txt)
             text.setTextWidth(text.boundingRect().width())
-            font = QtGui.QFont()
+            font = QFont()
             font.setBold(True)
             text.setFont(font)
             text.setZValue(1)
@@ -140,11 +142,11 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         return self.ymin + num / den * (self.ymax - self.ymin)
 
     def __create_text_value(self, value):
-        item = QtGui.QGraphicsTextItem()
+        item = QGraphicsTextItem()
 
         item.setPlainText(value)
 
-        font = QtGui.QFont()
+        font = QFont()
         font.setBold(True)
         font.setPointSize(6)
         item.setFont(font)
@@ -153,10 +155,10 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         return item
 
     def __create_profile(self, ap, print_values = False,
-                         color = QtGui.QColor("red")):
-        item = QtGui.QGraphicsPathItem()
+                         color = QColor("red")):
+        item = QGraphicsPathItem()
 
-        pen = QtGui.QPen()
+        pen = QPen()
         pen.setBrush(color)
         item.setPen(pen)
 
@@ -164,7 +166,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
 
         path = item.path()
         criteria = [c for c in self.criteria_order
-                      if self.model.criteria[c].disabled is False]
+                    if self.model.criteria[c].disabled is False]
         for i, cid in enumerate(criteria):
             y = self.__compute_y(ap, cid)
 
@@ -209,10 +211,10 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
     def __get_category_color(self, i):
         n = len(self.model.categories)
         g = 255 - 220 * (n - i) / n
-        return QtGui.QColor(0, g, 0)
+        return QColor(0, g, 0)
 
     def __create_category(self, i, path_below, path_above):
-        item = QtGui.QGraphicsPathItem()
+        item = QGraphicsPathItem()
 
         path = item.path()
         path.addPath(path_above)
@@ -250,14 +252,14 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
 
     def __higlight_intersections(self):
         self.intersection_items = []
-        combis = list(combinations(self.category_items.values(), r = 2))
+        combis = list(combinations(self.category_items.values(), r=2))
         for combi in combis:
             a = combi[0].path()
             b = combi[1].path()
             c = a.intersected(b)
 
-            item = QtGui.QGraphicsPathItem(c)
-            brush = QtGui.QBrush(QtGui.QColor("yellow"))
+            item = QGraphicsPathItem(c)
+            brush = QBrush(QColor("yellow"))
             item.setBrush(brush)
             self.addItem(item)
 
@@ -277,7 +279,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         path = item.path()
 
         criteria = [c for c in self.criteria_order
-                      if self.model.criteria[c].disabled is False]
+                    if self.model.criteria[c].disabled is False]
         for i, cid in enumerate(criteria):
             y_above = self.__compute_y(ap_above, cid)
             y_below = self.__compute_y(ap_below, cid)
@@ -323,7 +325,7 @@ class QGraphicsSceneEtri(QtGui.QGraphicsScene):
         path = item.path()
 
         criteria = [c for c in self.criteria_order
-                      if self.model.criteria[c].disabled is False]
+                    if self.model.criteria[c].disabled is False]
         for i, cid in enumerate(criteria):
             y = self.__compute_y(ap, cid)
 

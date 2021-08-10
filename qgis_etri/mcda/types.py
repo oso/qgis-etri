@@ -64,7 +64,7 @@ class McdaDict(object):
     def __iter__(self):
         """Return an iterator object for the MCDA dictionnary."""
 
-        return self._d.values()
+        return iter(self._d.values())
 
     def __getitem__(self, key):
         """Lookup for an MCDA object in the dictionnary on basis of its
@@ -108,12 +108,12 @@ class McdaDict(object):
     def iterkeys(self):
         """Return an iterator over the MCDA dictionary's object IDs"""
 
-        return self._d.keys()
+        return iter(self._d.keys())
 
     def itervalues(self):
         """Return an iterator over the MCDA dictionary's object IDs"""
 
-        return self._d.values()
+        return iter(self._d.values())
 
     def keys(self):
         """Return the list of MCDA object IDs contained in the MCDA

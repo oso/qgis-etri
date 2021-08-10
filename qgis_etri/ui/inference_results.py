@@ -95,8 +95,8 @@ class Ui_inference_results(object):
 
         self.retranslateUi(inference_results)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), inference_results.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), inference_results.reject)
+        self.buttonBox.accepted.connect(inference_results.accept)
+        self.buttonBox.rejected.connect(inference_results.reject)
         QtCore.QMetaObject.connectSlotsByName(inference_results)
 
     def retranslateUi(self, inference_results):
@@ -105,5 +105,5 @@ class Ui_inference_results(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("inference_results", "Compatible alternatives", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("inference_results", "Incompatible alternatives", None))
 
-from table import qt_performance_table
-from graphic import _MyGraphicsview
+from qgis_etri.table import qt_performance_table
+from qgis_etri.graphic import _MyGraphicsview
