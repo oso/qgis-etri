@@ -97,13 +97,14 @@ def layer_get_attributes(layer):
 
     return actions
 
-def generate_decision_map(layer_in, aa, out, out_encoding):
+def generate_decision_map(layer_in, aa, out, out_encoding, export_all_fields=False):
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
     fields.append(QgsField("Category", QtCore.QVariant.Int))
-    for field in layer_in.fields().toList():
-        fields.append(field)
+    if export_all_fields:
+        for field in layer_in.fields().toList():
+            fields.append(field)
 
     print(fields.count())
 
@@ -123,7 +124,10 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
         inGeom = feat.geometry()
         id = str(feat.id())
         outFeat.setGeometry(inGeom)
-        outFeat.setAttributes([aa[id].category_id] + feat.attributes())
+        attributes_from_input_file = []
+        if export_all_fields:
+            attributes_from_input_file = feat.attributes()
+        outFeat.setAttributes([aa[id].category_id] + attributes_from_input_file)
         writer.addFeature(outFeat)
 
     del writer

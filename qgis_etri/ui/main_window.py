@@ -292,6 +292,16 @@ class Ui_main_window(object):
         self.layout_procedure.addWidget(self.combo_procedure)
         self.gridLayout_8.addLayout(self.layout_procedure, 1, 0, 1, 1)
         self.right_layout.addWidget(self.group_affectation)
+
+        self.group_export = QGroupBox(main_window)
+        self.group_export.setObjectName(_fromUtf8("group_export"))
+        self.gridLayout_10 = QGridLayout(self.group_export)
+        self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
+        self.cbox_allfields = QCheckBox(self.group_export)
+        self.cbox_allfields.setObjectName(_fromUtf8("cbox_allfields"))
+        self.gridLayout_10.addWidget(self.cbox_allfields, 0, 0, 1, 1)
+        self.right_layout.addWidget(self.group_export)
+
         self.button_generate = QPushButton(main_window)
         self.button_generate.setEnabled(False)
         icon2 = QIcon()
@@ -342,6 +352,8 @@ class Ui_main_window(object):
         self.label_procedure.setText(_translate("main_window", "Procedure:", None))
         self.combo_procedure.setItemText(0, _translate("main_window", "Pessimistic", None))
         self.combo_procedure.setItemText(1, _translate("main_window", "Optimistic", None))
+        self.group_export.setTitle(_translate("main_window", "Export", None))
+        self.cbox_allfields.setText(_translate("main_window", "Export all fields", None))
         self.button_generate.setText(_translate("main_window", "Generate Decision Map", None))
 
 from qgis_etri.table import qt_performance_table, qt_criteria_table

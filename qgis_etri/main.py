@@ -554,7 +554,7 @@ class main_window(QDialog, Ui_main_window):
         if f is None or encoding is None:
             return
 
-        generate_decision_map(self.layer.layer, aa, f, encoding)
+        generate_decision_map(self.layer.layer, aa, f, encoding, self.cbox_allfields.isChecked())
         self.save_to_xmcda(os.path.splitext(f)[0] + ".xmcda")
 
         if self.iface is not None:
