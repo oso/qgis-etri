@@ -102,6 +102,10 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
     allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
     fields.append(QgsField("Category", QtCore.QVariant.Int))
+    for field in layer_in.fields().toList():
+        fields.append(field)
+
+    print(fields.count())
 
     try:
         os.unlink(out)
@@ -119,7 +123,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
         inGeom = feat.geometry()
         id = str(feat.id())
         outFeat.setGeometry(inGeom)
-        outFeat.setAttribute(0, aa[id].category_id)
+        outFeat.setAttributes([aa[id].category_id] + feat.attributes())
         writer.addFeature(outFeat)
 
     del writer
