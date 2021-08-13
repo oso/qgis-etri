@@ -28,7 +28,7 @@ class float_delegate(QItemDelegate):
 class qt_criteria_table(QTableWidget):
 
     criterion_direction_changed = QtCore.pyqtSignal(str)
-    criterion_state_changed = QtCore.pyqtSignal(Criterion)
+    criterion_state_changed = QtCore.pyqtSignal(str)
 
     def __init__(self, parent = None):
         super(qt_criteria_table, self).__init__(parent)
@@ -298,7 +298,7 @@ class qt_performance_table(QTableWidget):
             item.setText(str(aa.category_id))
             row = self.__get_alternative_row_by_id(aa.id)
             if category_colors is not None:
-                item.setBackgroundColor(category_colors[aa.category_id])
+                item.setBackground(category_colors[aa.category_id])
             self.setItem(row, col, item)
 
     def __get_alternative_row_by_id(self, alternative_id):

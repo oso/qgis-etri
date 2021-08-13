@@ -4,11 +4,13 @@ sys.path.insert(0, "..")
 import copy
 from qgis.PyQt import QtCore
 from qgis.PyQt import QtGui
+from qgis.PyQt import QtWidgets
 from qgis_etri.table import qt_criteria_table
 from qgis_etri.table import qt_performance_table
 from qgis_etri.table import qt_threshold_table
 from xml.etree import ElementTree
 from qgis_etri.mcda.electre_tri import ElectreTri
+from qgis_etri.main import main_window
 
 crit_table = None
 prof_table = None
@@ -119,8 +121,8 @@ def same_threshold_changed():
            veto_table.add_threshold(veto_thr, veto_thr)
 
 def add_tab(tabs, table, name):
-    tab = QtGui.QWidget()
-    layout = QtGui.QVBoxLayout(tab)
+    tab = QtWidgets.QWidget()
+    layout = QtWidgets.QVBoxLayout(tab)
     if isinstance(table, list):
         for t in table:
             layout.addWidget(t)
@@ -129,9 +131,11 @@ def add_tab(tabs, table, name):
     tabs.addTab(tab, name)
 
 def save_dialog_box():
-    fname = QtGui.QFileDialog.getSaveFileName(None,
+    fname = QtWidgets.QFileDialog.getSaveFileName(None,
                                               "Save XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
+    if isinstance(fname, tuple):
+        fname = fname[0]
     fname = str(fname)
     if fname:
         if "." not in fname:
@@ -151,14 +155,16 @@ def save_to_xmcda():
         root.append(alternatives_xmcda)
         indent(root)
         ElementTree.dump(root)
-        ElementTree.ElementTree(root).write(fname, xml_declaration=True,
-                                            encoding='utf-8', method='xml')
+        buf = ElementTree.tostring(root, encoding="UTF-8", method="xml")
+        with open(fname, 'wb') as f:
+            f.write(buf)
 
 def run_electre_tri():
     etri = ElectreTri(c, cv, ptb, lbda, cps)
-    affectations = etri.pessimist(pt)
-    cat_colors = colors.ncategories_colors[len(b)+1]
-    perf_table.add_affectations(affectations, None)
+    assignments = etri.pessimist(pt)
+    cat_colors = main_window.generate_category_colors(len(b)+1)
+    print([c.getRgb() for c in cat_colors.values()])
+    perf_table.add_assignments(assignments, None)
 
 if __name__ == "__main__":
 
@@ -167,18 +173,18 @@ if __name__ == "__main__":
     else:
         from data_ticino_new import *
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     perf_table = qt_performance_table(None, c, a, pt)
     crit_table = qt_criteria_table(None)
     crit_table.add_criteria(c, cv)
     prof_table = qt_performance_table(None, c, b, ptb)
 
-    thresh_cbox = QtGui.QCheckBox('Use same thresholds for all profiles')
+    thresh_cbox = QtWidgets.QCheckBox('Use same thresholds for all profiles')
     indif_table = qt_threshold_table(None, c)
     pref_table = qt_threshold_table(None, c)
     veto_table = qt_threshold_table(None, c)
 
-    crit = next(c.values())
+    crit = next(c.itervalues())
     for thres in crit.thresholds:
         print(thres)
     if crit.thresholds.has_threshold('q'):
@@ -195,37 +201,27 @@ if __name__ == "__main__":
             pref_table.add_threshold(pref_thr, pref_thr)
             veto_table.add_threshold(veto_thr, veto_thr)
 
-    tabs = QtGui.QTabWidget()
+    tabs = QtWidgets.QTabWidget()
     add_tab(tabs, perf_table, "Performance table")
     add_tab(tabs, crit_table, "Criteria")
     add_tab(tabs, prof_table, "Categories")
     add_tab(tabs, [thresh_cbox, indif_table, pref_table, veto_table], "Thresholds")
 
-    button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
-    button_etri = QtGui.QPushButton("Apply ELECTRE TRI")
+    button_to_xmcda = QtWidgets.QPushButton("Save to XMCDA")
+    button_etri = QtWidgets.QPushButton("Apply ELECTRE TRI")
 
-    crit_table.connect(crit_table,
-                       QtCore.SIGNAL("criterion_state_changed"),
-                       criterion_state_changed)
-    crit_table.connect(crit_table,
-                       QtCore.SIGNAL("criterion_direction_changed"),
-                       criterion_direction_changed)
-    thresh_cbox.connect(thresh_cbox,
-                 QtCore.SIGNAL('clicked()'),
-                 same_threshold_changed)
+    crit_table.criterion_state_changed.connect(criterion_state_changed)
+    crit_table.criterion_direction_changed.connect(criterion_direction_changed)
+    thresh_cbox.clicked.connect(same_threshold_changed)
 
-    button_to_xmcda.connect(button_to_xmcda,
-                            QtCore.SIGNAL("clicked()"),
-                            save_to_xmcda)
-    button_etri.connect(button_etri,
-                        QtCore.SIGNAL("clicked()"),
-                        run_electre_tri)
+    button_to_xmcda.clicked.connect(save_to_xmcda)
+    button_etri.clicked.connect(run_electre_tri)
 
-    layout = QtGui.QVBoxLayout()
+    layout = QtWidgets.QVBoxLayout()
     layout.addWidget(tabs)
     layout.addWidget(button_to_xmcda)
     layout.addWidget(button_etri)
-    dialog = QtGui.QDialog()
+    dialog = QtWidgets.QDialog()
     dialog.setLayout(layout)
     dialog.resize(640, 480)
     dialog.show()

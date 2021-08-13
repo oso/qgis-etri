@@ -627,13 +627,16 @@ class main_window(QDialog, Ui_main_window):
         self.button_infer.setEnabled(False)
         self.__fill_model_tables()
 
-    def __generate_category_colors(self):
-        self.category_colors = {}
+    @staticmethod
+    def generate_category_colors(ncat):
+        return {
+            str(i): QColor(0, 255 - 220 * i / ncat, 0)
+            for i in range(1, ncat+1)
+        }
 
+    def __generate_category_colors(self):
         ncat = len(self.bpt) + 1
-        for i in range(1, ncat + 1):
-            color = QColor(0, 255 - 220 * i / ncat, 0)
-            self.category_colors[str(i)] = color
+        self.category_colors = self.generate_category_colors(ncat)
 
     def on_button_chooseassign_pressed(self):
         items = [c.id for c in self.criteria if c.disabled is True]
