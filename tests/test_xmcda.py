@@ -2,7 +2,7 @@
 
 import sys 
 sys.path.append("..")
-import xmcda
+from qgis_etri import xmcda
 
 # Criteria
 criteria = ['prix', 'transport', 'envir', 'residents', 'competition']

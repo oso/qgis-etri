@@ -4,11 +4,11 @@ sys.path.insert(0, "..")
 import copy
 from qgis.PyQt import QtCore
 from qgis.PyQt import QtGui
-from table import qt_criteria_table
-from table import qt_performance_table
-from table import qt_threshold_table
+from qgis_etri.table import qt_criteria_table
+from qgis_etri.table import qt_performance_table
+from qgis_etri.table import qt_threshold_table
 from xml.etree import ElementTree
-from mcda.electre_tri import ElectreTri
+from qgis_etri.mcda.electre_tri import ElectreTri
 
 crit_table = None
 prof_table = None

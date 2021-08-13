@@ -3,8 +3,8 @@ import sys
 sys.path.insert(0, "..")
 from qgis.PyQt import QtCore
 from qgis.PyQt import QtGui
-from mcda.types import Alternatives, Criteria, PerformanceTable
-from table import qt_performance_table 
+from qgis_etri.mcda.types import Alternatives, Criteria, PerformanceTable
+from qgis_etri.table import qt_performance_table
 from xml.etree import ElementTree
 
 ElementTree.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
