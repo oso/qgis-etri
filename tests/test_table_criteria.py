@@ -80,9 +80,6 @@ def load_from_xmcda():
         cv = CriteriaValues()
         cv.from_xmcda(root.find('.//criteriaValues'))
 
-        print(c)
-        print(cv)
-
         crit_table.reset_table()
         crit_table.add_criteria(c, cv)
 
