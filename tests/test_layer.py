@@ -1,13 +1,10 @@
-import sys
-sys.path.append("..")
-import os
-from qgis.core import QgsVectorLayer, QgsApplication
+from qgis.testing import start_app
+from qgis.core import QgsVectorLayer
 from qgis_etri.layer import criteria_layer
 
 if __name__ == "__main__":
-    QgsApplication.setPrefixPath("/usr", True)
-    qgs = QgsApplication([], False)
-    qgs.initQgis()
+
+    start_app()
 
     layer = QgsVectorLayer("./data/ticino/criteria.shp", "criteria", "ogr")
     if not layer.isValid():
@@ -18,7 +15,3 @@ if __name__ == "__main__":
     print(layer.criteria)
     print(layer.alternatives)
     print(layer.pt)
-
-    del layer
-
-    qgs.exitQgis()
