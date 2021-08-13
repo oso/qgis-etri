@@ -4,20 +4,20 @@ from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
 from itertools import product
-from .ui.main_window import Ui_main_window
-from .ui.inference_results import Ui_inference_results
-from .layer import criteria_layer
-from .mcda.electre_tri import ElectreTri
-from .mcda.types import Criteria, CriteriaValues, CriterionValue
-from .mcda.types import PerformanceTable, Alternatives
-from .mcda.types import Alternative, AlternativePerformances
-from .mcda.types import AlternativeAssignment, AlternativesAssignments
-from .mcda.types import Thresholds, Threshold
-from .mcda.generate import generate_categories
-from .mcda.generate import generate_categories_profiles
-from .qgis_utils import generate_decision_map, saveDialog, addtocDialog
-from .graphic import QGraphicsSceneEtri
-from .xmcda import submit_problem, request_solution
+from qgis_etri.ui.main_window import Ui_main_window
+from qgis_etri.ui.inference_results import Ui_inference_results
+from qgis_etri.layer import criteria_layer
+from qgis_etri.mcda.electre_tri import ElectreTri
+from qgis_etri.mcda.types import Criteria, CriteriaValues, CriterionValue
+from qgis_etri.mcda.types import PerformanceTable, Alternatives
+from qgis_etri.mcda.types import Alternative, AlternativePerformances
+from qgis_etri.mcda.types import AlternativeAssignment, AlternativesAssignments
+from qgis_etri.mcda.types import Thresholds, Threshold
+from qgis_etri.mcda.generate import generate_categories
+from qgis_etri.mcda.generate import generate_categories_profiles
+from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
+from qgis_etri.graphic import QGraphicsSceneEtri
+from qgis_etri.xmcda import submit_problem, request_solution
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)

@@ -3,6 +3,7 @@ import sys
 sys.path.insert(0, "..")
 from qgis.PyQt import QtCore
 from qgis.PyQt import QtGui
+from qgis.PyQt import QtWidgets
 from qgis_etri.mcda.types import Criterion
 from qgis_etri.table import qt_criteria_table
 from xml.etree import ElementTree
@@ -28,9 +29,11 @@ def indent(elem, level=0):
             elem.tail = i
 
 def save_dialog_box():
-    fname = QtGui.QFileDialog.getSaveFileName(None,
+    fname = QtWidgets.QFileDialog.getSaveFileName(None,
                                               "Save XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
+    if isinstance(fname, tuple):
+        fname = fname[0]
     fname = str(fname)
     if fname:
         if "." not in fname:
@@ -39,9 +42,11 @@ def save_dialog_box():
     return fname
 
 def load_dialog_box():
-    fname = QtGui.QFileDialog.getOpenFileName(None,
+    fname = QtWidgets.QFileDialog.getOpenFileName(None,
                                               "Load XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
+    if isinstance(fname, tuple):
+        fname = fname[0]
     return str(fname)
 
 def save_to_xmcda():
@@ -75,16 +80,21 @@ def load_from_xmcda():
         cv = CriteriaValues()
         cv.from_xmcda(root.find('.//criteriaValues'))
 
+        print(c)
+        print(cv)
+
         crit_table.reset_table()
         crit_table.add_criteria(c, cv)
 
 def add_criterion():
-    string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
-    if ok and not string.isEmpty():
-        name = str(string.toUtf8())
+    name, ok = QtWidgets.QInputDialog.getText(None, "Add criterion", "Criterion name")
+    if ok and name:
+        # name = str(string.toUtf8())
         crit = Criterion(name, name, 0, 1, 10)
-        crit_table.add_criterion(crit)
+        critV = CriterionValue(name, 10)
+        crit_table.add_criterion(crit, critV)
         c.append(crit)
+        cv.append(critV)
 
 def criterion_direction_changed(criterion):
     print("Criterion direction changed:", criterion)
@@ -99,38 +109,28 @@ if __name__ == "__main__":
     else:
         from data_ticino_new import *
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     crit_table = qt_criteria_table(None)
 
-    crit_table.connect(crit_table,
-                       QtCore.SIGNAL("criterion_state_changed"),
-                       criterion_state_changed)
-    crit_table.connect(crit_table,
-                       QtCore.SIGNAL("criterion_direction_changed"),
-                       criterion_direction_changed)
+    crit_table.criterion_state_changed.connect(criterion_state_changed)
+    crit_table.criterion_direction_changed.connect(criterion_direction_changed)
 
-    button_add = QtGui.QPushButton("Add criterion")
-    button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
-    button_from_xmcda = QtGui.QPushButton("Load from XMCDA")
+    button_add = QtWidgets.QPushButton("Add criterion")
+    button_to_xmcda = QtWidgets.QPushButton("Save to XMCDA")
+    button_from_xmcda = QtWidgets.QPushButton("Load from XMCDA")
 
-    button_to_xmcda.connect(button_add,
-                            QtCore.SIGNAL("clicked()"),
-                            add_criterion)
-    button_to_xmcda.connect(button_to_xmcda,
-                            QtCore.SIGNAL("clicked()"),
-                            save_to_xmcda)
-    button_from_xmcda.connect(button_from_xmcda,
-                              QtCore.SIGNAL("clicked()"),
-                              load_from_xmcda)
+    button_add.clicked.connect(add_criterion)
+    button_to_xmcda.clicked.connect(save_to_xmcda)
+    button_from_xmcda.clicked.connect(load_from_xmcda)
 
     crit_table.add_criteria(c, cv)
 
-    layout = QtGui.QVBoxLayout()
+    layout = QtWidgets.QVBoxLayout()
     layout.addWidget(crit_table)
     layout.addWidget(button_add)
     layout.addWidget(button_to_xmcda)
     layout.addWidget(button_from_xmcda)
-    dialog = QtGui.QDialog()
+    dialog = QtWidgets.QDialog()
     dialog.setLayout(layout)
     dialog.resize(640, 480)
     dialog.show()

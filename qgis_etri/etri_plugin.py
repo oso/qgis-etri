@@ -6,7 +6,7 @@ from qgis.core import *
 import qgis_etri.ui.resources_rc
 import sys, os
 
-from .main import main_window
+from qgis_etri.main import main_window
 
 class etri_plugin(object):
 

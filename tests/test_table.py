@@ -38,7 +38,7 @@ def criterion_direction_changed(criterion):
     print(criterion.id, ":", criterion.direction)
 
 def criterion_state_changed(criterion):
-    criterion = c[criterion]
+    criterion = c[criterion.id]
     print("Criteria state changed:", criterion)
     for table in [ perf_table, prof_table, indif_table, pref_table, veto_table ]:
         if table != None:

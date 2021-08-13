@@ -2,7 +2,7 @@ from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QRegExpValidator
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
 from collections import OrderedDict
-from .mcda.types import Criteria, Criterion, Constant
+from qgis_etri.mcda.types import Criteria, Criterion, Constant
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1
@@ -27,8 +27,8 @@ class float_delegate(QItemDelegate):
 
 class qt_criteria_table(QTableWidget):
 
-    criterion_direction_changed = QtCore.pyqtSignal(str)
-    criterion_state_changed = QtCore.pyqtSignal(str)
+    criterion_direction_changed = QtCore.pyqtSignal(Criterion)
+    criterion_state_changed = QtCore.pyqtSignal(Criterion)
 
     def __init__(self, parent = None):
         super(qt_criteria_table, self).__init__(parent)
@@ -98,7 +98,7 @@ class qt_criteria_table(QTableWidget):
             c.direction = 1
         else:
             c.direction = -1
-        self.criterion_direction_changed.emit(c.id)
+        self.criterion_direction_changed.emit(c)
 
     def __on_criterion_state_changed(self, row):
         c, cv = self.row_crit[row]
@@ -227,8 +227,8 @@ class profiles_table(QTableWidget):
             self.setItem(row, col, item)
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[str(v), k] for k, v in self.col_crit.items()])
-        return crit_col[str(criterion)]
+        crit_col = dict([[v, k] for k, v in self.col_crit.items()])
+        return crit_col[criterion]
 
     def disable_criterion(self, criterion):
         self.setColumnHidden(self.__get_criterion_col(criterion),
@@ -309,8 +309,8 @@ class qt_performance_table(QTableWidget):
         return None
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[str(v),k] for k,v in self.col_crit.items()])
-        return crit_col[str(criterion)]
+        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        return crit_col[criterion]
 
     def disable_criterion(self, criterion):
         self.setColumnHidden(self.__get_criterion_col(criterion),

@@ -1,7 +1,7 @@
 import sys #FIXME: useless
 import time
-from .pysimplesoap.client import SoapClient
-from .pysimplesoap.simplexml import SimpleXMLElement, TYPE_MAP
+from qgis_etri.pysimplesoap.client import SoapClient
+from qgis_etri.pysimplesoap.simplexml import SimpleXMLElement, TYPE_MAP
 
 ETRI_BM_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 

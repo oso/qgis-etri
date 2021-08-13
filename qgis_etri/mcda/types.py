@@ -205,6 +205,10 @@ class McdaObject(object):
 
 class Criteria(McdaDict):
 
+    def __init__(self, l = [], id = None):
+        self.id = id
+        self._d = OrderedDict((m.id, m) for m in l)
+
     def __repr__(self):
         """Manner to represent the MCDA dictionnary"""
 
@@ -294,6 +298,9 @@ class Criterion(McdaObject):
         self.direction = direction
         self.weight = weight
         self.thresholds = thresholds
+
+    def __hash__(self):
+        return hash(self.id)
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
