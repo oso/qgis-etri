@@ -113,8 +113,10 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
 
     for feat in layer_in.getFeatures():
         inGeom = feat.geometry()
+        inGeom = QgsGeometry()
         id = str(feat.id())
-        outFeat.setGeometry(inGeom)
+        if inGeom is not None:
+            outFeat.setGeometry(inGeom)
         outFeat.setAttribute(0, aa[id].category_id)
         writer.addFeature(outFeat)
 
