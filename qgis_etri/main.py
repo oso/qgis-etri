@@ -398,6 +398,7 @@ class main_window(QDialog, Ui_main_window):
         self.layer_loaded = False
 
         self.table_criteria.add_criteria(self.criteria, self.cv)
+        self.table_criteria.enable_export_fields(False)
         self.table_prof.add_criteria(self.criteria)
 
         self.table_indiff.add_criteria(self.criteria)
@@ -881,6 +882,10 @@ class main_window(QDialog, Ui_main_window):
 
         features = self.layer.get_features_ids(self.a_ref.keys())
         self.layer.layer.setSelectedFeatures(features)
+
+    def on_cbox_allfields_stateChanged(self, state):
+        self.table_criteria.enable_export_fields(state)
+
 
 class InferenceThread(QtCore.QThread):
 

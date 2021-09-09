@@ -207,6 +207,11 @@ class qt_criteria_table(QTableWidget):
                 for r in range(self.rowCount())
                 if self.cellWidget(r, COL_EXPORT).isChecked()]
 
+    def enable_export_fields(self, enable=True):
+        for r in range(self.rowCount()):
+            self.cellWidget(r, COL_EXPORT).setEnabled(enable)
+
+
 class profiles_table(QTableWidget):
 
     def __init__(self, parent=None, criteria=None, profiles=None):
