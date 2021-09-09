@@ -42,6 +42,7 @@ clean:
 	find . -name '*.pyc' -exec rm --force {} +
 
 mrproper: clean
+	rm -f $(PLUGINNAME).zip
 	$(MAKE_SUBDIR) mrproper
 
 zip: all
