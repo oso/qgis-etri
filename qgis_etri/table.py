@@ -9,6 +9,7 @@ COMBO_INDEX_MIN=1
 COL_NAME = 0
 COL_DIRECTION = 1
 COL_WEIGHT = 2
+COL_EXPORT = 3
 
 class float_delegate(QItemDelegate):
 
@@ -35,7 +36,7 @@ class qt_criteria_table(QTableWidget):
 
         self.row_crit = {}
 
-        self.setColumnCount(3)
+        self.setColumnCount(4)
         self.setShowGrid(False)
         self.setDragEnabled(False)
         self.__add_headers()
@@ -84,12 +85,23 @@ class qt_criteria_table(QTableWidget):
         self.setHorizontalHeaderItem(COL_NAME, item)
 
         item = QTableWidgetItem()
+        item.setText("Direction")
+        item.setTextAlignment(QtCore.Qt.AlignLeft)
         self.setHorizontalHeaderItem(COL_DIRECTION, item)
 
         item = QTableWidgetItem()
         item.setText("Weight")
         item.setTextAlignment(QtCore.Qt.AlignRight)
         self.setHorizontalHeaderItem(COL_WEIGHT, item)
+
+        self.setColumnWidth(COL_WEIGHT, 50)
+
+        item = QTableWidgetItem()
+        item.setText("Export")
+        item.setTextAlignment(QtCore.Qt.AlignRight)
+        self.setHorizontalHeaderItem(COL_EXPORT, item)
+
+        self.setColumnWidth(COL_EXPORT, 50)
 
     def __on_criterion_direction_changed(self, row):
         c, cv = self.row_crit[row]
@@ -173,10 +185,27 @@ class qt_criteria_table(QTableWidget):
             item.setText(str(cv.value))
         self.setItem(row, COL_WEIGHT, item)
 
+        # Add export check box
+        item = QTableWidgetItem()
+        # item.setFlags(QtCore.Qt.ItemIsTristate)
+        self.setItem(row, COL_EXPORT, item)
+
+        cbox = QCheckBox(self)
+        # item.setFlags(QtCore.Qt.ItemIsTristate)
+        # cbox.setTristate(False)
+        cbox.setCheckState(QtCore.Qt.Checked)
+        cbox.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.setCellWidget(row, COL_EXPORT, cbox)
+
     def add_criteria(self, cs, cvs):
         for c in cs:
             cv = cvs[c.id]
             self.add_criterion(c, cv)
+
+    def get_export_fields(self):
+        return [self.cellWidget(r, COL_NAME).text()
+                for r in range(self.rowCount())
+                if self.cellWidget(r, COL_EXPORT).isChecked()]
 
 class profiles_table(QTableWidget):
 

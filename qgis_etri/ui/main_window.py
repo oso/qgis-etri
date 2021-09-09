@@ -39,7 +39,7 @@ class Ui_main_window(object):
         self.gridLayout_2 = QGridLayout(self.tab_criteria)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.table_criteria = qt_criteria_table(self.tab_criteria)
-        self.table_criteria.setColumnCount(3)
+        self.table_criteria.setColumnCount(4)
         self.table_criteria.setObjectName(_fromUtf8("table_criteria"))
         self.table_criteria.setRowCount(0)
         self.gridLayout_2.addWidget(self.table_criteria, 0, 0, 1, 1)
@@ -353,7 +353,7 @@ class Ui_main_window(object):
         self.combo_procedure.setItemText(0, _translate("main_window", "Pessimistic", None))
         self.combo_procedure.setItemText(1, _translate("main_window", "Optimistic", None))
         self.group_export.setTitle(_translate("main_window", "Export", None))
-        self.cbox_allfields.setText(_translate("main_window", "Export all fields", None))
+        self.cbox_allfields.setText(_translate("main_window", "Export source fields", None))
         self.button_generate.setText(_translate("main_window", "Generate Decision Map", None))
 
 from qgis_etri.table import qt_performance_table, qt_criteria_table
