@@ -22,14 +22,31 @@ See COPYING for a version of the GPLv3 License
 
 Installation
 ------------
-1) Unzip the archive in ~/.qgis/python/plugins (or the corresponding
-   folder on Windows)
-2) Start Quantum GIS
-3) Go to Plugins -> Manage Plugins
-4) Check the ELECTRE-TRI plugin
-5) After this step an icon should appear in the plugin bar.
+steps 1 and 2 are optional and can be done only once before distributing the plugin archive
+1) build the plugin (python Qt tools required -> pip install PyQt5):
+     make
+2) generate the plugin package
+     make zip
+3) the generated zip file qgis_etri.zip can be distributed and installed in QGIS:
+   In the QGIS menu bar, go to: Plugins -> Manage and Install Plugins...
+   In the dialog select the tab 'Install from ZIP' and choose the zip file
+4) After this step an icon should appear in the plugin bar.
    To use it click on the icon and the ELECTRE-TRI window should
    appear...
+
+Development installation
+------------------------
+On a linux development machine, a lighter installation can be done, by creating a symbolic link from source code to QGIS plugin folder:
+    make link
+
+There are also make recipes to build and install a local package
+    make install
+and to remove an existing plugin
+    make uninstall
+
+Development hints
+-----------------
+Make UI changes in the ui files (ui/main_window.ui and ui/inference_results.ui), then rebuild th plugin via `make all`
 
 Usage
 -----
@@ -42,9 +59,11 @@ the load layer button.
 displayed in the criteria tab. Deselect attributes that are not criteria
 of the model. For the criteria of the problem, you can change the weights
 and the direction (if its a criterion to maximize or to minimize).
-3. Once the criteria parameters defined, you can define the profile and
+3. If you tick the checkbox Exort Source Fields, you can select/deselect
+fields in column 4, which will be exported to the generated output file
+4. Once the criteria parameters defined, you can define the profile and
 thresholds of the ELECTRE TRI model in the second tab.
-4. Finally choose a cut level in the box on the right and then you can
+5. Finally choose a cut level in the box on the right and then you can
 generate the decision map by clicking on the corresponding button.
 
 Reference
