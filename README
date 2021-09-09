@@ -59,8 +59,11 @@ the load layer button.
 displayed in the criteria tab. Deselect attributes that are not criteria
 of the model. For the criteria of the problem, you can change the weights
 and the direction (if its a criterion to maximize or to minimize).
+There are two shortcut buttons to select/deselect all criteria
 3. If you tick the checkbox Exort Source Fields, you can select/deselect
-fields in column 4, which will be exported to the generated output file
+fields in column 4, which will be exported to the generated output file.
+A pushbutton allows to clone the criteria selection, i.e all criteria
+which are selected for the model will be selected also for export.
 4. Once the criteria parameters defined, you can define the profile and
 thresholds of the ELECTRE TRI model in the second tab.
 5. Finally choose a cut level in the box on the right and then you can

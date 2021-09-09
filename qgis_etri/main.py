@@ -883,6 +883,15 @@ class main_window(QDialog, Ui_main_window):
         features = self.layer.get_features_ids(self.a_ref.keys())
         self.layer.layer.setSelectedFeatures(features)
 
+    def on_button_select_all_pressed(self):
+        self.table_criteria.set_all_criteria(True)
+
+    def on_button_select_none_pressed(self):
+        self.table_criteria.set_all_criteria(False)
+
+    def on_button_clone_selection_pressed(self):
+        self.table_criteria.clone_selection()
+
     def on_cbox_allfields_stateChanged(self, state):
         self.table_criteria.enable_export_fields(state)
 

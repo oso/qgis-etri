@@ -382,6 +382,20 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="button_select_none">
+          <property name="text">
+           <string>Deselect all criteria</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="button_select_all">
+          <property name="text">
+           <string>Select all criteria</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -551,6 +565,16 @@
          <widget class="QCheckBox" name="cbox_allfields">
           <property name="text">
            <string>Export source fields</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="button_clone_selection">
+          <property name="toolTip">
+           <string>Clone the selection of active criteria into the selection of fields to be exported</string>
+          </property>
+          <property name="text">
+           <string>Clone selected criteria</string>
           </property>
          </widget>
         </item>

@@ -211,6 +211,14 @@ class qt_criteria_table(QTableWidget):
         for r in range(self.rowCount()):
             self.cellWidget(r, COL_EXPORT).setEnabled(enable)
 
+    def set_all_criteria(self, checked=False):
+        for r in range(self.rowCount()):
+            self.cellWidget(r, COL_NAME).setChecked(checked)
+
+    def clone_selection(self):
+        for r in range(self.rowCount()):
+            self.cellWidget(r, COL_EXPORT).setChecked(self.cellWidget(r, COL_NAME).isChecked())
+
 
 class profiles_table(QTableWidget):
 
