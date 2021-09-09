@@ -133,7 +133,7 @@ class ElectreTri(McdaObject):
         elif p is None or diff <= p:
             return 0
         else:
-            num = float(v-diff)
+            num = float(diff-p)
             den = float(v-p)
             return num/den
 
