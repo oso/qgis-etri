@@ -21,7 +21,7 @@ PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
 PKG_FILES +=	$(UIFILES:%.ui=%.py)
-PKG_FILES +=	$(RSFILES:%.ui=%.py)
+PKG_FILES +=	$(RSFILES)
 
 PKG_FILES +=	pysimplesoap/__init__.py
 PKG_FILES +=	pysimplesoap/client.py
@@ -30,29 +30,32 @@ PKG_FILES +=	pysimplesoap/simplexml.py
 PKG_FILES +=	COPYING
 PKG_FILES +=	README
 
-TARGETS := $(UIFILES:%.ui=%.py) $(RSFILES)
+QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
+PLUGINNAME = qgis_etri
 
-all: $(TARGETS)
+MAKE_SUBDIR = $(MAKE) -C qgis_etri -e RSFILES="$(RSFILES)" -e UIFILES="$(UIFILES)"
 
-ui/resources_rc.py: ui/resources.qrc
-	pyrcc4 -o $@ $<
-
-ui/%.py: ui/%.ui
-	pyuic4 -o $@ $<
+all:
+	$(MAKE_SUBDIR) all
 
 clean:
-	rm -f pysimplesoap/*.pyc
-	rm -f mcda/*.pyc
-	rm -f tests/*.pyc
-	rm -f ui/*.pyc
-	rm -f *.pyc
+	find . -name '*.pyc' -exec rm --force {} +
 
 mrproper: clean
-	rm -f $(TARGETS)
+	$(MAKE_SUBDIR) mrproper
 
-zip: $(TARGETS)
-	@ln -sf . qgis_etri
-	zip -9v qgis_etri.zip $(PKG_FILES:%=qgis_etri/%)
-	@rm qgis_etri
+zip: all
+	zip -9v $(PLUGINNAME).zip $(PKG_FILES:%=qgis_etri/%)
+
+link: uninstall
+	ln -s $(shell pwd)/$(PLUGINNAME) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+
+unlink: uninstall
+
+install: zip uninstall
+	unzip $(PLUGINNAME).zip -d $(HOME)/$(QGISDIR)/python/plugins/
+
+uninstall:
+	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
 .PHONY: all clean mrproper zip

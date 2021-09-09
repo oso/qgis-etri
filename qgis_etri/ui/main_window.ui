@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>606</height>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,8 +27,9 @@
        <item row="0" column="0">
         <widget class="qt_criteria_table" name="table_criteria">
          <property name="columnCount">
-          <number>3</number>
+          <number>4</number>
          </property>
+         <column/>
          <column/>
          <column/>
          <column/>
@@ -101,7 +102,16 @@
            <string>Indifference</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_3">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item row="0" column="0">
@@ -114,7 +124,16 @@
            <string>Preference</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_4">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item row="0" column="0">
@@ -127,7 +146,16 @@
            <string>Veto</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_7">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item row="0" column="0">
@@ -514,6 +542,22 @@
       </widget>
      </item>
      <item>
+      <widget class="QGroupBox" name="group_export">
+       <property name="title">
+        <string>Export</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="cbox_allfields">
+          <property name="text">
+           <string>Export source fields</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="button_generate">
        <property name="enabled">
         <bool>false</bool>
@@ -535,17 +579,17 @@
   <customwidget>
    <class>_MyGraphicsview</class>
    <extends>QGraphicsView</extends>
-   <header location="global">graphic</header>
+   <header location="global">qgis_etri.graphic</header>
   </customwidget>
   <customwidget>
    <class>qt_criteria_table</class>
    <extends>QTableWidget</extends>
-   <header location="global">table</header>
+   <header location="global">qgis_etri.table</header>
   </customwidget>
   <customwidget>
    <class>qt_performance_table</class>
    <extends>QTableWidget</extends>
-   <header location="global">table</header>
+   <header location="global">qgis_etri.table</header>
   </customwidget>
  </customwidgets>
  <resources>
