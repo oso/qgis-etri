@@ -811,7 +811,7 @@ class main_window(QDialog, Ui_main_window):
 
     def __save_xmcda_files(self, xmcda):
         for name, xm in xmcda.items():
-            f = open("/tmp/%s.xml" % name, "w")
+            f = open("/tmp/%s.xml" % name, "wb")
             f.write(xm)
             f.close()
 
@@ -822,11 +822,11 @@ class main_window(QDialog, Ui_main_window):
         pt_ref = self.pt_ref.copy()
         bpt = self.bpt.copy()
         for ap in pt_ref:
-            for crit, value in ap.performances.items():
+            for crit, value in list(ap.performances.items()):
                 if crit not in criteria.keys():
                     del ap.performances[crit]
         for ap in bpt:
-            for crit, value in ap.performances.items():
+            for crit, value in list(ap.performances.items()):
                 if crit not in criteria.keys():
                     del ap.performances[crit]
 
@@ -853,7 +853,7 @@ class main_window(QDialog, Ui_main_window):
         xmcda = self.__generate_xmcda_input()
 
         self.inference_thread = InferenceThread(xmcda, self)
-        self.finished.connect(self.on_inference_thread_finished)
+        self.inference_thread.run_finished.connect(self.on_inference_thread_finished)
         self.inference_thread.start()
 
         self.cancelbox = QMessageBox(self)
@@ -898,6 +898,8 @@ class main_window(QDialog, Ui_main_window):
 
 class InferenceThread(QtCore.QThread):
 
+    run_finished = QtCore.pyqtSignal(bool)
+
     def __init__(self, xmcda_input, parent = None):
         super(InferenceThread, self).__init__(parent)
         self.stopped = False
@@ -936,7 +938,7 @@ class InferenceThread(QtCore.QThread):
             time.sleep(1)
 
         self.stop()
-        self.finished.emit(self.completed)
+        self.run_finished.emit(self.completed)
 
 if __name__ == "__main__":
     import sys

@@ -163,7 +163,7 @@ class SimpleXMLElement(object):
 
     def __repr__(self):
         "Return the XML representation of this tag"
-        return self._element.toxml('UTF-8')
+        return repr(self._element)
 
     def get_name(self):
         "Return the tag name of this node"
@@ -295,12 +295,12 @@ class SimpleXMLElement(object):
     def __len__(self):
         "Return elements count"
         return len(self.__elements)
-        
+
     def __contains__( self, item):
         "Search for a tag name in this element or child nodes"
         return self._element.getElementsByTagName(item)
-    
-    def __unicode__(self):
+
+    def __str__(self):
         "Returns the unicode text nodes of the current element"
         if self._element.childNodes:
             rc = u""
@@ -309,10 +309,10 @@ class SimpleXMLElement(object):
                     rc = rc + node.data
             return rc
         return ''
-    
-    def __str__(self):
-        "Returns the str text nodes of the current element"
-        return str(self).encode("utf8","ignore")
+
+    # def __str__(self):
+    #     "Returns the str text nodes of the current element"
+    #     return self._unicode().encode("utf8", "ignore")
 
     def __int__(self):
         "Returns the integer value of the current element"
