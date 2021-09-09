@@ -1,5 +1,6 @@
 import os, sys, traceback
 from xml.etree import ElementTree
+from qgis.core import QgsCoordinateTransform, QgsProject
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
@@ -869,10 +870,17 @@ class main_window(QDialog, Ui_main_window):
             return
 
         features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.setSelectedFeatures(features)
+        self.layer.layer.selectByIds(features)
         mc = self.iface.mapCanvas()
         rect = self.layer.layer.boundingBoxOfSelected()
         rect.scale(2)
+        if self.layer.layer.sourceCrs() != QgsProject.instance().crs():
+            transformation = QgsCoordinateTransform(
+                self.layer.layer.sourceCrs(),
+                QgsProject.instance().crs(),
+                QgsProject.instance()
+            )
+            rect = transformation.transform(rect)
         mc.setExtent(rect)
         mc.refresh()
 
@@ -881,7 +889,7 @@ class main_window(QDialog, Ui_main_window):
             return
 
         features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.setSelectedFeatures(features)
+        self.layer.layer.selectByIds(features)
 
     def on_button_select_all_pressed(self):
         self.table_criteria.set_all_criteria(True)
