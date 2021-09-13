@@ -16,8 +16,8 @@ def xmcda_save_dialog(parent):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastXMCDAfileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastXMCDAfileDir", QVariant( QFileInfo( str( files.first() ) ).absolutePath() ) )
+    return ( str( files.first() ), str( fileDialog.encoding() ) )
 
 def xmcda_load_dialog(parent):
     settings = QSettings() 
@@ -32,5 +32,5 @@ def xmcda_load_dialog(parent):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastXMCDAfileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastXMCDAfileDir", QVariant( QFileInfo( str( files.first() ) ).absolutePath() ) )
+    return ( str( files.first() ), str( fileDialog.encoding() ) )

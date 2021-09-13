@@ -1,21 +1,24 @@
 import os, sys, traceback
 from xml.etree import ElementTree
-from PyQt4 import QtCore, QtGui
+from qgis.core import QgsCoordinateTransform, QgsProject
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
 from itertools import product
-from ui.main_window import Ui_main_window
-from ui.inference_results import Ui_inference_results
-from layer import criteria_layer
-from mcda.electre_tri import ElectreTri
-from mcda.types import Criteria, CriteriaValues, CriterionValue
-from mcda.types import PerformanceTable, Alternatives
-from mcda.types import Alternative, AlternativePerformances
-from mcda.types import AlternativeAssignment, AlternativesAssignments
-from mcda.types import Thresholds, Threshold
-from mcda.generate import generate_categories
-from mcda.generate import generate_categories_profiles
-from qgis_utils import generate_decision_map, saveDialog, addtocDialog
-from graphic import QGraphicsSceneEtri
-from xmcda import submit_problem, request_solution
+from qgis_etri.ui.main_window import Ui_main_window
+from qgis_etri.ui.inference_results import Ui_inference_results
+from qgis_etri.layer import criteria_layer
+from qgis_etri.mcda.electre_tri import ElectreTri
+from qgis_etri.mcda.types import Criteria, CriteriaValues, CriterionValue
+from qgis_etri.mcda.types import PerformanceTable, Alternatives
+from qgis_etri.mcda.types import Alternative, AlternativePerformances
+from qgis_etri.mcda.types import AlternativeAssignment, AlternativesAssignments
+from qgis_etri.mcda.types import Thresholds, Threshold
+from qgis_etri.mcda.generate import generate_categories
+from qgis_etri.mcda.generate import generate_categories_profiles
+from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
+from qgis_etri.graphic import QGraphicsSceneEtri
+from qgis_etri.xmcda import submit_problem, request_solution
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
@@ -28,16 +31,16 @@ COMBO_INFERENCE_GLOBAL = 0
 COMBO_INFERENCE_PROFILES = 1
 COMBO_INFERENCE_WEIGHTS = 2
 
-class InferenceDialog(QtGui.QDialog, Ui_inference_results):
+class InferenceDialog(QDialog, Ui_inference_results):
 
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.setupUi(self)
 
-class main_window(QtGui.QDialog, Ui_main_window):
+class main_window(QDialog, Ui_main_window):
 
     def __init__(self, iface = None, layer = None):
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         Ui_main_window.__init__(self)
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.Window)
@@ -53,16 +56,16 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.button_show.setVisible(False)
             self.button_zoom.setVisible(False)
 
-        self.table_criteria.connect(self.table_criteria,
-                                    QtCore.SIGNAL("criterion_state_changed"),
-                                    self.__criterion_state_changed)
+        self.table_criteria.criterion_state_changed.connect(self.__criterion_state_changed)
 
     def closeEvent(self, event):
-        val = QtGui.QMessageBox.question(self, "ELECTRE TRI",
-                    "Close ELECTRE TRI?",
-                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                    QtGui.QMessageBox.No)
-        if val == QtGui.QMessageBox.No:
+        val = QMessageBox.question(
+            self, "ELECTRE TRI",
+            "Close ELECTRE TRI?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if val == QMessageBox.No:
             event.ignore()
 
     def keyPressEvent(self, event):
@@ -191,12 +194,12 @@ class main_window(QtGui.QDialog, Ui_main_window):
         for altp in self.pt:
             for crit in self.criteria:
                 d = crit.direction
-                if crit_min.has_key(crit.id) is False:
+                if (crit.id in crit_min) is False:
                     crit_min[crit.id] = altp.performances[crit.id]
                 elif crit_min[crit.id]*d > altp(crit.id)*d:
                     crit_min[crit.id] = altp.performances[crit.id]
 
-                if crit_max.has_key(crit.id) is False:
+                if (crit.id in crit_max) is False:
                     crit_max[crit.id] = altp.performances[crit.id]
                 elif crit_max[crit.id]*d < altp(crit.id)*d:
                     crit_max[crit.id] = altp.performances[crit.id]
@@ -233,8 +236,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
             self.__loadlayer()
             self.__reset_buttons()
         except:
-            traceback.print_exc(sys.stderr)
-            QtGui.QMessageBox.information(None, "Error",
+            traceback.print_exc(file=sys.stderr)
+            QMessageBox.information(None, "Error",
                                           "Cannot load specified layer")
             return
 
@@ -316,7 +319,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.itervalues())
+            bp = next(pt.values())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -334,7 +337,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.itervalues())
+            bp = next(pt.values())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -387,7 +390,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
                             + ".xmcda"
             self.__load_from_xmcda(xmcda_file)
         except:
-            traceback.print_exc(sys.stderr)
+            traceback.print_exc(file=sys.stderr)
             self.__generate_initial_model()
 
         self.__fill_model_tables()
@@ -396,6 +399,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.layer_loaded = False
 
         self.table_criteria.add_criteria(self.criteria, self.cv)
+        self.table_criteria.enable_export_fields(False)
         self.table_prof.add_criteria(self.criteria)
 
         self.table_indiff.add_criteria(self.criteria)
@@ -478,9 +482,9 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
     def on_button_del_profile_pressed(self):
         if len(self.bpt) == 1:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "Molel should have at least " \
-                                          "2 categories")
+            QMessageBox.information(None, "Error",
+                                    "Molel should have at least "
+                                    "2 categories")
             return
 
         name = "b%d" % len(self.bpt)
@@ -506,7 +510,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def on_button_generate_pressed(self):
         active_criteria = self.criteria.get_active()
         if self.bpt.is_complete(active_criteria.keys()) is False:
-            QtGui.QMessageBox.information(None, "Error",
+            QMessageBox.information(None, "Error",
                                           "Profile table is incomplete")
             return
 
@@ -515,8 +519,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
                 qpt = PerformanceTable(id = 'q')
                 ppt = PerformanceTable(id = 'p')
                 for i in range(len(self.bpt)):
-                    qp = next(self.qpt.itervalues()).copy()
-                    pp = next(self.ppt.itervalues()).copy()
+                    qp = next(self.qpt.values()).copy()
+                    pp = next(self.ppt.values()).copy()
                     name = "b%d" % (i + 1)
                     qp.id, pp.id = name, name
                     qpt.append(qp), ppt.append(pp)
@@ -527,7 +531,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
             if self.cbox_noveto.isChecked() is False:
                 vpt = PerformanceTable(id = 'v')
                 for i in range(len(self.bpt)):
-                    vp = next(self.vpt.itervalues()).copy()
+                    vp = next(self.vpt.values()).copy()
                     vp.id = "b%d" % (i + 1)
                     vpt.append(vp)
             else:
@@ -548,11 +552,15 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
         (f, encoding) = saveDialog(self, "Save output shapefile",
                                    "Shapefiles (*.shp)", "shp",
-                                   QtGui.QFileDialog.AcceptSave)
+                                   QFileDialog.AcceptSave)
         if f is None or encoding is None:
             return
 
-        generate_decision_map(self.layer.layer, aa, f, encoding)
+        export_fields = []
+        if self.cbox_allfields.isChecked():
+            export_fields = self.table_criteria.get_export_fields()
+            print(export_fields)
+        generate_decision_map(self.layer.layer, aa, f, encoding, export_fields)
         self.save_to_xmcda(os.path.splitext(f)[0] + ".xmcda")
 
         if self.iface is not None:
@@ -576,7 +584,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def on_button_savexmcda_pressed(self):
         (f, encoding) = saveDialog(self, "Save MCDA model",
                                    "XMCDA files (*.xmcda)", "xmcda",
-                                   QtGui.QFileDialog.AcceptSave)
+                                   QFileDialog.AcceptSave)
         if f is None:
             return
 
@@ -599,7 +607,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         if self.vpt:
             xmcda.append(self.vpt.to_xmcda())
 
-        f = open(filepath, "w")
+        f = open(filepath, "wb")
         buf = ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
         f.write(buf)
         f.close()
@@ -607,15 +615,15 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def on_button_loadxmcda_pressed(self):
         (f, encoding) = saveDialog(self, "Load MCDA model",
                                    "XMCDA files (*.xmcda)", "xmcda",
-                                   QtGui.QFileDialog.AcceptOpen)
+                                   QFileDialog.AcceptOpen)
         if f is None:
             return
 
         try:
             self.__load_from_xmcda(f)
         except:
-            traceback.print_exc(sys.stderr)
-            QtGui.QMessageBox.information(None, "Error",
+            traceback.print_exc(file=sys.stderr)
+            QMessageBox.information(None, "Error",
                                           "Cannot load XMCDA data")
             return
 
@@ -625,24 +633,27 @@ class main_window(QtGui.QDialog, Ui_main_window):
         self.button_infer.setEnabled(False)
         self.__fill_model_tables()
 
-    def __generate_category_colors(self):
-        self.category_colors = {}
+    @staticmethod
+    def generate_category_colors(ncat):
+        return {
+            str(i): QColor(0, 255 - 220 * i / ncat, 0)
+            for i in range(1, ncat+1)
+        }
 
+    def __generate_category_colors(self):
         ncat = len(self.bpt) + 1
-        for i in range(1, ncat + 1):
-            color = QtGui.QColor(0, 255 - 220 * i / ncat, 0)
-            self.category_colors[str(i)] = color
+        self.category_colors = self.generate_category_colors(ncat)
 
     def on_button_chooseassign_pressed(self):
         items = [c.id for c in self.criteria if c.disabled is True]
         if len(items) < 1:
-            QtGui.QMessageBox.information(None, "Error",
+            QMessageBox.information(None, "Error",
                                           "No assignment column")
             return
 
-        item, ok = QtGui.QInputDialog.getItem(self,
-                                              "Select assignments column",
-                                              "Column:", items, 0, False)
+        item, ok = QInputDialog.getItem(self,
+                                        "Select assignments column",
+                                        "Column:", items, 0, False)
         if ok is False:
             return
 
@@ -654,14 +665,14 @@ class main_window(QtGui.QDialog, Ui_main_window):
         ncat = len(self.bpt) + 1
         pt, aa = PerformanceTable(), AlternativesAssignments()
         for ap in self.pt:
-            perf =  int(ap.performances[cid])
+            perf = int(ap.performances[cid])
             if perf > 0 and perf < (ncat + 1):
                 pt.append(ap)
                 aa.append(AlternativeAssignment(ap.id, str(perf)))
 
         if len(pt) < 1:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "No assignments examples found")
+            QMessageBox.information(None, "Error",
+                                    "No assignments examples found")
             return
 
         self.a_ref = Alternatives([Alternative(a.id) for a in aa])
@@ -712,9 +723,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
     def __show_model_learned(self, cv, bpt, lbda, a):
         dialog = InferenceDialog(self)
         dialog.setModal(True)
-        self.connect(dialog,
-                     QtCore.SIGNAL("accepted()"),
-                     self.on_model_learned_accepted)
+        self.accepted.connect(self.on_model_learned_accepted)
         dialog.show()
 
         model = ElectreTri(self.criteria, cv, bpt, lbda, self.cat_profiles)
@@ -728,7 +737,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
         dialog.label_lambda.setText("Lambda: %s" % str(lbda))
 
         a_incomp = Alternatives([aref for aref in self.a_ref
-                                      if aref.id not in a.keys()])
+                                 if aref.id not in a.keys()])
         pt_incomp = PerformanceTable([ap for ap in self.pt_ref
                                       if ap.id in a_incomp.keys()])
         pt_comp = PerformanceTable([ap for ap in self.pt_ref
@@ -753,22 +762,22 @@ class main_window(QtGui.QDialog, Ui_main_window):
         try:
             msg = str(solution.messages)
         except:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "Invalid reply received, " \
-                                          "nothing received!")
+            QMessageBox.information(None, "Error",
+                                    "Invalid reply received, "
+                                    "nothing received!")
             return
 
         xmcda_msg = ElementTree.ElementTree(ElementTree.fromstring(msg))
         if xmcda_msg.find(".//methodMessages") is None:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "Invalid reply received")
+            QMessageBox.information(None, "Error",
+                                    "Invalid reply received")
             return
 
         error = xmcda_msg.find(".//methodMessages/errorMessage/text")
         if error is not None:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "Webservice replied:\n" +
-                                          error.text)
+            QMessageBox.information(None, "Error",
+                                    "Webservice replied:\n" +
+                                    error.text)
             return
 
 
@@ -783,8 +792,8 @@ class main_window(QtGui.QDialog, Ui_main_window):
             a = self.__parse_xmcda_object(solution.compatible_alts,
                                           "alternatives", Alternatives)
         except:
-            QtGui.QMessageBox.information(None, "Error",
-                                          "Cannot parse reply")
+            QMessageBox.information(None, "Error",
+                                    "Cannot parse reply")
             return
 
         self.cv_learned = cv
@@ -803,7 +812,7 @@ class main_window(QtGui.QDialog, Ui_main_window):
 
     def __save_xmcda_files(self, xmcda):
         for name, xm in xmcda.items():
-            f = open("/tmp/%s.xml" % name, "w")
+            f = open("/tmp/%s.xml" % name, "wb")
             f.write(xm)
             f.close()
 
@@ -814,11 +823,11 @@ class main_window(QtGui.QDialog, Ui_main_window):
         pt_ref = self.pt_ref.copy()
         bpt = self.bpt.copy()
         for ap in pt_ref:
-            for crit, value in ap.performances.items():
+            for crit, value in list(ap.performances.items()):
                 if crit not in criteria.keys():
                     del ap.performances[crit]
         for ap in bpt:
-            for crit, value in ap.performances.items():
+            for crit, value in list(ap.performances.items()):
                 if crit not in criteria.keys():
                     del ap.performances[crit]
 
@@ -845,19 +854,15 @@ class main_window(QtGui.QDialog, Ui_main_window):
         xmcda = self.__generate_xmcda_input()
 
         self.inference_thread = InferenceThread(xmcda, self)
-        self.connect(self.inference_thread,
-                     QtCore.SIGNAL("finished(bool)"),
-                     self.on_inference_thread_finished)
+        self.inference_thread.run_finished.connect(self.on_inference_thread_finished)
         self.inference_thread.start()
 
-        self.cancelbox = QtGui.QMessageBox(self)
+        self.cancelbox = QMessageBox(self)
         self.cancelbox.setWindowTitle('Please wait...')
         self.cancelbox.setText('Press cancel to stop inference')
-        self.cancelbox.setStandardButtons(QtGui.QMessageBox.Cancel)
+        self.cancelbox.setStandardButtons(QMessageBox.Cancel)
         self.cancelbox.setModal(True)
-        self.connect(self.cancelbox,
-                     QtCore.SIGNAL("buttonClicked(QAbstractButton *)"),
-                     self.on_cancelbox_button_clicked)
+        self.cancelbox.buttonClicked.connect(self.on_cancelbox_button_clicked)
         self.cancelbox.show()
 
     def on_button_zoom_pressed(self):
@@ -865,10 +870,17 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.setSelectedFeatures(features)
+        self.layer.layer.selectByIds(features)
         mc = self.iface.mapCanvas()
         rect = self.layer.layer.boundingBoxOfSelected()
         rect.scale(2)
+        if self.layer.layer.sourceCrs() != QgsProject.instance().crs():
+            transformation = QgsCoordinateTransform(
+                self.layer.layer.sourceCrs(),
+                QgsProject.instance().crs(),
+                QgsProject.instance()
+            )
+            rect = transformation.transform(rect)
         mc.setExtent(rect)
         mc.refresh()
 
@@ -877,9 +889,24 @@ class main_window(QtGui.QDialog, Ui_main_window):
             return
 
         features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.setSelectedFeatures(features)
+        self.layer.layer.selectByIds(features)
+
+    def on_button_select_all_pressed(self):
+        self.table_criteria.set_all_criteria(True)
+
+    def on_button_select_none_pressed(self):
+        self.table_criteria.set_all_criteria(False)
+
+    def on_button_clone_selection_pressed(self):
+        self.table_criteria.clone_selection()
+
+    def on_cbox_allfields_stateChanged(self, state):
+        self.table_criteria.enable_export_fields(state)
+
 
 class InferenceThread(QtCore.QThread):
+
+    run_finished = QtCore.pyqtSignal(bool)
 
     def __init__(self, xmcda_input, parent = None):
         super(InferenceThread, self).__init__(parent)
@@ -919,11 +946,11 @@ class InferenceThread(QtCore.QThread):
             time.sleep(1)
 
         self.stop()
-        self.emit(QtCore.SIGNAL("finished(bool)"), self.completed)
+        self.run_finished.emit(self.completed)
 
 if __name__ == "__main__":
     import sys
-    from PyQt4 import QtGui
+    # from qgis.PyQt import QtGui
     from qgis.core import *
 
     if len(sys.argv) != 2:
@@ -943,7 +970,7 @@ if __name__ == "__main__":
         print("Failed to load layer!")
         sys.exit(1)
 
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     window = main_window(layer = layer)
     window.show()
     app.exec_()

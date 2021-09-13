@@ -1,7 +1,8 @@
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
+
 from qgis.core import QgsVectorLayer
-from mcda.types import Criteria, Criterion, Alternative, Alternatives
-from mcda.types import PerformanceTable, AlternativePerformances
+from qgis_etri.mcda.types import Criteria, Criterion, Alternative, Alternatives
+from qgis_etri.mcda.types import PerformanceTable, AlternativePerformances
 
 class criteria_layer(QgsVectorLayer):
 

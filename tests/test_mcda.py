@@ -9,7 +9,7 @@ ElementTree.dump(crit)
 
 crit2 = Criteria()
 crit2.from_xmcda(crit)
-print crit2
+print(crit2)
 
 xmcda = a.to_xmcda()
 ElementTree.dump(xmcda[0])

@@ -1,19 +1,17 @@
-import sys
-sys.path.append("..")
-import os
-from qgis.core import QgsVectorLayer, QgsApplication
-from layer import criteria_layer
+from qgis.testing import start_app
+from qgis.core import QgsVectorLayer
+from qgis_etri.layer import criteria_layer
 
 if __name__ == "__main__":
-    QgsApplication.setPrefixPath("/usr", True)
-    QgsApplication.initQgis()
+
+    start_app()
 
     layer = QgsVectorLayer("./data/ticino/criteria.shp", "criteria", "ogr")
     if not layer.isValid():
-        raise NameError, "Layer failed to load!"
+        raise NameError("Layer failed to load!")
 
     layer = criteria_layer(layer)
 
-    print layer.criteria
-
-    QgsApplication.exitQgis()
+    print(layer.criteria)
+    print(layer.alternatives)
+    print(layer.pt)

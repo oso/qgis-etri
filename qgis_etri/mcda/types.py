@@ -3,7 +3,6 @@
 .. moduleauthor:: Olivier Sobrie <olivier@sobrie.be>
 """
 
-from __future__ import division, print_function
 import random
 import sys
 from itertools import product
@@ -65,7 +64,7 @@ class McdaDict(object):
     def __iter__(self):
         """Return an iterator object for the MCDA dictionnary."""
 
-        return self._d.itervalues()
+        return iter(self._d.values())
 
     def __getitem__(self, key):
         """Lookup for an MCDA object in the dictionnary on basis of its
@@ -98,29 +97,29 @@ class McdaDict(object):
     def has_key(self, key):
         """Check if MCDA object id is in the dictionnary"""
 
-        return self._d.has_key(key)
+        return key in self._d
 
     def items(self):
         """Return a copy of the MCDA dictionary's list of (id, mcda_object)
         pairs"""
 
-        return self._d.items()
+        return list(self._d.items())
 
     def iterkeys(self):
         """Return an iterator over the MCDA dictionary's object IDs"""
 
-        return self._d.iterkeys()
+        return iter(self._d.keys())
 
     def itervalues(self):
         """Return an iterator over the MCDA dictionary's object IDs"""
 
-        return self._d.itervalues()
+        return iter(self._d.values())
 
     def keys(self):
         """Return the list of MCDA object IDs contained in the MCDA
         dictionnary"""
 
-        return self._d.keys()
+        return list(self._d.keys())
 
     def remove(self, key):
         """This method allows to remove an element from the dictionnary"""
@@ -137,13 +136,13 @@ class McdaDict(object):
         """Return the list of MCDA objects contained in the MCDA
         dictionnary"""
 
-        return self._d.values()
+        return list(self._d.values())
 
     def to_list(self):
         """Return a list of MCDA objects contained in the MCDA dictionnary
         ordered by MCDA object ID"""
 
-        l = self._d.values()
+        l = list(self._d.values())
         l.sort(key = lambda x: x.id)
         return l
 
@@ -174,7 +173,7 @@ class McdaDict(object):
         else:
             raise ValueError('%s::split invalid proportions')
 
-        keys, nkeys = self._d.keys(), len(self._d.keys())
+        keys, nkeys = list(self._d.keys()), len(self._d)
         j, subsets = 0, []
 
         if randomize is True:
@@ -205,6 +204,10 @@ class McdaObject(object):
         return deepcopy(self)
 
 class Criteria(McdaDict):
+
+    def __init__(self, l = [], id = None):
+        self.id = id
+        self._d = OrderedDict((m.id, m) for m in l)
 
     def __repr__(self):
         """Manner to represent the MCDA dictionnary"""
@@ -295,6 +298,9 @@ class Criterion(McdaObject):
         self.direction = direction
         self.weight = weight
         self.thresholds = thresholds
+
+    def __hash__(self):
+        return hash(self.id)
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
@@ -690,7 +696,7 @@ class PerformanceTable(McdaDict):
         """
 
         if cids is None:
-            cids = next(self._d.itervalues()).performances.keys()
+            cids = next(self._d.values()).performances.keys()
 
         for ap in self._d.values():
             ap.round(k, cids)
@@ -706,7 +712,7 @@ class PerformanceTable(McdaDict):
         """
 
         if cids is None:
-            cids = next(self._d.itervalues()).performances.keys()
+            cids = next(self._d.values()).performances.keys()
 
         for ap in self._d.values():
             ap.multiply(value, cids)
@@ -972,7 +978,7 @@ class AlternativePerformances(McdaObject):
         """
 
         if cids is None:
-            cids = self.performances.keys()
+            cids = list(self.performances.keys())
 
         for key, value in self.performances.items():
             self.performances[key] = round(value, k)
@@ -988,7 +994,7 @@ class AlternativePerformances(McdaObject):
         """
 
         if cids is None:
-            cids = self.performances.keys()
+            cids = list(self.performances.keys())
 
         for key in self.performances:
             self.performances[key] *= value
@@ -1002,7 +1008,7 @@ class AlternativePerformances(McdaObject):
         altid = ElementTree.SubElement(xmcda, 'alternativeID')
         altid.text = self.altid
 
-        for crit_id, val in self.performances.iteritems():
+        for crit_id, val in self.performances.items():
             perf = ElementTree.SubElement(xmcda, 'performance')
             critid = ElementTree.SubElement(perf, 'criterionID')
             critid.text = crit_id

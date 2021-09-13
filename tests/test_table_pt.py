@@ -1,10 +1,11 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, "..")
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from mcda.types import Alternatives, Criteria, PerformanceTable
-from table import qt_performance_table 
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
+from qgis.PyQt import QtWidgets
+from qgis_etri.mcda.types import Alternatives, AlternativePerformances, Criteria, PerformanceTable
+from qgis_etri.table import qt_performance_table
 from xml.etree import ElementTree
 
 ElementTree.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
@@ -28,10 +29,12 @@ def indent(elem, level=0):
             elem.tail = i
 
 def save_dialog_box():
-    fname = QtGui.QFileDialog.getSaveFileName(None,
+    fname = QtWidgets.QFileDialog.getSaveFileName(None,
                                               "Save XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
-    fname = unicode(fname)
+    if isinstance(fname, tuple):
+        fname = fname[0]
+    fname = str(fname)
     if fname:
         if "." not in fname:
             fname += ".xmcda"
@@ -39,10 +42,12 @@ def save_dialog_box():
     return fname
 
 def load_dialog_box():
-    fname = QtGui.QFileDialog.getOpenFileName(None,
+    fname = QtWidgets.QFileDialog.getOpenFileName(None,
                                               "Load XMCDA file", ".",
                                               "XMCDA files (*.xmcda)")
-    return unicode(fname)
+    if isinstance(fname, tuple):
+        fname = fname[0]
+    return str(fname)
 
 def save_to_xmcda():
     if not pt_table:
@@ -53,7 +58,7 @@ def save_to_xmcda():
         root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
         pt_xmcda = pt.to_xmcda()
         criteria_xmcda = c.to_xmcda()
-        alternatives_xmcda = a.to_xmcda()[0]
+        alternatives_xmcda = a.to_xmcda()
         root.append(pt_xmcda)
         root.append(criteria_xmcda)
         root.append(alternatives_xmcda)
@@ -72,36 +77,36 @@ def load_from_xmcda():
         root = tree.getroot()
         ElementTree.dump(root)
 
-        a = alternatives()
-        a.from_xmcda(root)
+        a = Alternatives()
+        a.from_xmcda(root.find('.//alternatives'))
 
-        c = criteria()
-        c.from_xmcda(root, root)
+        c = Criteria()
+        c.from_xmcda(root.find('.//criteria'))
 
-        pt = performance_table()
-        pt.from_xmcda(root)
+        pt = PerformanceTable()
+        pt.from_xmcda(root.find('.//performanceTable'))
 
         pt_table.reset_table()
         pt_table.add_criteria(c)
         pt_table.add_pt(a, pt)
 
 def add_alternative():
-    string, ok = QtGui.QInputDialog.getText(None, "Add alternative", "Alternative name")
-    if ok and not string.isEmpty():
-        name = str(string.toUtf8())
-        alt = alternative(name, name)
-        alt_perfs = alternative_performances(alt.id)
+    name, ok = QtWidgets.QInputDialog.getText(None, "Add alternative", "Alternative name")
+    if ok and name:
+        alt = Alternative(name, name)
+        alt_perfs = AlternativePerformances(alt.id, {id: 7 for id in c.iterkeys()})
         pt_table.add(alt, alt_perfs)
         a.append(alt)
         pt.append(alt_perfs)
 
 def add_criterion():
-    string, ok = QtGui.QInputDialog.getText(None, "Add criterion", "Criterion name")
-    if ok and not string.isEmpty():
-        name = str(string.toUtf8())
-        crit = criterion(name, name, 0, 1, 10)
+    name, ok = QtWidgets.QInputDialog.getText(None, "Add criterion", "Criterion name")
+    if ok and name:
+        crit = Criterion(name, name, False, 1, 10)
         pt_table.add_criterion(crit)
         c.append(crit)
+        for ap in pt.itervalues():
+            ap.performances[name] = 88
 
 if __name__ == "__main__":
 
@@ -110,34 +115,26 @@ if __name__ == "__main__":
     else:
         from data_ticino_new import *
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     pt_table = qt_performance_table(None, c, a, pt)
 
-    button_add = QtGui.QPushButton("Add alternative")
-    button_addc = QtGui.QPushButton("Add criterion")
-    button_to_xmcda = QtGui.QPushButton("Save to XMCDA")
-    button_from_xmcda = QtGui.QPushButton("Load from XMCDA")
+    button_add = QtWidgets.QPushButton("Add alternative")
+    button_addc = QtWidgets.QPushButton("Add criterion")
+    button_to_xmcda = QtWidgets.QPushButton("Save to XMCDA")
+    button_from_xmcda = QtWidgets.QPushButton("Load from XMCDA")
 
-    button_to_xmcda.connect(button_add,
-                            QtCore.SIGNAL("clicked()"),
-                            add_alternative)
-    button_to_xmcda.connect(button_addc,
-                            QtCore.SIGNAL("clicked()"),
-                            add_criterion)
-    button_to_xmcda.connect(button_to_xmcda,
-                            QtCore.SIGNAL("clicked()"),
-                            save_to_xmcda)
-    button_from_xmcda.connect(button_from_xmcda,
-                              QtCore.SIGNAL("clicked()"),
-                              load_from_xmcda)
+    button_add.clicked.connect(add_alternative)
+    button_addc.clicked.connect(add_criterion)
+    button_to_xmcda.clicked.connect(save_to_xmcda)
+    button_from_xmcda.clicked.connect(load_from_xmcda)
 
-    layout = QtGui.QVBoxLayout()
+    layout = QtWidgets.QVBoxLayout()
     layout.addWidget(pt_table)
     layout.addWidget(button_add)
     layout.addWidget(button_addc)
     layout.addWidget(button_to_xmcda)
     layout.addWidget(button_from_xmcda)
-    dialog = QtGui.QDialog()
+    dialog = QtWidgets.QDialog()
     dialog.setLayout(layout)
     dialog.resize(640, 480)
     dialog.show()

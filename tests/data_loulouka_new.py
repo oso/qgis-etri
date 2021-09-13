@@ -1,12 +1,12 @@
 import os, sys
-from mcda.types import Criterion, Criteria
-from mcda.types import CriterionValue, CriteriaValues
-from mcda.types import Alternative, Alternatives
-from mcda.types import AlternativePerformances, PerformanceTable
-from mcda.types import Threshold, Thresholds, Constant
-from mcda.types import AlternativeAssignment, AlternativesAssignments
-from mcda.types import Category, Categories
-from mcda.types import CategoryProfile, CategoriesProfiles, Limits
+from qgis_etri.mcda.types import Criterion, Criteria
+from qgis_etri.mcda.types import CriterionValue, CriteriaValues
+from qgis_etri.mcda.types import Alternative, Alternatives
+from qgis_etri.mcda.types import AlternativePerformances, PerformanceTable
+from qgis_etri.mcda.types import Threshold, Thresholds, Constant
+from qgis_etri.mcda.types import AlternativeAssignment, AlternativesAssignments
+from qgis_etri.mcda.types import Category, Categories
+from qgis_etri.mcda.types import CategoryProfile, CategoriesProfiles, Limits
 
 # Weights
 g1 = Criterion('g01', 'g1', False, 1, 0.02)

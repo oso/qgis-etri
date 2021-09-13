@@ -1,7 +1,9 @@
 import os
 import colorsys
 
-from PyQt4 import QtGui, QtCore
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 from qgis.core import *
 from qgis.gui import *
 
@@ -14,7 +16,7 @@ def layer_get_criteria(layer):
     fields = provider.fields()
     i = 0
     criteria = []
-    for (id, field) in fields.iteritems():
+    for (id, field) in fields.items():
         #FIXME: Check the type to only include numbers
         criterion = {}
         str = '%s' % field.name().trimmed()
@@ -39,7 +41,7 @@ def layer_get_minmax(layer):
     maxs = {}
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
-        for (k, attr) in attrs.iteritems():
+        for (k, attr) in attrs.items():
             value = attr.toDouble()[0]
             if first == True:
                 mins[k] = value
@@ -58,7 +60,7 @@ def layer_load(path, name):
     layerProvider = "ogr"
     layer = QgsVectorLayer(path, name, layerProvider)
     if not layer.isValid():
-        raise NameError,"Layer failed to load!"
+        raise NameError("Layer failed to load!")
 
     return layer
 
@@ -70,7 +72,7 @@ def layer_get_feature_attribute(layer, featid):
     attrs = feat.attributeMap()
 
     attributes = {}
-    for (k, attr) in attrs.iteritems():
+    for (k, attr) in attrs.items():
         try:
             attributes[k] = str(attr.toString()).trimmed()
         except:
@@ -88,25 +90,32 @@ def layer_get_attributes(layer):
     while provider.nextFeature(feat):
         attrs = feat.attributeMap()
         attributes = {}
-        for (k, attr) in attrs.iteritems():
+        for (k, attr) in attrs.items():
             attributes[k] = attr.toDouble()[0]
 
         actions[feat.id()] = attributes
 
     return actions
 
-def generate_decision_map(layer_in, aa, out, out_encoding):
+
+def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=[]):
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
     fields.append(QgsField("Category", QtCore.QVariant.Int))
+    for field in layer_in.fields():
+        if field.name() in export_source_fields:
+            fields.append(field)
+    print(fields.count())
 
     try:
         os.unlink(out)
     except:
         pass
 
-    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.geometryType(), vprovider.crs())
+    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.wkbType(), vprovider.crs(), 'ESRI Shapefile')
+    if writer.hasError():
+        raise Exception(f"Problem creating file writer: {writer.errorMessage()}")
 
     outFeat = QgsFeature(fields)
     nFeat = vprovider.featureCount()
@@ -115,7 +124,8 @@ def generate_decision_map(layer_in, aa, out, out_encoding):
         inGeom = feat.geometry()
         id = str(feat.id())
         outFeat.setGeometry(inGeom)
-        outFeat.setAttribute(0, aa[id].category_id)
+        attributes_from_input_file = [feat.attribute(f.name()) for f in fields if f.name() in export_source_fields]
+        outFeat.setAttributes([aa[id].category_id] + attributes_from_input_file)
         writer.addFeature(outFeat)
 
     del writer
@@ -136,46 +146,48 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
     fileDialog = QgsEncodingFileDialog(parent, title, dirName,
                                        filtering, encode)
     fileDialog.setDefaultSuffix(extension)
-    fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
+    fileDialog.setFileMode(QFileDialog.AnyFile)
     fileDialog.setAcceptMode(acceptmode)
-    fileDialog.setConfirmOverwrite(True)
-    if not fileDialog.exec_() == QtGui.QDialog.Accepted:
+    # this is the default value, it is just repeated to be more explicit
+    fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
+    if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",
-                      QtCore.QFileInfo(unicode(files[0])).absolutePath())
+                      QtCore.QFileInfo(str(files[0])).absolutePath())
 
-    return (unicode(files[0]), unicode(fileDialog.encoding()))
+    return (str(files[0]), str(fileDialog.encoding()))
+
 
 def addtocDialog(parent, filename, nprofils):
-    addToTOC = QtGui.QMessageBox.question(parent,
-                    "Decision MAP layer created",
-                    "Would you like to add the new layer to the TOC?",
-                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No,
-                    QtGui.QMessageBox.NoButton)
+    addToTOC = QMessageBox.question(
+        parent,
+        "Decision MAP layer created",
+        "Would you like to add the new layer to the TOC?",
+        QMessageBox.Yes | QMessageBox.No,
+        QMessageBox.NoButton
+    )
 
-    if addToTOC == QtGui.QMessageBox.Yes:
+    if addToTOC == QMessageBox.Yes:
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         vlayer = QgsVectorLayer(filename, name, "ogr")
         render_decision_map(vlayer, nprofils)
 
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        QgsProject.instance().addMapLayer(vlayer)
 
 def render_decision_map_new(layer, nprofils):
     cat_list = []
     nclasses = nprofils + 1
     for i in range(1, nclasses + 1):
-        s = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        color = QtGui.QColor(0,
-                             255 - 220 * i / nclasses,
-                             0)
+        s = QgsSymbol.defaultSymbol(layer.geometryType())
+        color = QColor(0, 255 - 220 * i / nclasses, 0)
         s.setColor(color)
-        cat_list.append(QgsRendererCategoryV2(i, s, "Category %d" % i))
+        cat_list.append(QgsRendererCategory(i, s, "Category %d" % i))
 
-    sr = QgsCategorizedSymbolRendererV2("categories", cat_list)
+    sr = QgsCategorizedSymbolRenderer("categories", cat_list)
     sr.setClassAttribute("category")
-    layer.setRendererV2(sr)
+    layer.setRenderer(sr)
 
 def render_decision_map(layer, nprofils):
     render_decision_map_new(layer, nprofils)
