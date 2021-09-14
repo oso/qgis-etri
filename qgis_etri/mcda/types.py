@@ -904,6 +904,9 @@ class AlternativePerformances(McdaObject):
         """Return the performance of the alternative on criterion_id"""
         return self.performances[criterion_id]
 
+    def __hash__(self):
+        return hash(self.id)
+
     def __repr__(self):
         """Manner to represent the MCDA object"""
         return "%s: %s" % (self.id, self.performances)
