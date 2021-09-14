@@ -198,6 +198,11 @@ class McdaObject(object):
 
         return self.__dict__ == other.__dict__
 
+    def __hash__(self):
+        if hasattr(self, 'id'):
+            return hash(self.id)
+        raise TypeError("unhashable type or subtype of: 'McdaObject' (has no attribute 'id')")
+
     def copy(self):
         """Return a copy of the current MCDA object"""
 
@@ -298,9 +303,6 @@ class Criterion(McdaObject):
         self.direction = direction
         self.weight = weight
         self.thresholds = thresholds
-
-    def __hash__(self):
-        return hash(self.id)
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
@@ -903,9 +905,6 @@ class AlternativePerformances(McdaObject):
     def __call__(self, criterion_id):
         """Return the performance of the alternative on criterion_id"""
         return self.performances[criterion_id]
-
-    def __hash__(self):
-        return hash(self.id)
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
