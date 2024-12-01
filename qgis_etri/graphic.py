@@ -210,7 +210,7 @@ class QGraphicsSceneEtri(QGraphicsScene):
 
     def __get_category_color(self, i):
         n = len(self.model.categories)
-        g = 255 - 220 * (n - i) / n
+        g = int(255 - 220 * (n - i) / n)
         return QColor(0, g, 0)
 
     def __create_category(self, i, path_below, path_above):
