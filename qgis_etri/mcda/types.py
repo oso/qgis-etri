@@ -243,7 +243,7 @@ class Criteria(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('criterion')
+        tag_list = xmcda.iter('criterion')
         for tag in tag_list:
             c = Criterion().from_xmcda(tag)
             self.append(c)
@@ -374,7 +374,7 @@ class Criterion(McdaObject):
 
         value = xmcda.find('.//criterionValue/value')
         if value is not None:
-            self.weight = unmarshal(value.getchildren()[0])
+            self.weight = unmarshal(list(value)[0])
 
         value = xmcda.find('.//thresholds')
         if value is not None:
@@ -419,7 +419,7 @@ class CriteriaValues(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('criterionValue')
+        tag_list = xmcda.iter('criterionValue')
         for tag in tag_list:
             cv = CriterionValue().from_xmcda(tag)
             self.append(cv)
@@ -494,7 +494,7 @@ class CriterionValue(McdaObject):
 
         value = xmcda.find('.//value')
         if value is not None:
-            self.value = unmarshal(value.getchildren()[0])
+            self.value = unmarshal(list(value)[0])
 
         return self
 
@@ -526,7 +526,7 @@ class Alternatives(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('alternative')
+        tag_list = xmcda.iter('alternative')
         for tag in tag_list:
             alt = Alternative().from_xmcda(tag)
             self.append(alt)
@@ -816,7 +816,7 @@ class PerformanceTable(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('alternativePerformances')
+        tag_list = xmcda.iter('alternativePerformances')
         for tag in tag_list:
             altp = AlternativePerformances().from_xmcda(tag)
             self.append(altp)
@@ -1033,10 +1033,10 @@ class AlternativePerformances(McdaObject):
         if self.id is None:
             self.id = altid.text
 
-        tag_list = xmcda.getiterator('performance')
+        tag_list = xmcda.iter('performance')
         for tag in tag_list:
             crit_id = tag.find('.//criterionID').text
-            value = tag.find('.//value').getchildren()
+            value = list(tag.find('.//value'))
             if len(value) > 0:
                 crit_val = unmarshal(value[0])
             else:
@@ -1114,7 +1114,7 @@ class CategoriesValues(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('categoryValue')
+        tag_list = xmcda.iter('categoryValue')
         for tag in tag_list:
             altp = CategoryValue().from_xmcda(tag)
             self.append(altp)
@@ -1155,7 +1155,7 @@ class CategoryValue(McdaObject):
             raise TypeError('categoryValue::invalid tag')
 
         self.id = xmcda.find('.//categoryID').text
-        value = xmcda.find('.//value').getchildren()[0]
+        value = list(xmcda.find('.//value'))[0]
         if value.tag == 'interval':
             self.value = Interval().from_xmcda(value)
         else:
@@ -1206,9 +1206,9 @@ class Interval(McdaObject):
             raise TypeError('interval::invalid tag')
 
         lower = xmcda.find('.//lowerBound')
-        self.lower = unmarshal(lower.getchildren()[0])
+        self.lower = unmarshal(list(lower)[0])
         upper = xmcda.find('.//upperBound')
-        self.upper = unmarshal(upper.getchildren()[0])
+        self.upper = unmarshal(list(upper)[0])
         return self
 
 class AlternativesValues(McdaDict):
@@ -1235,7 +1235,7 @@ class AlternativesValues(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('alternativeValue')
+        tag_list = xmcda.iter('alternativeValue')
         for tag in tag_list:
             altp = AlternativeValue().from_xmcda(tag)
             self.append(altp)
@@ -1270,7 +1270,7 @@ class AlternativeValue(McdaObject):
             raise TypeError('alternativesValues::invalid tag')
 
         self.id = xmcda.find('.//alternativeID').text
-        value = xmcda.find('.//value').getchildren()[0]
+        value = list(xmcda.find('.//value'))[0]
         self.value = unmarshal(value)
 
         return self
@@ -1323,7 +1323,7 @@ class CriteriaFunctions(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('criterionFunction')
+        tag_list = xmcda.iter('criterionFunction')
         for tag in tag_list:
             cf = CriterionFunction().from_xmcda(tag)
             self.append(cf)
@@ -1453,7 +1453,7 @@ class Segment(McdaObject):
         if xmcda.tag != 'segment':
             raise TypeError('segment::invalid tag')
 
-        tag_list = xmcda.getiterator('point')
+        tag_list = xmcda.iter('point')
         if tag_list != 2:
             raise ValueError('segment:: invalid number of points')
 
@@ -1549,7 +1549,7 @@ class PiecewiseLinear(list):
         if xmcda.tag != 'piecewiseLinear':
             raise TypeError('piecewise_linear::invalid tag')
 
-        tag_list = xmcda.getiterator('segment')
+        tag_list = xmcda.iter('segment')
         for tag in tag_list:
             s = Segment().from_xmcda(tag)
             self.append(s)
@@ -1583,7 +1583,7 @@ class Points(list):
         if xmcda.tag != 'points':
             raise TypeError('points::invalid tag')
 
-        tag_list = xmcda.getiterator('point')
+        tag_list = xmcda.iter('point')
         for tag in tag_list:
             p = Point().from_xmcda(tag)
             self.append(p)
@@ -1620,9 +1620,9 @@ class Point(McdaObject):
 
         self.id = xmcda.get('id')
 
-        x = xmcda.find('.//abscissa').getchildren()[0]
+        x = list(xmcda.find('.//abscissa'))[0]
         self.x = unmarshal(x)
-        y = xmcda.find('.//ordinate').getchildren()[0]
+        y = list(xmcda.find('.//ordinate'))[0]
         self.y = unmarshal(y)
 
         return self
@@ -1655,7 +1655,7 @@ class Constant(McdaObject):
             raise TypeError('constant::invalid tag')
 
         self.id = xmcda.get('id')
-        self.value = unmarshal(xmcda.getchildren()[0])
+        self.value = unmarshal(list(xmcda)[0])
 
 class Thresholds(McdaDict):
 
@@ -1692,7 +1692,7 @@ class Thresholds(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('threshold')
+        tag_list = xmcda.iter('threshold')
         for tag in tag_list:
             t = Threshold(None)
             t.from_xmcda(tag)
@@ -1732,7 +1732,7 @@ class Threshold(McdaObject):
 
         self.id = xmcda.get('id')
         self.name = xmcda.get('name')
-        values = xmcda.getchildren()[0]
+        values = list(xmcda)[0]
         if values.tag == 'constant':
             c = Constant(None, 0)
             c.from_xmcda(values)
@@ -1775,7 +1775,7 @@ class Categories(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('category')
+        tag_list = xmcda.iter('category')
         for tag in tag_list:
             c = Category()
             c.from_xmcda(tag)
@@ -1858,7 +1858,7 @@ class Category(McdaObject):
                 self.disabled = False
 
         rank = xmcda.find('.//rank')
-        self.rank = unmarshal(rank.getchildren()[0])
+        self.rank = unmarshal(list(rank)[0])
 
         return self
 
@@ -1959,7 +1959,7 @@ class CategoriesProfiles(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('categoryProfile')
+        tag_list = xmcda.iter('categoryProfile')
         for tag in tag_list:
             catp = CategoryProfile().from_xmcda(tag)
             self.append(catp)
@@ -2073,7 +2073,7 @@ class AlternativesAssignments(McdaDict):
 
         self.id = xmcda.get('id')
 
-        tag_list = xmcda.getiterator('alternativeAffectation')
+        tag_list = xmcda.iter('alternativeAffectation')
         for tag in tag_list:
             aa = AlternativeAssignment()
             aa.from_xmcda(tag)
