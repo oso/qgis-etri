@@ -181,7 +181,7 @@ def render_decision_map_new(layer, nprofils):
     nclasses = nprofils + 1
     for i in range(1, nclasses + 1):
         s = QgsSymbol.defaultSymbol(layer.geometryType())
-        color = QColor(0, 255 - 220 * i / nclasses, 0)
+        color = QColor(0, 255 - int(220 * i / nclasses), 0)
         s.setColor(color)
         cat_list.append(QgsRendererCategory(i, s, "Category %d" % i))
 
