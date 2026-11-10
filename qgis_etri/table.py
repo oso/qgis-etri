@@ -1,5 +1,5 @@
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtGui import QRegExpValidator
+from qgis.PyQt.QtGui import QRegularExpressionValidator
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
 from collections import OrderedDict
 from qgis_etri.mcda.types import Criteria, Criterion, Constant
@@ -20,8 +20,8 @@ class float_delegate(QItemDelegate):
     def createEditor(self, parent, option, index):
         if self.columns == None or index.column() in self.columns:
             line = QLineEdit(parent)
-            expr = QtCore.QRegExp("[0-9]*\.?[0-9]*")
-            line.setValidator(QRegExpValidator(expr, self))
+            expr = QtCore.QRegularExpression(r"[0-9]*\.?[0-9]*")
+            line.setValidator(QRegularExpressionValidator(expr, self))
             return line
         else:
             QItemDelegate.createEditor(self, parent, option, index)
