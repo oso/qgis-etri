@@ -130,16 +130,12 @@ class qt_criteria_table(QTableWidget):
         self.criterion_state_changed.emit(c)
 
     def __add_combo_signal(self, combo, row):
-        smapper = QtCore.QSignalMapper(self)
-        combo.currentIndexChanged.connect(smapper.map)
-        smapper.setMapping(combo, row)
-        smapper.mapped.connect(self.__on_criterion_direction_changed)
+        combo.currentIndexChanged.connect(
+            lambda _index, row=row: self.__on_criterion_direction_changed(row))
 
     def __add_cbox_signal(self, cbox, row):
-        smapper = QtCore.QSignalMapper(self)
-        cbox.stateChanged.connect(smapper.map)
-        smapper.setMapping(cbox, row)
-        smapper.mapped.connect(self.__on_criterion_state_changed)
+        cbox.stateChanged.connect(
+            lambda _state, row=row: self.__on_criterion_state_changed(row))
 
     def add_criterion(self, c, cv):
         row = self.rowCount()
