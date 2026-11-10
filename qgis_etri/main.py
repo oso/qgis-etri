@@ -264,7 +264,7 @@ class main_window(QDialog, Ui_main_window):
         if self.cbox_mrsort.isChecked():
             index = self.tab_thresholds.indexOf(self.tab_indiff)
             self.tab_thresholds.removeTab(index)
-            intex = self.tab_thresholds.indexOf(self.tab_pref)
+            index = self.tab_thresholds.indexOf(self.tab_pref)
             self.tab_thresholds.removeTab(index)
             self.table_indiff.remove_all()
             self.table_pref.remove_all()

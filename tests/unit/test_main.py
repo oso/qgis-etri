@@ -141,3 +141,26 @@ def test_load_xmcda_with_empty_veto(make_window):
     assert window.bpt.keys() == ['b1', 'b2']
     assert window.vpt is None
     assert window.cbox_noveto.isChecked()
+
+
+def threshold_tabs(window):
+    tabs = window.tab_thresholds
+    return [tabs.widget(i) for i in range(tabs.count())]
+
+
+def test_mrsort_and_veto_checkboxes_toggle_tabs(make_window):
+    window = make_window("ticino")
+    indiff, pref, veto = window.tab_indiff, window.tab_pref, window.tab_veto
+    assert threshold_tabs(window) == [indiff, pref, veto]
+
+    window.cbox_mrsort.setChecked(True)
+    assert threshold_tabs(window) == [veto]
+
+    window.cbox_noveto.setChecked(True)
+    assert threshold_tabs(window) == []
+
+    window.cbox_mrsort.setChecked(False)
+    assert threshold_tabs(window) == [indiff, pref]
+
+    window.cbox_noveto.setChecked(False)
+    assert threshold_tabs(window) == [indiff, pref, veto]
