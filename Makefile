@@ -1,5 +1,3 @@
-RSFILES :=	ui/resources_rc.py
-
 UIFILES :=	ui/main_window.ui
 UIFILES +=	ui/inference_results.ui
 
@@ -20,11 +18,15 @@ PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
 PKG_FILES +=	$(UIFILES)
-PKG_FILES +=	$(RSFILES)
 
 PKG_FILES +=	pysimplesoap/__init__.py
 PKG_FILES +=	pysimplesoap/client.py
 PKG_FILES +=	pysimplesoap/simplexml.py
+
+PKG_FILES +=	images/etri.png
+PKG_FILES +=	images/etri.svg
+PKG_FILES +=	images/min.svg
+PKG_FILES +=	images/plus.svg
 
 PKG_FILES +=	COPYING
 PKG_FILES +=	README
@@ -32,19 +34,16 @@ PKG_FILES +=	README
 QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 PLUGINNAME = qgis_etri
 
-MAKE_SUBDIR = $(MAKE) -C qgis_etri -e RSFILES="$(RSFILES)"
-
-all:
-	$(MAKE_SUBDIR) all
+all: zip
 
 clean:
 	find . -name '*.pyc' -exec rm --force {} +
 
 mrproper: clean
 	rm -f $(PLUGINNAME).zip
-	$(MAKE_SUBDIR) mrproper
 
-zip: all
+zip:
+	rm -f $(PLUGINNAME).zip
 	zip -9v $(PLUGINNAME).zip $(PKG_FILES:%=qgis_etri/%)
 
 link: uninstall
@@ -58,4 +57,4 @@ install: zip uninstall
 uninstall:
 	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
-.PHONY: all clean mrproper zip
+.PHONY: all clean mrproper zip link unlink install uninstall

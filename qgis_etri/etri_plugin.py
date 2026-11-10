@@ -3,7 +3,6 @@ from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import *
 
-import qgis_etri.ui.resources_rc
 import sys, os
 
 from qgis_etri.main import main_window
@@ -16,7 +15,7 @@ class etri_plugin(object):
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/etri/images/etri.png"), "Electre Tri Plugin", self.iface.mainWindow())
+        self.action = QAction(QIcon(os.path.join(os.path.dirname(__file__), "images", "etri.png")), "Electre Tri Plugin", self.iface.mainWindow())
         # connect the action to the run method
         self.action.triggered.connect(self.run)
         # Add toolbar button and menu item

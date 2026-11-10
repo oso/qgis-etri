@@ -414,8 +414,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
-            <normaloff>:/plugins/etri/images/plus.svg</normaloff>:/plugins/etri/images/plus.svg</iconset>
+           <iconset>
+            <normaloff>../images/plus.svg</normaloff>../images/plus.svg</iconset>
           </property>
          </widget>
         </item>
@@ -447,8 +447,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
-            <normaloff>:/plugins/etri/images/min.svg</normaloff>:/plugins/etri/images/min.svg</iconset>
+           <iconset>
+            <normaloff>../images/min.svg</normaloff>../images/min.svg</iconset>
           </property>
          </widget>
         </item>
@@ -590,8 +590,8 @@
         <string>Generate Decision Map</string>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/plugins/etri/images/etri.svg</normaloff>:/plugins/etri/images/etri.svg</iconset>
+        <iconset>
+         <normaloff>../images/etri.svg</normaloff>../images/etri.svg</iconset>
        </property>
       </widget>
      </item>
