@@ -973,4 +973,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = main_window(layer = layer)
     window.show()
-    app.exec_()
+    app.exec()

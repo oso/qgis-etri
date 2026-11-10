@@ -150,7 +150,7 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
     fileDialog.setAcceptMode(acceptmode)
     # this is the default value, it is just repeated to be more explicit
     fileDialog.setOption(QFileDialog.Option.DontConfirmOverwrite, False)
-    if not fileDialog.exec_() == QDialog.DialogCode.Accepted:
+    if not fileDialog.exec() == QDialog.DialogCode.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",

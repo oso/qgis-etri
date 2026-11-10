@@ -138,4 +138,4 @@ if __name__ == "__main__":
     dialog.setLayout(layout)
     dialog.resize(640, 480)
     dialog.show()
-    app.exec_()
+    app.exec()
