@@ -22,15 +22,15 @@ See COPYING for a version of the GPLv3 License
 
 Installation
 ------------
-steps 1 and 2 are optional and can be done only once before distributing the plugin archive
-1) build the plugin (python Qt tools required -> pip install PyQt5):
-     make
-2) generate the plugin package
+The plugin works with QGIS 3 (>= 3.38, Qt 5) and QGIS 4 (Qt 6). No build
+step is needed: the .ui files are loaded at runtime.
+
+1) generate the plugin package (optional, only needed to distribute it):
      make zip
-3) the generated zip file qgis_etri.zip can be distributed and installed in QGIS:
+2) the generated zip file qgis_etri.zip can be distributed and installed in QGIS:
    In the QGIS menu bar, go to: Plugins -> Manage and Install Plugins...
    In the dialog select the tab 'Install from ZIP' and choose the zip file
-4) After this step an icon should appear in the plugin bar.
+3) After this step an icon should appear in the plugin bar.
    To use it click on the icon and the ELECTRE-TRI window should
    appear...
 
@@ -44,9 +44,16 @@ There are also make recipes to build and install a local package
 and to remove an existing plugin
     make uninstall
 
+These recipes target the QGIS 3 profile directory by default. For QGIS 4, use:
+    make link QGISDIR=.local/share/QGIS/QGIS4/profiles/default
+
 Development hints
 -----------------
-Make UI changes in the ui files (ui/main_window.ui and ui/inference_results.ui), then rebuild th plugin via `make all`
+Make UI changes in the ui files (ui/main_window.ui and ui/inference_results.ui)
+with Qt Designer. They are loaded at runtime, so there is nothing to rebuild.
+Import Qt classes through qgis.PyQt (never PyQt5/PyQt6 directly) and use fully
+scoped enum names (e.g. Qt.AlignmentFlag.AlignRight) to stay compatible with
+both Qt 5 and Qt 6.
 
 Usage
 -----
