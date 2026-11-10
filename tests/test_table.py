@@ -191,7 +191,7 @@ if __name__ == "__main__":
         indif_table.add_threshold('q', 'q')
         pref_table.add_threshold('p', 'p')
         veto_table.add_threshold('v', 'v')
-        thresh_cbox.setCheckState(QtCore.Qt.Checked)
+        thresh_cbox.setCheckState(QtCore.Qt.CheckState.Checked)
     else:
         for i in range(1,len(b)+1):
             indi_thr = "q%d"% i

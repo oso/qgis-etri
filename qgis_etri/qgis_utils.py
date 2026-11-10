@@ -146,11 +146,11 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
     fileDialog = QgsEncodingFileDialog(parent, title, dirName,
                                        filtering, encode)
     fileDialog.setDefaultSuffix(extension)
-    fileDialog.setFileMode(QFileDialog.AnyFile)
+    fileDialog.setFileMode(QFileDialog.FileMode.AnyFile)
     fileDialog.setAcceptMode(acceptmode)
     # this is the default value, it is just repeated to be more explicit
-    fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
-    if not fileDialog.exec_() == QDialog.Accepted:
+    fileDialog.setOption(QFileDialog.Option.DontConfirmOverwrite, False)
+    if not fileDialog.exec_() == QDialog.DialogCode.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",
@@ -164,11 +164,11 @@ def addtocDialog(parent, filename, nprofils):
         parent,
         "Decision MAP layer created",
         "Would you like to add the new layer to the TOC?",
-        QMessageBox.Yes | QMessageBox.No,
-        QMessageBox.NoButton
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        QMessageBox.StandardButton.NoButton
     )
 
-    if addToTOC == QMessageBox.Yes:
+    if addToTOC == QMessageBox.StandardButton.Yes:
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         vlayer = QgsVectorLayer(filename, name, "ogr")

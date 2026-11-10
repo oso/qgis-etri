@@ -43,7 +43,7 @@ class main_window(QDialog, Ui_main_window):
         QDialog.__init__(self)
         Ui_main_window.__init__(self)
         self.setupUi(self)
-        self.setWindowFlags(QtCore.Qt.Window)
+        self.setWindowFlags(QtCore.Qt.WindowType.Window)
 
         self.iface = iface
 
@@ -62,14 +62,14 @@ class main_window(QDialog, Ui_main_window):
         val = QMessageBox.question(
             self, "ELECTRE TRI",
             "Close ELECTRE TRI?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
         )
-        if val == QMessageBox.No:
+        if val == QMessageBox.StandardButton.No:
             event.ignore()
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Escape:
+        if event.key() == QtCore.Qt.Key.Key_Escape:
             self.close()
 
     def __update_layer_list(self, map_canvas):
@@ -552,7 +552,7 @@ class main_window(QDialog, Ui_main_window):
 
         (f, encoding) = saveDialog(self, "Save output shapefile",
                                    "Shapefiles (*.shp)", "shp",
-                                   QFileDialog.AcceptSave)
+                                   QFileDialog.AcceptMode.AcceptSave)
         if f is None or encoding is None:
             return
 
@@ -584,7 +584,7 @@ class main_window(QDialog, Ui_main_window):
     def on_button_savexmcda_pressed(self):
         (f, encoding) = saveDialog(self, "Save MCDA model",
                                    "XMCDA files (*.xmcda)", "xmcda",
-                                   QFileDialog.AcceptSave)
+                                   QFileDialog.AcceptMode.AcceptSave)
         if f is None:
             return
 
@@ -615,7 +615,7 @@ class main_window(QDialog, Ui_main_window):
     def on_button_loadxmcda_pressed(self):
         (f, encoding) = saveDialog(self, "Load MCDA model",
                                    "XMCDA files (*.xmcda)", "xmcda",
-                                   QFileDialog.AcceptOpen)
+                                   QFileDialog.AcceptMode.AcceptOpen)
         if f is None:
             return
 
@@ -860,7 +860,7 @@ class main_window(QDialog, Ui_main_window):
         self.cancelbox = QMessageBox(self)
         self.cancelbox.setWindowTitle('Please wait...')
         self.cancelbox.setText('Press cancel to stop inference')
-        self.cancelbox.setStandardButtons(QMessageBox.Cancel)
+        self.cancelbox.setStandardButtons(QMessageBox.StandardButton.Cancel)
         self.cancelbox.setModal(True)
         self.cancelbox.buttonClicked.connect(self.on_cancelbox_button_clicked)
         self.cancelbox.show()

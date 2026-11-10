@@ -70,7 +70,7 @@ class qt_criteria_table(QTableWidget):
                                     "Invalid weight value")
                 item = QTableWidgetItem()
                 item.setText("0")
-                item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 self.setItem(row, COL_WEIGHT, item)
 
     def reset_table(self):
@@ -81,24 +81,24 @@ class qt_criteria_table(QTableWidget):
     def __add_headers(self):
         item = QTableWidgetItem()
         item.setText("Criterion")
-        item.setTextAlignment(QtCore.Qt.AlignLeft)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.setHorizontalHeaderItem(COL_NAME, item)
 
         item = QTableWidgetItem()
         item.setText("Direction")
-        item.setTextAlignment(QtCore.Qt.AlignLeft)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.setHorizontalHeaderItem(COL_DIRECTION, item)
 
         item = QTableWidgetItem()
         item.setText("Weight")
-        item.setTextAlignment(QtCore.Qt.AlignRight)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
         self.setHorizontalHeaderItem(COL_WEIGHT, item)
 
         self.setColumnWidth(COL_WEIGHT, 50)
 
         item = QTableWidgetItem()
         item.setText("Export")
-        item.setTextAlignment(QtCore.Qt.AlignRight)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
         self.setHorizontalHeaderItem(COL_EXPORT, item)
 
         self.setColumnWidth(COL_EXPORT, 50)
@@ -121,12 +121,12 @@ class qt_criteria_table(QTableWidget):
             c.disabled = False
             item_cv.setText("0")
             combo_dir.setDisabled(False)
-            item_cv.setFlags(item_cv.flags() | QtCore.Qt.ItemIsEnabled)
+            item_cv.setFlags(item_cv.flags() | QtCore.Qt.ItemFlag.ItemIsEnabled)
         else:
             c.disabled = True
             item_cv.setText("")
             combo_dir.setDisabled(True)
-            item_cv.setFlags(item_cv.flags() & ~QtCore.Qt.ItemIsEnabled)
+            item_cv.setFlags(item_cv.flags() & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
         self.criterion_state_changed.emit(c)
 
     def __add_combo_signal(self, combo, row):
@@ -145,12 +145,12 @@ class qt_criteria_table(QTableWidget):
 
         # Add first cell with name and checkbox
         item = QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsTristate)
+        item.setFlags(QtCore.Qt.ItemFlag.ItemIsAutoTristate)
         self.setItem(row, COL_NAME, item)
 
         cbox = QCheckBox(self)
         if c.disabled is not True:
-            cbox.setCheckState(QtCore.Qt.Checked)
+            cbox.setCheckState(QtCore.Qt.CheckState.Checked)
         if c.name:
             cbox.setText(c.name)
         else:
@@ -160,7 +160,7 @@ class qt_criteria_table(QTableWidget):
 
         # Add direction cell
         item = QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsTristate)
+        item.setFlags(QtCore.Qt.ItemFlag.ItemIsAutoTristate)
         self.setItem(row, COL_DIRECTION, item)
         combo = QComboBox(self)
         combo.addItem("Max")
@@ -174,23 +174,23 @@ class qt_criteria_table(QTableWidget):
 
         # Add weight column
         item = QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
         if c.disabled is True:
-            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEnabled)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
         else:
             item.setText(str(cv.value))
         self.setItem(row, COL_WEIGHT, item)
 
         # Add export check box
         item = QTableWidgetItem()
-        # item.setFlags(QtCore.Qt.ItemIsTristate)
+        # item.setFlags(QtCore.Qt.ItemFlag.ItemIsAutoTristate)
         self.setItem(row, COL_EXPORT, item)
 
         cbox = QCheckBox(self)
-        # item.setFlags(QtCore.Qt.ItemIsTristate)
+        # item.setFlags(QtCore.Qt.ItemFlag.ItemIsAutoTristate)
         # cbox.setTristate(False)
-        cbox.setCheckState(QtCore.Qt.Checked)
-        cbox.setLayoutDirection(QtCore.Qt.RightToLeft)
+        cbox.setCheckState(QtCore.Qt.CheckState.Checked)
+        cbox.setLayoutDirection(QtCore.Qt.LayoutDirection.RightToLeft)
         self.setCellWidget(row, COL_EXPORT, cbox)
 
     def add_criteria(self, cs, cvs):
@@ -332,7 +332,7 @@ class qt_performance_table(QTableWidget):
         self.horizontalHeaderItem(col).setText('Category')
         for aa in assignments:
             item = QTableWidgetItem()
-            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             item.setText(str(aa.category_id))
             row = self.__get_alternative_row_by_id(aa.id)
             if category_colors is not None:
@@ -377,7 +377,7 @@ class qt_performance_table(QTableWidget):
                performances[crit.id] is not None:
                  item.setText(str(performances[crit.id]))
             if editable is False:
-                 item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+                 item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.setItem(row, col, item)
         self.row_altp.append(alt_perfs)
 
