@@ -171,26 +171,14 @@ class main_window(QDialog, Ui_main_window):
         self.cat_profiles = generate_categories_profiles(self.categories)
 
     def __generate_initial_model(self):
-        crit_min = {}
-        crit_max = {}
-        for altp in self.pt:
-            for crit in self.criteria:
-                d = crit.direction
-                if (crit.id in crit_min) is False:
-                    crit_min[crit.id] = altp.performances[crit.id]
-                elif crit_min[crit.id]*d > altp(crit.id)*d:
-                    crit_min[crit.id] = altp.performances[crit.id]
-
-                if (crit.id in crit_max) is False:
-                    crit_max[crit.id] = altp.performances[crit.id]
-                elif crit_max[crit.id]*d < altp(crit.id)*d:
-                    crit_max[crit.id] = altp.performances[crit.id]
+        # Put the profile in the middle of the range of each criterion
+        mins = self.pt.get_min().performances
+        maxs = self.pt.get_max().performances
 
         self.cv = CriteriaValues()
         b1 = AlternativePerformances('b1', {})
         for crit in self.criteria:
-            b1.performances[crit.id] = (crit_max[crit.id]
-                                        - crit_min[crit.id]) / 2
+            b1.performances[crit.id] = (mins[crit.id] + maxs[crit.id]) / 2
             cv = CriterionValue(crit.id, 1)
             self.cv.append(cv)
 
