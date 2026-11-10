@@ -698,7 +698,7 @@ class PerformanceTable(McdaDict):
         """
 
         if cids is None:
-            cids = next(self._d.values()).performances.keys()
+            cids = next(self.itervalues()).performances.keys()
 
         for ap in self._d.values():
             ap.round(k, cids)
@@ -714,7 +714,7 @@ class PerformanceTable(McdaDict):
         """
 
         if cids is None:
-            cids = next(self._d.values()).performances.keys()
+            cids = next(self.itervalues()).performances.keys()
 
         for ap in self._d.values():
             ap.multiply(value, cids)

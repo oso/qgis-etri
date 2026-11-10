@@ -318,7 +318,7 @@ class main_window(QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.values())
+            bp = next(pt.itervalues())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -336,7 +336,7 @@ class main_window(QDialog, Ui_main_window):
         table.remove_all()
 
         if pt and len(pt) > 0:
-            bp = next(pt.values())
+            bp = next(pt.itervalues())
         else:
             bp = AlternativePerformances('b', {c.id: None \
                                                for c in self.criteria})
@@ -518,8 +518,8 @@ class main_window(QDialog, Ui_main_window):
                 qpt = PerformanceTable(id = 'q')
                 ppt = PerformanceTable(id = 'p')
                 for i in range(len(self.bpt)):
-                    qp = next(self.qpt.values()).copy()
-                    pp = next(self.ppt.values()).copy()
+                    qp = next(self.qpt.itervalues()).copy()
+                    pp = next(self.ppt.itervalues()).copy()
                     name = "b%d" % (i + 1)
                     qp.id, pp.id = name, name
                     qpt.append(qp), ppt.append(pp)
@@ -530,7 +530,7 @@ class main_window(QDialog, Ui_main_window):
             if self.cbox_noveto.isChecked() is False:
                 vpt = PerformanceTable(id = 'v')
                 for i in range(len(self.bpt)):
-                    vp = next(self.vpt.values()).copy()
+                    vp = next(self.vpt.itervalues()).copy()
                     vp.id = "b%d" % (i + 1)
                     vpt.append(vp)
             else:
