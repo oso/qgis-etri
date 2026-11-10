@@ -1,5 +1,4 @@
 UIFILES :=	ui/main_window.ui
-UIFILES +=	ui/inference_results.ui
 
 PKG_FILES +=	metadata.txt
 PKG_FILES +=	__init__.py
@@ -9,7 +8,6 @@ PKG_FILES +=	layer.py
 PKG_FILES +=	main.py
 PKG_FILES +=	qgis_utils.py
 PKG_FILES +=	table.py
-PKG_FILES +=	xmcda.py
 
 PKG_FILES +=	mcda/__init__.py
 PKG_FILES +=	mcda/electre_tri.py
@@ -18,10 +16,6 @@ PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
 PKG_FILES +=	$(UIFILES)
-
-PKG_FILES +=	pysimplesoap/__init__.py
-PKG_FILES +=	pysimplesoap/client.py
-PKG_FILES +=	pysimplesoap/simplexml.py
 
 PKG_FILES +=	images/etri.png
 PKG_FILES +=	images/etri.svg

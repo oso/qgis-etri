@@ -1,40 +1,25 @@
 import os, sys, traceback
 from xml.etree import ElementTree
-from qgis.core import QgsCoordinateTransform, QgsProject
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QMessageBox
 from itertools import product
-from qgis_etri.ui import Ui_main_window, Ui_inference_results
+from qgis_etri.ui import Ui_main_window
 from qgis_etri.layer import criteria_layer
 from qgis_etri.mcda.electre_tri import ElectreTri
 from qgis_etri.mcda.types import Criteria, CriteriaValues, CriterionValue
 from qgis_etri.mcda.types import PerformanceTable, Alternatives
 from qgis_etri.mcda.types import Alternative, AlternativePerformances
-from qgis_etri.mcda.types import AlternativeAssignment, AlternativesAssignments
 from qgis_etri.mcda.types import Thresholds, Threshold
 from qgis_etri.mcda.generate import generate_categories
 from qgis_etri.mcda.generate import generate_categories_profiles
 from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from qgis_etri.graphic import QGraphicsSceneEtri
-from qgis_etri.xmcda import submit_problem, request_solution
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
-XMCDA_ETRIBMINFERENCE_URL = 'http://webservices.decision-deck.org/soap/ElectreTriBMInference-PyXMCDA.py'
 
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
-
-COMBO_INFERENCE_GLOBAL = 0
-COMBO_INFERENCE_PROFILES = 1
-COMBO_INFERENCE_WEIGHTS = 2
-
-class InferenceDialog(QDialog, Ui_inference_results):
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.setupUi(self)
 
 class main_window(QDialog, Ui_main_window):
 
@@ -52,8 +37,6 @@ class main_window(QDialog, Ui_main_window):
             self.layer = criteria_layer(layer)
             self.__loadlayer()
             self.__reset_buttons()
-            self.button_show.setVisible(False)
-            self.button_zoom.setVisible(False)
 
         self.table_criteria.criterion_state_changed.connect(self.__criterion_state_changed)
 
@@ -229,9 +212,6 @@ class main_window(QDialog, Ui_main_window):
         try:
             self.layer = criteria_layer(map_canvas.layer(index))
             self.__clear_tables()
-            self.button_zoom.setEnabled(False)
-            self.button_show.setEnabled(False)
-            self.button_infer.setEnabled(False)
             self.__loadlayer()
             self.__reset_buttons()
         except:
@@ -246,7 +226,6 @@ class main_window(QDialog, Ui_main_window):
         self.table_indiff.reset_table()
         self.table_pref.reset_table()
         self.table_veto.reset_table()
-        self.table_refs.reset_table()
 
     def same_pqv_thresholds_for_all_profiles(self):
         if self.ppt is not None:
@@ -435,12 +414,8 @@ class main_window(QDialog, Ui_main_window):
         self.button_add_profile.setEnabled(True)
         self.button_del_profile.setEnabled(True)
         self.button_generate.setEnabled(True)
-        self.button_chooseassign.setEnabled(True)
         self.button_loadxmcda.setEnabled(True)
         self.button_savexmcda.setEnabled(True)
-        self.button_infer.setEnabled(False)
-        self.button_zoom.setEnabled(False)
-        self.button_show.setEnabled(False)
 
     def __criterion_state_changed(self, criterion):
         self.table_prof.disable_criterion(criterion)
@@ -627,268 +602,7 @@ class main_window(QDialog, Ui_main_window):
             return
 
         self.__clear_tables()
-        self.button_zoom.setEnabled(False)
-        self.button_show.setEnabled(False)
-        self.button_infer.setEnabled(False)
         self.__fill_model_tables()
-
-    @staticmethod
-    def generate_category_colors(ncat):
-        return {
-            str(i): QColor(0, 255 - int(220 * i / ncat), 0)
-            for i in range(1, ncat+1)
-        }
-
-    def __generate_category_colors(self):
-        ncat = len(self.bpt) + 1
-        self.category_colors = self.generate_category_colors(ncat)
-
-    def on_button_chooseassign_pressed(self):
-        items = [c.id for c in self.criteria if c.disabled is True]
-        if len(items) < 1:
-            QMessageBox.information(None, "Error",
-                                          "No assignment column")
-            return
-
-        item, ok = QInputDialog.getItem(self,
-                                        "Select assignments column",
-                                        "Column:", items, 0, False)
-        if ok is False:
-            return
-
-        try:
-            cid = item.toString()
-        except:
-            cid = str(item)
-
-        ncat = len(self.bpt) + 1
-        pt, aa = PerformanceTable(), AlternativesAssignments()
-        for ap in self.pt:
-            perf = int(ap.performances[cid])
-            if perf > 0 and perf < (ncat + 1):
-                pt.append(ap)
-                aa.append(AlternativeAssignment(ap.id, str(perf)))
-
-        if len(pt) < 1:
-            QMessageBox.information(None, "Error",
-                                    "No assignments examples found")
-            return
-
-        self.a_ref = Alternatives([Alternative(a.id) for a in aa])
-        self.pt_ref = pt
-        self.aa_ref = aa
-
-        a = Alternatives([Alternative(aid) for aid in pt.keys()])
-
-        self.table_refs.reset_table()
-
-        self.table_refs.add_criteria(self.criteria)
-        self.table_refs.add_pt(a, pt, False)
-        self.__generate_category_colors()
-        self.table_refs.add_assignments(aa, self.category_colors, True)
-
-        self.button_zoom.setEnabled(True)
-        self.button_show.setEnabled(True)
-
-        self.button_infer.setEnabled(True)
-
-    def __parse_xmcda_object(self, xmcda, tag, object_type):
-        e = ElementTree.fromstring(str(xmcda))
-        t = ElementTree.ElementTree(e)
-        return object_type().from_xmcda(t.find(".//%s" % tag))
-
-    def __parse_xmcda_lambda(self, xmcda):
-        e = ElementTree.fromstring(str(xmcda))
-        t = ElementTree.ElementTree(e)
-        value = t.find('.//methodParameters/parameter/value/real')
-        return float(value.text)
-
-    def on_model_learned_accepted(self):
-        for cid, cv in self.cv_learned.items():
-            self.cv[cid].value = cv.value
-        for bid, bp in self.bpt.items():
-            bp.performances.update(self.bpt_learned[bid].performances)
-        self.lbda = self.lbda_learned
-
-        self.__clear_tables()
-        self.button_zoom.setEnabled(False)
-        self.button_show.setEnabled(False)
-        self.button_infer.setEnabled(False)
-        self.__fill_model_tables()
-        self.cbox_samethresholds.setChecked(True)
-        self.cbox_mrsort.setChecked(True)
-        self.cbox_noveto.setChecked(True)
-
-    def __show_model_learned(self, cv, bpt, lbda, a):
-        dialog = InferenceDialog(self)
-        dialog.setModal(True)
-        self.accepted.connect(self.on_model_learned_accepted)
-        dialog.show()
-
-        model = ElectreTri(self.criteria, cv, bpt, lbda, self.cat_profiles)
-        worst = self.pt.get_worst(self.criteria)
-        best = self.pt.get_best(self.criteria)
-        criteria_order = [c.id for c in self.criteria]
-        graph = QGraphicsSceneEtri(model, worst, best,
-                                   self.graph_plot.size(),
-                                   criteria_order)
-        dialog.graph_model.setScene(graph)
-        dialog.label_lambda.setText("Lambda: %s" % str(lbda))
-
-        a_incomp = Alternatives([aref for aref in self.a_ref
-                                 if aref.id not in a.keys()])
-        pt_incomp = PerformanceTable([ap for ap in self.pt_ref
-                                      if ap.id in a_incomp.keys()])
-        pt_comp = PerformanceTable([ap for ap in self.pt_ref
-                                    if ap.id in a.keys()])
-
-        dialog.table_comp.add_criteria(self.criteria)
-        dialog.table_comp.add_pt(a, pt_comp)
-        dialog.table_incomp.add_criteria(self.criteria)
-        dialog.table_incomp.add_pt(a_incomp, pt_incomp)
-
-    def on_inference_thread_finished(self, completed):
-        try:
-            self.cancelbox.close()
-        except:
-            pass
-
-        if completed is False:
-            return
-
-        solution = self.inference_thread.solution
-
-        try:
-            msg = str(solution.messages)
-        except:
-            QMessageBox.information(None, "Error",
-                                    "Invalid reply received, "
-                                    "nothing received!")
-            return
-
-        xmcda_msg = ElementTree.ElementTree(ElementTree.fromstring(msg))
-        if xmcda_msg.find(".//methodMessages") is None:
-            QMessageBox.information(None, "Error",
-                                    "Invalid reply received")
-            return
-
-        error = xmcda_msg.find(".//methodMessages/errorMessage/text")
-        if error is not None:
-            QMessageBox.information(None, "Error",
-                                    "Webservice replied:\n" +
-                                    error.text)
-            return
-
-
-        try:
-            cv = self.__parse_xmcda_object(solution.crit_weights,
-                                           "criteriaValues",
-                                           CriteriaValues)
-            bpt = self.__parse_xmcda_object(solution.reference_alts,
-                                            "performanceTable",
-                                            PerformanceTable)
-            lbda = self.__parse_xmcda_lambda(getattr(solution, 'lambda'))
-            a = self.__parse_xmcda_object(solution.compatible_alts,
-                                          "alternatives", Alternatives)
-        except:
-            QMessageBox.information(None, "Error",
-                                    "Cannot parse reply")
-            return
-
-        self.cv_learned = cv
-        self.bpt_learned = bpt
-        self.lbda_learned = lbda
-
-        self.__show_model_learned(cv, bpt, lbda, a)
-
-    def on_cancelbox_button_clicked(self, button):
-        self.inference_thread.stop()
-
-    def __xmcda_input(self, obj):
-        xmcda = ElementTree.Element("{%s}XMCDA" % XMCDA_URL)
-        xmcda.append(obj)
-        return ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
-
-    def __save_xmcda_files(self, xmcda):
-        for name, xm in xmcda.items():
-            f = open("/tmp/%s.xml" % name, "wb")
-            f.write(xm)
-            f.close()
-
-    def __generate_xmcda_input(self):
-        # This ugly part is needed for the old version of the webservice
-        # that doesn't handle correctly deactivated criteria
-        criteria = self.criteria.get_active()
-        pt_ref = self.pt_ref.copy()
-        bpt = self.bpt.copy()
-        for ap in pt_ref:
-            for crit, value in list(ap.performances.items()):
-                if crit not in criteria.keys():
-                    del ap.performances[crit]
-        for ap in bpt:
-            for crit, value in list(ap.performances.items()):
-                if crit not in criteria.keys():
-                    del ap.performances[crit]
-
-        xmcda = {}
-        xmcda['alternatives'] = self.__xmcda_input(self.a_ref.to_xmcda())
-        xmcda['criteria'] = self.__xmcda_input(criteria.to_xmcda())
-        xmcda['categories'] = self.__xmcda_input(self.categories.to_xmcda())
-        xmcda['perfs_table'] = self.__xmcda_input(pt_ref.to_xmcda())
-        xmcda['assign'] = self.__xmcda_input(self.aa_ref.to_xmcda())
-        self.__save_xmcda_files(xmcda)
-
-        index = self.combo_inference.currentIndex()
-        if index == COMBO_INFERENCE_PROFILES:
-            lbda = self.spinbox_cutlevel.value()
-            xmcda['crit_weights'] = self.cv.to_xmcda()
-            xmcda['lambda'] = self.lambda_to_xmcda(lbda)
-        elif index == COMBO_INFERENCE_WEIGHTS:
-            xmcda['cat_profiles'] = self.cat_profiles.to_xmcda()
-            xmcda['reference_alts'] = bpt.to_xmcda()
-
-        return xmcda
-
-    def on_button_infer_pressed(self):
-        xmcda = self.__generate_xmcda_input()
-
-        self.inference_thread = InferenceThread(xmcda, self)
-        self.inference_thread.run_finished.connect(self.on_inference_thread_finished)
-        self.inference_thread.start()
-
-        self.cancelbox = QMessageBox(self)
-        self.cancelbox.setWindowTitle('Please wait...')
-        self.cancelbox.setText('Press cancel to stop inference')
-        self.cancelbox.setStandardButtons(QMessageBox.StandardButton.Cancel)
-        self.cancelbox.setModal(True)
-        self.cancelbox.buttonClicked.connect(self.on_cancelbox_button_clicked)
-        self.cancelbox.show()
-
-    def on_button_zoom_pressed(self):
-        if len(self.a_ref) < 1:
-            return
-
-        features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.selectByIds(features)
-        mc = self.iface.mapCanvas()
-        rect = self.layer.layer.boundingBoxOfSelected()
-        rect.scale(2)
-        if self.layer.layer.sourceCrs() != QgsProject.instance().crs():
-            transformation = QgsCoordinateTransform(
-                self.layer.layer.sourceCrs(),
-                QgsProject.instance().crs(),
-                QgsProject.instance()
-            )
-            rect = transformation.transform(rect)
-        mc.setExtent(rect)
-        mc.refresh()
-
-    def on_button_show_pressed(self):
-        if len(self.a_ref) < 1:
-            return
-
-        features = self.layer.get_features_ids(self.a_ref.keys())
-        self.layer.layer.selectByIds(features)
 
     def on_button_select_all_pressed(self):
         self.table_criteria.set_all_criteria(True)
@@ -903,50 +617,6 @@ class main_window(QDialog, Ui_main_window):
         self.table_criteria.enable_export_fields(
             self.cbox_allfields.isChecked())
 
-
-class InferenceThread(QtCore.QThread):
-
-    run_finished = QtCore.pyqtSignal(bool)
-
-    def __init__(self, xmcda_input, parent = None):
-        super(InferenceThread, self).__init__(parent)
-        self.stopped = False
-        self.mutex = QtCore.QMutex()
-        self.completed = False
-        self.xmcda_input = xmcda_input
-
-    def stop(self):
-        try:
-            self.mutex.lock()
-            self.stopped = True
-        finally:
-            self.mutex.unlock()
-
-    def is_stopped(self):
-        try:
-            self.mutex.lock()
-            return self.stopped
-        finally:
-            self.mutex.unlock()
-
-    def run(self):
-        ticket = submit_problem(XMCDA_ETRIBMINFERENCE_URL,
-                                self.xmcda_input)
-        while True:
-            solution = request_solution(XMCDA_ETRIBMINFERENCE_URL,
-                                        ticket, 0)
-            if self.is_stopped():
-                break
-
-            if solution:
-                self.solution = solution
-                self.completed = True
-                break
-
-            time.sleep(1)
-
-        self.stop()
-        self.run_finished.emit(self.completed)
 
 if __name__ == "__main__":
     import sys

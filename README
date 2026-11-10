@@ -49,7 +49,7 @@ These recipes target the QGIS 3 profile directory by default. For QGIS 4, use:
 
 Development hints
 -----------------
-Make UI changes in the ui files (ui/main_window.ui and ui/inference_results.ui)
+Make UI changes in the ui file (ui/main_window.ui)
 with Qt Designer. They are loaded at runtime, so there is nothing to rebuild.
 Import Qt classes through qgis.PyQt (never PyQt5/PyQt6 directly) and use fully
 scoped enum names (e.g. Qt.AlignmentFlag.AlignRight) to stay compatible with
