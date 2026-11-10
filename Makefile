@@ -19,7 +19,7 @@ PKG_FILES +=	mcda/generate.py
 PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
-PKG_FILES +=	$(UIFILES:%.ui=%.py)
+PKG_FILES +=	$(UIFILES)
 PKG_FILES +=	$(RSFILES)
 
 PKG_FILES +=	pysimplesoap/__init__.py
@@ -32,7 +32,7 @@ PKG_FILES +=	README
 QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 PLUGINNAME = qgis_etri
 
-MAKE_SUBDIR = $(MAKE) -C qgis_etri -e RSFILES="$(RSFILES)" -e UIFILES="$(UIFILES)"
+MAKE_SUBDIR = $(MAKE) -C qgis_etri -e RSFILES="$(RSFILES)"
 
 all:
 	$(MAKE_SUBDIR) all

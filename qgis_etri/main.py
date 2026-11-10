@@ -5,8 +5,7 @@ from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QMessageBox
 from itertools import product
-from qgis_etri.ui.main_window import Ui_main_window
-from qgis_etri.ui.inference_results import Ui_inference_results
+from qgis_etri.ui import Ui_main_window, Ui_inference_results
 from qgis_etri.layer import criteria_layer
 from qgis_etri.mcda.electre_tri import ElectreTri
 from qgis_etri.mcda.types import Criteria, CriteriaValues, CriterionValue
