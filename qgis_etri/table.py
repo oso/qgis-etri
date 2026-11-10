@@ -11,6 +11,15 @@ COL_DIRECTION = 1
 COL_WEIGHT = 2
 COL_EXPORT = 3
 
+def _parse_number(text):
+    """Parse a number typed in a table cell, as an int when possible.
+
+    Raises ValueError if text is not a number."""
+    try:
+        return int(text)
+    except ValueError:
+        return float(text)
+
 class float_delegate(QItemDelegate):
 
     def __init__(self, parent=None, columns=None):
@@ -48,30 +57,31 @@ class qt_criteria_table(QTableWidget):
         self.setItemDelegate(float_delegate(self, [COL_WEIGHT]))
 
     def __cell_changed(self, row, col):
-        if col == COL_WEIGHT:
-            if (row in self.row_crit) is False:
-                return
+        if col != COL_WEIGHT or row not in self.row_crit:
+            return
 
-            c, cv = self.row_crit[row]
-            item = self.cellWidget(row, col)
-            if item is None:
-                return
+        c, cv = self.row_crit[row]
+        item = self.item(row, col)
+        if item is None:
+            return
 
-            try:
-                value = str(item.text())
-                if value.find('.') == -1:
-                    cv.value = int(value)
-                else:
-                    cv.value = float(value)
-            except:
-                QMessageBox.warning(self,
-                                    "Criterion [%s] %s"
-                                    % (c.id, c.name),
-                                    "Invalid weight value")
-                item = QTableWidgetItem()
-                item.setText("0")
-                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-                self.setItem(row, COL_WEIGHT, item)
+        value = item.text()
+        if value == '':
+            # The weight cell of a disabled criterion is emptied, keep
+            # its weight. For an active criterion, an empty cell means 0.
+            if not c.disabled:
+                cv.value = 0
+            return
+
+        try:
+            cv.value = _parse_number(value)
+        except ValueError:
+            QMessageBox.warning(self,
+                                "Criterion [%s] %s"
+                                % (c.id, c.name),
+                                "Invalid weight value")
+            # Emits cellChanged again, which sets the weight to 0
+            item.setText("0")
 
     def reset_table(self):
         self.clearContents()
@@ -402,20 +412,18 @@ class qt_performance_table(QTableWidget):
         altp = self.row_altp[row]
         crit = self.col_crit[col]
 
-        item = self.cellWidget(row, col)
-        if item == None:
+        item = self.item(row, col)
+        if item is None:
+            return
+
+        value = item.text()
+        if value == '' and self.allownovalue:
+            altp.performances[crit.id] = None
             return
 
         try:
-            value = str(item.text())
-            if len(value) == 0 and self.allownovalue:
-                return
-
-            if value.find('.') == -1:
-               altp.performances[crit.id] = int(value)
-            else:
-               altp.performances[crit.id] = float(value)
-        except:
+            altp.performances[crit.id] = _parse_number(value)
+        except ValueError:
             QMessageBox.warning(self,
                                 "Alternative [%s] %s"
                                 % (alt.id, alt.name),
@@ -502,20 +510,18 @@ class qt_threshold_table(QTableWidget):
 
         threshold = thresholds[threshold_id]
 
-        item = self.cellWidget(row, col)
+        item = self.item(row, col)
         if item is None:
             return
 
         # FIXME: Handle other types than constant
         try:
-            value = str(item.text())
+            value = item.text()
             if value == '':
                 threshold.values.value = None
-            elif value.find('.') == -1:
-                threshold.values.value = int(value)
             else:
-                threshold.values.value = float(value)
-        except:
+                threshold.values.value = _parse_number(value)
+        except ValueError:
             QMessageBox.warning(self,
                                 "Criterion [%s] %s"
                                 % (crit.id, crit.name),

@@ -51,4 +51,7 @@ install: zip uninstall
 uninstall:
 	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
-.PHONY: all clean mrproper zip link unlink install uninstall
+test:
+	python -m pytest
+
+.PHONY: all clean mrproper zip link unlink install uninstall test
