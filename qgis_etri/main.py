@@ -636,7 +636,7 @@ class main_window(QDialog, Ui_main_window):
     @staticmethod
     def generate_category_colors(ncat):
         return {
-            str(i): QColor(0, 255 - 220 * i / ncat, 0)
+            str(i): QColor(0, 255 - int(220 * i / ncat), 0)
             for i in range(1, ncat+1)
         }
 
