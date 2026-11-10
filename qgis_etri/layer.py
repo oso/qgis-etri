@@ -1,4 +1,4 @@
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import QgsVectorLayer
 from qgis_etri.mcda.types import Criteria, Criterion, Alternative, Alternatives
@@ -21,9 +21,8 @@ class criteria_layer(QgsVectorLayer):
 
         for field in fields:
             ftype = field.type()
-            if (ftype != QVariant.Bool) and (ftype != QVariant.Double) \
-                                        and (ftype != QVariant.Int) \
-                                        and (ftype != QVariant.LongLong):
+            if ftype not in (QMetaType.Type.Bool, QMetaType.Type.Double,
+                             QMetaType.Type.Int, QMetaType.Type.LongLong):
                 continue
 
             name = str(field.name())

@@ -102,7 +102,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
     vprovider = layer_in.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
-    fields.append(QgsField("Category", QtCore.QVariant.Int))
+    fields.append(QgsField("Category", QtCore.QMetaType.Type.Int))
     for field in layer_in.fields():
         if field.name() in export_source_fields:
             fields.append(field)
