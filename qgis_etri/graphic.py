@@ -236,7 +236,7 @@ class QGraphicsSceneEtri(QGraphicsScene):
             else:
                 lower = self.profiles_items[self.model.profiles[i - 1]]
             if i == len(self.model.profiles):
-                lower = self.profiles_items['best']
+                upper = self.profiles_items['best']
             else:
                 upper = self.profiles_items[self.model.profiles[i]]
 
