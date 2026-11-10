@@ -268,7 +268,7 @@ class main_window(QDialog, Ui_main_window):
         return True
 
     def on_cbox_noveto_stateChanged(self, state):
-        if state == QtCore.Qt.Checked:
+        if self.cbox_noveto.isChecked():
             index = self.tab_thresholds.indexOf(self.tab_veto)
             self.tab_thresholds.removeTab(index)
             self.table_veto.remove_all()
@@ -285,7 +285,7 @@ class main_window(QDialog, Ui_main_window):
                                                    self.table_veto)
 
     def on_cbox_mrsort_stateChanged(self, state):
-        if state == QtCore.Qt.Checked:
+        if self.cbox_mrsort.isChecked():
             index = self.tab_thresholds.indexOf(self.tab_indiff)
             self.tab_thresholds.removeTab(index)
             intex = self.tab_thresholds.indexOf(self.tab_pref)
@@ -351,7 +351,7 @@ class main_window(QDialog, Ui_main_window):
         table.add_pt(self.balternatives, pt)
 
     def on_cbox_samethresholds_stateChanged(self, state):
-        if state == QtCore.Qt.Checked:
+        if self.cbox_samethresholds.isChecked():
             self.set_same_threshold_for_all_profiles(self.qpt,
                                                      self.table_indiff)
             self.set_same_threshold_for_all_profiles(self.ppt,
@@ -901,7 +901,8 @@ class main_window(QDialog, Ui_main_window):
         self.table_criteria.clone_selection()
 
     def on_cbox_allfields_stateChanged(self, state):
-        self.table_criteria.enable_export_fields(state)
+        self.table_criteria.enable_export_fields(
+            self.cbox_allfields.isChecked())
 
 
 class InferenceThread(QtCore.QThread):
