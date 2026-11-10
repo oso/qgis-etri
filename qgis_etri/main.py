@@ -144,11 +144,21 @@ class main_window(QDialog, Ui_main_window):
                 vpt = PerformanceTable(id = 'v')
                 vpt.from_xmcda(xmcda)
 
-        if qpt is not None and len(qpt) == 0 and len(ppt) > 0:
+        # An empty threshold table is the same as a missing one
+        if qpt is not None and len(qpt) == 0:
+            qpt = None
+        if ppt is not None and len(ppt) == 0:
+            ppt = None
+        if vpt is not None and len(vpt) == 0:
+            vpt = None
+
+        # The indifference and preference thresholds are enabled or
+        # disabled together (MR-Sort checkbox). If only one of them is
+        # given, use the same values for the other one.
+        if qpt is None and ppt is not None:
             qpt = ppt.copy()
             qpt.id = "q"
-
-        if ppt is not None and len(ppt) == 0 and len(qpt) > 0:
+        elif ppt is None and qpt is not None:
             ppt = qpt.copy()
             ppt.id = "p"
 

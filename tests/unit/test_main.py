@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 
 import pytest
@@ -78,3 +79,65 @@ def test_delete_profile_with_one_threshold_per_profile(make_window, mrsort):
         assert window.qpt.keys() == window.ppt.keys() == ['b1']
         assert window.table_indiff.rowCount() == 1
         assert window.table_pref.rowCount() == 1
+
+
+def ticino_xmcda(**tables):
+    """Return the Ticino model, with the threshold tables given as
+    keyword arguments ('q', 'p' or 'v') removed (None) or emptied ('')."""
+    with open(os.path.join(DATA_DIR, "ticino", "criteria.xmcda")) as f:
+        xmcda = f.read()
+    for tid, content in tables.items():
+        pattern = r'<performanceTable id="%s">.*?</performanceTable>' % tid
+        if content is None:
+            replacement = ''
+        else:
+            replacement = ('<performanceTable id="%s">%s</performanceTable>'
+                           % (tid, content))
+        xmcda, n = re.subn(pattern, replacement, xmcda)
+        assert n == 1
+    return xmcda
+
+
+def test_load_xmcda(make_window):
+    window = make_window("ticino")
+
+    assert window.bpt.keys() == ['b1', 'b2']
+    assert window.qpt.keys() == window.ppt.keys() == window.vpt.keys() \
+        == ['b']
+    assert not window.cbox_mrsort.isChecked()
+    assert not window.cbox_noveto.isChecked()
+
+
+@pytest.mark.parametrize("tables", [
+    {'q': '', 'p': None},
+    {'q': None, 'p': ''},
+    {'q': '', 'p': ''},
+    {'q': None, 'p': None},
+])
+def test_load_xmcda_without_q_and_p(make_window, tables):
+    window = make_window("ticino", ticino_xmcda(**tables))
+
+    # The model is loaded from the file, not generated
+    assert window.bpt.keys() == ['b1', 'b2']
+    assert window.qpt is None and window.ppt is None
+    assert window.cbox_mrsort.isChecked()
+
+
+@pytest.mark.parametrize("tables", [
+    {'q': ''}, {'q': None}, {'p': ''}, {'p': None},
+])
+def test_load_xmcda_with_only_q_or_p(make_window, tables):
+    window = make_window("ticino", ticino_xmcda(**tables))
+
+    assert window.bpt.keys() == ['b1', 'b2']
+    assert window.qpt.keys() == window.ppt.keys() == ['b']
+    assert window.qpt['b'].performances == window.ppt['b'].performances
+    assert not window.cbox_mrsort.isChecked()
+
+
+def test_load_xmcda_with_empty_veto(make_window):
+    window = make_window("ticino", ticino_xmcda(v=''))
+
+    assert window.bpt.keys() == ['b1', 'b2']
+    assert window.vpt is None
+    assert window.cbox_noveto.isChecked()
