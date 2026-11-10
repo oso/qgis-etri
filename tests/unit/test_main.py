@@ -53,3 +53,28 @@ def test_initial_profile_is_in_the_middle_of_the_range(make_window):
     for c in window.criteria:
         assert b1[c.id] == pytest.approx((mins[c.id] + maxs[c.id]) / 2)
         assert mins[c.id] <= b1[c.id] <= maxs[c.id]
+
+
+@pytest.mark.parametrize("mrsort", [True, False])
+def test_delete_profile_with_one_threshold_per_profile(make_window, mrsort):
+    window = make_window(xmcda=False)
+    window.cbox_samethresholds.setChecked(False)
+    window.cbox_mrsort.setChecked(mrsort)
+    assert window.cbox_noveto.isChecked()
+
+    window.on_button_add_profile_pressed()
+    assert window.bpt.keys() == ['b1', 'b2']
+    if not mrsort:
+        assert window.qpt.keys() == window.ppt.keys() == ['b1', 'b2']
+
+    window.on_button_del_profile_pressed()
+    assert window.bpt.keys() == ['b1']
+    assert window.table_prof.rowCount() == 1
+    assert len(window.categories) == 2
+    assert window.vpt is None
+    if mrsort:
+        assert window.qpt is None and window.ppt is None
+    else:
+        assert window.qpt.keys() == window.ppt.keys() == ['b1']
+        assert window.table_indiff.rowCount() == 1
+        assert window.table_pref.rowCount() == 1

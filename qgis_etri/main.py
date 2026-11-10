@@ -456,12 +456,14 @@ class main_window(QDialog, Ui_main_window):
         self.bpt.remove(b.id)
 
         if self.cbox_samethresholds.isChecked() is False:
-            self.table_indiff.remove(b.id)
-            self.table_pref.remove(b.id)
-            self.table_veto.remove(b.id)
-            self.qpt.remove(b.id)
-            self.ppt.remove(b.id)
-            self.vpt.remove(b.id)
+            # Threshold tables are None when MR-Sort or 'no veto' is
+            # checked
+            for pt, table in ((self.qpt, self.table_indiff),
+                              (self.ppt, self.table_pref),
+                              (self.vpt, self.table_veto)):
+                if pt is not None:
+                    table.remove(b.id)
+                    pt.remove(b.id)
 
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
         self.categories = generate_categories(len(self.bpt) + 1,
