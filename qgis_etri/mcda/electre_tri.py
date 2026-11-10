@@ -273,7 +273,7 @@ class ElectreTri(McdaObject):
 
         self.id = xmcda.get('id')
         value = xmcda.find('.//methodParameters/parameter/value')
-        self.lbda = unmarshal(value.getchildren()[0])
+        self.lbda = unmarshal(value[0])
 
         criteria = xmcda.find('.//criteria')
         setattr(self, 'criteria', Criteria().from_xmcda(criteria))
