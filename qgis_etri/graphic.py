@@ -9,7 +9,7 @@ from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsText
 class _MyGraphicsview(QGraphicsView):
 
     def __init__(self, parent=None):
-        super(QGraphicsView, self).__init__(parent)
+        super().__init__(parent)
 
     def resizeEvent(self, event):
         scene = self.scene()
