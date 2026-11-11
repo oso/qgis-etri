@@ -30,6 +30,7 @@ class main_window(QDialog, Ui_main_window):
         self.setWindowFlags(QtCore.Qt.WindowType.Window)
 
         self.iface = iface
+        self.layer_loaded = False
 
         if iface is not None:
             self.__update_layer_list(iface.mapCanvas())
@@ -252,6 +253,11 @@ class main_window(QDialog, Ui_main_window):
         else:
             self.tab_thresholds.insertTab(2, self.tab_veto, "Veto")
 
+            if self.layer_loaded is False:
+                # A model is being loaded, __fill_model_tables fills the
+                # table with its veto thresholds
+                return
+
             self.vpt = PerformanceTable(id = 'v')
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.vpt,
@@ -274,6 +280,11 @@ class main_window(QDialog, Ui_main_window):
             self.tab_thresholds.insertTab(0, self.tab_indiff,
                                           "Indifference")
             self.tab_thresholds.insertTab(1, self.tab_pref, "Preference")
+
+            if self.layer_loaded is False:
+                # A model is being loaded, __fill_model_tables fills the
+                # tables with its indifference and preference thresholds
+                return
 
             self.qpt = PerformanceTable(id = 'q')
             self.ppt = PerformanceTable(id = 'p')
@@ -385,21 +396,23 @@ class main_window(QDialog, Ui_main_window):
         self.table_prof.add_pt(self.balternatives, self.bpt)
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
-        if self.same_pqv_thresholds_for_all_profiles() is True:
-            self.cbox_samethresholds.setChecked(True)
+        # The checkboxes keep the state of the previously loaded model,
+        # set them in both directions. Their handlers do not touch the
+        # threshold tables while layer_loaded is False.
+        same_thresholds = self.same_pqv_thresholds_for_all_profiles()
+        self.cbox_samethresholds.setChecked(same_thresholds)
+        if same_thresholds:
             balternatives = Alternatives([Alternative('b')])
         else:
             balternatives = self.balternatives
 
-        if self.qpt is None and self.ppt is None:
-            self.cbox_mrsort.setChecked(True)
-        else:
+        self.cbox_mrsort.setChecked(self.qpt is None and self.ppt is None)
+        if self.qpt is not None:
             self.table_indiff.add_pt(balternatives, self.qpt)
             self.table_pref.add_pt(balternatives, self.ppt)
 
-        if self.vpt is None:
-           self.cbox_noveto.setChecked(True)
-        else:
+        self.cbox_noveto.setChecked(self.vpt is None)
+        if self.vpt is not None:
             self.table_veto.add_pt(balternatives, self.vpt)
 
         self.spinbox_cutlevel.setValue(self.lbda)

@@ -126,3 +126,65 @@ def test_mrsort_and_veto_checkboxes_toggle_tabs(make_window):
 
     window.cbox_noveto.setChecked(False)
     assert threshold_tabs(window) == [indiff, pref, veto]
+
+
+def one_threshold_per_profile(xmcda):
+    """Replace the 'b' threshold of the q, p and v tables by the same
+    threshold for each profile (b1, b2), with a different value."""
+    def per_profile(match):
+        ap = match.group(0)
+        b1 = ap.replace('"b"', '"b1"').replace('>b<', '>b1<')
+        b2 = ap.replace('"b"', '"b2"').replace('>b<', '>b2<')
+        b2 = re.sub(r'<integer>(\d+)</integer>',
+                    lambda m: '<integer>%d</integer>' % (int(m[1]) + 1), b2)
+        return b1 + b2
+    return re.sub(r'<alternativePerformances id="b">.*?'
+                  r'</alternativePerformances>', per_profile, xmcda)
+
+
+@pytest.fixture
+def load_xmcda(monkeypatch, tmp_path):
+    """Return a function loading an XMCDA string with the 'Load' button"""
+    import qgis_etri.main
+
+    def load(window, xmcda):
+        path = str(tmp_path / "model.xmcda")
+        with open(path, "w") as f:
+            f.write(xmcda)
+        monkeypatch.setattr(qgis_etri.main, "saveDialog",
+                            lambda *args: (path, "UTF-8"))
+        window.on_button_loadxmcda_pressed()
+
+    return load
+
+
+def test_load_model_with_thresholds_after_mrsort_model(make_window,
+                                                       load_xmcda):
+    window = make_window("ticino", ticino_xmcda(q=None, p=None, v=None))
+    assert window.cbox_mrsort.isChecked()
+    assert window.cbox_noveto.isChecked()
+
+    load_xmcda(window, ticino_xmcda())
+
+    assert not window.cbox_mrsort.isChecked()
+    assert not window.cbox_noveto.isChecked()
+    assert threshold_tabs(window) == [window.tab_indiff, window.tab_pref,
+                                      window.tab_veto]
+    assert window.qpt['b'].performances['PRICE'] == 15
+    assert window.ppt['b'].performances['PRICE'] == 40
+    assert window.vpt['b'].performances['PRICE'] == 100
+    assert window.table_indiff.item(0, 0).text() == "15"
+    assert window.table_veto.item(0, 0).text() == "100"
+
+
+def test_load_model_with_one_threshold_per_profile(make_window, load_xmcda):
+    window = make_window("ticino")
+    assert window.cbox_samethresholds.isChecked()
+
+    load_xmcda(window, one_threshold_per_profile(ticino_xmcda()))
+
+    assert not window.cbox_samethresholds.isChecked()
+    assert window.qpt.keys() == ['b1', 'b2']
+    assert window.qpt['b2'].performances['PRICE'] == 16
+    assert window.table_indiff.rowCount() == 2
+    assert window.table_indiff.item(1, 0).text() == "16"
