@@ -1,5 +1,3 @@
-UIFILES :=	ui/main_window.ui
-
 PKG_FILES +=	metadata.txt
 PKG_FILES +=	__init__.py
 PKG_FILES +=	etri_plugin.py
@@ -15,7 +13,7 @@ PKG_FILES +=	mcda/generate.py
 PKG_FILES +=	mcda/types.py
 
 PKG_FILES +=	ui/__init__.py
-PKG_FILES +=	$(UIFILES)
+PKG_FILES +=	ui/main_window.ui
 
 PKG_FILES +=	images/etri.png
 PKG_FILES +=	images/etri.svg
