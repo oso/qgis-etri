@@ -9,7 +9,7 @@ description=A decision aid plugin based on ELECTRE-TRI
 about=This plugin implements the ELECTRE-TRI method. From a criteria
     vector layer, it generates a map in which each element map to a
     category based on the model parameters provided by the user.
-version=0.5.0-c2c_alpha1
+version=version 2.0
 category=Vector
 tags=vector,electre,decision aid
 
