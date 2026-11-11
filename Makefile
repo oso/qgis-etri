@@ -22,7 +22,7 @@ PKG_FILES +=	images/etri.svg
 PKG_FILES +=	images/min.svg
 PKG_FILES +=	images/plus.svg
 
-PKG_FILES +=	COPYING
+PKG_FILES +=	LICENSE
 PKG_FILES +=	README
 
 QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
