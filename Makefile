@@ -1,24 +1,24 @@
-PKG_FILES +=	metadata.txt
-PKG_FILES +=	__init__.py
-PKG_FILES +=	etri_plugin.py
-PKG_FILES +=	graphic.py
-PKG_FILES +=	layer.py
-PKG_FILES +=	main.py
-PKG_FILES +=	qgis_utils.py
-PKG_FILES +=	table.py
+PKG_FILES +=	qgis_etri/metadata.txt
+PKG_FILES +=	qgis_etri/__init__.py
+PKG_FILES +=	qgis_etri/etri_plugin.py
+PKG_FILES +=	qgis_etri/graphic.py
+PKG_FILES +=	qgis_etri/layer.py
+PKG_FILES +=	qgis_etri/main.py
+PKG_FILES +=	qgis_etri/qgis_utils.py
+PKG_FILES +=	qgis_etri/table.py
 
-PKG_FILES +=	mcda/__init__.py
-PKG_FILES +=	mcda/electre_tri.py
-PKG_FILES +=	mcda/generate.py
-PKG_FILES +=	mcda/types.py
+PKG_FILES +=	qgis_etri/mcda/__init__.py
+PKG_FILES +=	qgis_etri/mcda/electre_tri.py
+PKG_FILES +=	qgis_etri/mcda/generate.py
+PKG_FILES +=	qgis_etri/mcda/types.py
 
-PKG_FILES +=	ui/__init__.py
-PKG_FILES +=	ui/main_window.ui
+PKG_FILES +=	qgis_etri/ui/__init__.py
+PKG_FILES +=	qgis_etri/ui/main_window.ui
 
-PKG_FILES +=	images/etri.png
-PKG_FILES +=	images/etri.svg
-PKG_FILES +=	images/min.svg
-PKG_FILES +=	images/plus.svg
+PKG_FILES +=	qgis_etri/images/etri.png
+PKG_FILES +=	qgis_etri/images/etri.svg
+PKG_FILES +=	qgis_etri/images/min.svg
+PKG_FILES +=	qgis_etri/images/plus.svg
 
 PKG_FILES +=	LICENSE
 PKG_FILES +=	README
@@ -36,7 +36,7 @@ mrproper: clean
 
 zip:
 	rm -f $(PLUGINNAME).zip
-	zip -9v $(PLUGINNAME).zip $(PKG_FILES:%=qgis_etri/%)
+	zip -9v $(PLUGINNAME).zip $(PKG_FILES)
 
 link: uninstall
 	ln -s $(shell pwd)/$(PLUGINNAME) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
