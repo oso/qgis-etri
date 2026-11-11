@@ -172,6 +172,11 @@ def addtocDialog(parent, filename, nprofils):
         basename = os.path.basename(filename)
         name = os.path.splitext(basename)[0]
         vlayer = QgsVectorLayer(filename, name, "ogr")
+        if not vlayer.isValid():
+            QMessageBox.warning(parent, "Error",
+                                "Unable to load the layer %s" % filename)
+            return
+
         render_decision_map(vlayer, nprofils)
 
         QgsProject.instance().addMapLayer(vlayer)
@@ -181,6 +186,10 @@ def render_decision_map_new(layer, nprofils):
     nclasses = nprofils + 1
     for i in range(1, nclasses + 1):
         s = QgsSymbol.defaultSymbol(layer.geometryType())
+        if s is None:
+            # Layer without geometry, nothing to render
+            return
+
         color = QColor(0, 255 - int(220 * i / nclasses), 0)
         s.setColor(color)
         cat_list.append(QgsRendererCategory(i, s, "Category %d" % i))
