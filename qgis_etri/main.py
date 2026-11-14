@@ -93,7 +93,6 @@ class main_window(QDialog, Ui_main_window):
     def __load_from_xmcda(self, xmcda_file):
         tree = safe_parse(xmcda_file)
         root = tree.getroot()
-        xmcda_formatversion = root.find('.//formatversion')
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
         xmcda_b = root.find('.//alternatives')

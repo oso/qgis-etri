@@ -216,7 +216,6 @@ class ElectreTri(McdaObject):
     def auck(self, aa, pt, k):
         profile = self.profiles[k-1]
         lower_cat = self.categories[:k]
-        upper_cat = self.categories[k:]
 
         lower_aa, upper_aa = {}, {}
         for a in aa:

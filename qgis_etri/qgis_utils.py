@@ -13,7 +13,6 @@ def layer_get_criteria(layer):
 
     provider = layer.dataProvider()
     fields = provider.fields()
-    i = 0
     criteria = []
     for (id, field) in fields.items():
         #FIXME: Check the type to only include numbers
@@ -99,7 +98,6 @@ def layer_get_attributes(layer):
 
 def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=[]):
     vprovider = layer_in.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
     fields = QgsFields()
     fields.append(QgsField("Category", QtCore.QMetaType.Type.Int))
     for field in layer_in.fields():
@@ -117,7 +115,6 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
         raise Exception(f"Problem creating file writer: {writer.errorMessage()}")
 
     outFeat = QgsFeature(fields)
-    nFeat = vprovider.featureCount()
 
     for feat in layer_in.getFeatures():
         inGeom = feat.geometry()
