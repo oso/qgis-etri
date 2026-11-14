@@ -20,11 +20,13 @@ PKG_FILES +=	qgis_etri/images/etri.svg
 PKG_FILES +=	qgis_etri/images/min.svg
 PKG_FILES +=	qgis_etri/images/plus.svg
 
-PKG_FILES +=	LICENSE
-PKG_FILES +=	README
+# Files from the root directory put under $(PLUGINNAME) in the zip file
+PLUGIN_ROOT_FILES +=	LICENSE
+PLUGIN_ROOT_FILES +=	README
 
 QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 PLUGINNAME = qgis_etri
+BUILDDIR = build
 
 all: zip
 
@@ -32,11 +34,15 @@ clean:
 	find . -name '*.pyc' -exec rm --force {} +
 
 mrproper: clean
-	rm -f $(PLUGINNAME).zip
+	rm -rf $(BUILDDIR) $(PLUGINNAME).zip
 
 zip:
-	rm -f $(PLUGINNAME).zip
+	rm -rf $(BUILDDIR) $(PLUGINNAME).zip
 	zip -9v $(PLUGINNAME).zip $(PKG_FILES)
+	mkdir -p $(BUILDDIR)/$(PLUGINNAME)
+	cp -p $(PLUGIN_ROOT_FILES) $(BUILDDIR)/$(PLUGINNAME)
+	cd $(BUILDDIR) && zip -9v ../$(PLUGINNAME).zip $(PLUGIN_ROOT_FILES:%=$(PLUGINNAME)/%)
+	rm -rf $(BUILDDIR)
 
 link: uninstall
 	ln -s $(shell pwd)/$(PLUGINNAME) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
