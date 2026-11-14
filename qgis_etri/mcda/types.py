@@ -620,21 +620,22 @@ class PerformanceTable(McdaDict):
 
     def __mathop(self, value, op):
         out = PerformanceTable([], self.id)
-        if type(value) == float or type(value) == int \
-           or type(AlternativePerformances):
+        if isinstance(value, (float, int, AlternativePerformances,
+                              PerformanceTable)):
             for key, val in self.items():
+                if isinstance(value, PerformanceTable):
+                    v = value[key]
+                else:
+                    v = value
+
                 if op == "add":
-                    ap = val + value
+                    ap = val + v
                 elif op == "sub":
-                    ap = val - value
+                    ap = val - v
                 elif op == "mul":
-                    ap = val * value
+                    ap = val * v
                 elif op == "div":
-                    ap = val / value
-                out.append(ap)
-        elif type(PerformanceTable):
-            for key, val in self.items():
-                ap = val * value[key]
+                    ap = val / v
                 out.append(ap)
         else:
             raise TypeError("Invalid value type (%s)" % type(value))
