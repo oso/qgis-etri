@@ -440,7 +440,7 @@ class CriteriaValues(McdaDict):
             fmt = "%5g"
 
         # Compute max column length
-        cols_max = { }
+        cols_max = {}
         for cid in criterion_ids:
             cols_max[cid] = max([len(fmt % self[cid].value), len(cid)])
 
@@ -846,7 +846,7 @@ class PerformanceTable(McdaDict):
             fmt = {cid: "%5g" for cid in criterion_ids}
 
         # Compute max column length
-        cols_max = { "aids": (max([len(aid) for aid in self.keys()])) }
+        cols_max = {"aids": (max([len(aid) for aid in self.keys()]))}
         for cid in criterion_ids:
             cols_max[cid] = max([len(fmt[cid] % ap.performances[cid])
                                  for ap in self.values()] + [len(cid)])
@@ -1896,7 +1896,7 @@ class Limits(McdaObject):
 
     def __init__(self, lower=None, upper=None):
         self.lower = lower
-        self.upper  = upper
+        self.upper = upper
 
     def __repr__(self):
         """Manner to represent the MCDA object"""
@@ -1942,13 +1942,13 @@ class CategoriesProfiles(McdaDict):
         return "categories_profiles(%s)" % self.values()
 
     def get_ordered_profiles(self):
-        lower_cat = { cp.value.lower: cp.id for cp in self }
-        upper_cat = { cp.value.upper: cp.id for cp in self }
+        lower_cat = {cp.value.lower: cp.id for cp in self}
+        upper_cat = {cp.value.upper: cp.id for cp in self}
 
         lowest_highest = set(lower_cat.keys()) ^ set(upper_cat.keys())
         lowest = list(set(lower_cat.keys()) & lowest_highest)
 
-        profiles = [ lower_cat[lowest[0]] ]
+        profiles = [lower_cat[lowest[0]]]
         for i in range(1, len(self)):
             ucat = self[profiles[-1]].value.upper
             profiles.insert(i, lower_cat[ucat])
@@ -1957,7 +1957,7 @@ class CategoriesProfiles(McdaDict):
 
     def get_ordered_categories(self):
         profiles = self.get_ordered_profiles()
-        categories = [ self[profiles[0]].value.lower ]
+        categories = [self[profiles[0]].value.lower]
         for profile in profiles:
             categories.append(self[profile].value.upper)
         return categories

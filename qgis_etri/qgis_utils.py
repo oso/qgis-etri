@@ -18,7 +18,7 @@ def layer_get_criteria(layer):
     fields = provider.fields()
     criteria = []
     for (id, field) in fields.items():
-        #FIXME: Check the type to only include numbers
+        # FIXME: Check the type to only include numbers
         criterion = {}
         str = '%s' % field.name().trimmed()
         criterion['name'] = str
@@ -155,7 +155,7 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
     # this is the default value, it is just repeated to be more explicit
     fileDialog.setOption(QFileDialog.Option.DontConfirmOverwrite, False)
     if not fileDialog.exec() == QDialog.DialogCode.Accepted:
-            return None, None
+        return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir",
                       QtCore.QFileInfo(str(files[0])).absolutePath())

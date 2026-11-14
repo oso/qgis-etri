@@ -3,8 +3,8 @@ from qgis.PyQt.QtGui import QRegularExpressionValidator
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
 from qgis_etri.mcda.types import Criterion
 
-COMBO_INDEX_MAX=0
-COMBO_INDEX_MIN=1
+COMBO_INDEX_MAX = 0
+COMBO_INDEX_MIN = 1
 COL_NAME = 0
 COL_DIRECTION = 1
 COL_WEIGHT = 2
@@ -186,7 +186,7 @@ class qt_criteria_table(QTableWidget):
 
         # Add weight column
         item = QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         if c.disabled is True:
             item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
         else:
@@ -361,7 +361,7 @@ class qt_performance_table(QTableWidget):
         return None
 
     def __get_criterion_col(self, criterion):
-        crit_col = dict([[v,k] for k,v in self.col_crit.items()])
+        crit_col = dict([[v, k] for k, v in self.col_crit.items()])
         return crit_col[criterion]
 
     def disable_criterion(self, criterion):
@@ -389,9 +389,9 @@ class qt_performance_table(QTableWidget):
             item = QTableWidgetItem()
             if crit.id in performances and \
                performances[crit.id] is not None:
-                 item.setText(str(performances[crit.id]))
+                item.setText(str(performances[crit.id]))
             if editable is False:
-                 item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
+                item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.setItem(row, col, item)
         self.row_altp.append(alt_perfs)
 
@@ -408,8 +408,8 @@ class qt_performance_table(QTableWidget):
         self.row_altp.pop(row)
 
     def __cell_changed(self, row, col):
-        if (col in self.col_crit) is False or   \
-            row >= len(self.row_altp) or row < 0:
+        if (col in self.col_crit) is False or \
+                row >= len(self.row_altp) or row < 0:
             return
 
         alt = self.row_alt[row]
@@ -502,8 +502,8 @@ class qt_threshold_table(QTableWidget):
             self.setItem(row, col, item)
 
     def __cell_changed(self, row, col):
-        if (col in self.col_crit) is False or   \
-            (row in self.row_threshid) is False:
+        if (col in self.col_crit) is False or \
+                (row in self.row_threshid) is False:
             return
 
         crit = self.col_crit[col]
