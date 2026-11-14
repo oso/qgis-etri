@@ -110,7 +110,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
 
     try:
         os.unlink(out)
-    except:
+    except FileNotFoundError:
         pass
 
     writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.wkbType(), vprovider.crs(), 'ESRI Shapefile')
