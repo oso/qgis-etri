@@ -1,5 +1,4 @@
 import os, sys, traceback
-from xml.etree import ElementTree
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QMessageBox
 from itertools import product
@@ -11,13 +10,13 @@ from qgis_etri.mcda.types import PerformanceTable, Alternatives
 from qgis_etri.mcda.types import Alternative, AlternativePerformances
 from qgis_etri.mcda.types import Thresholds, Threshold
 from qgis_etri.mcda.generate import generate_categories
+from qgis_etri.mcda.xml_writer import Element, SubElement, tostring
 from qgis_etri.mcda.generate import generate_categories_profiles
 from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from qgis_etri.graphic import QGraphicsSceneEtri
 from qgis_etri.xml_utils import safe_parse
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
-ElementTree.register_namespace('xmcda', XMCDA_URL)
 
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
@@ -95,7 +94,6 @@ class main_window(QDialog, Ui_main_window):
     def __load_from_xmcda(self, xmcda_file):
         tree = safe_parse(xmcda_file)
         root = tree.getroot()
-#        ElementTree.dump(root)
         xmcda_formatversion = root.find('.//formatversion')
         xmcda_crit = root.find('.//criteria')
         xmcda_critval = root.find('.//criteriaValues')
@@ -561,11 +559,11 @@ class main_window(QDialog, Ui_main_window):
         self.__update_graph()
 
     def lambda_to_xmcda(self, lbda):
-        root = ElementTree.Element('methodParameters')
-        xmcda = ElementTree.SubElement(root, 'parameter')
+        root = Element('methodParameters')
+        xmcda = SubElement(root, 'parameter')
         xmcda.set('name', 'lambda')
-        xmcda = ElementTree.SubElement(xmcda, 'value')
-        xmcda = ElementTree.SubElement(xmcda, 'real')
+        xmcda = SubElement(xmcda, 'value')
+        xmcda = SubElement(xmcda, 'real')
         xmcda.text = str(lbda)
         return root
 
@@ -579,7 +577,7 @@ class main_window(QDialog, Ui_main_window):
         self.save_to_xmcda(f)
 
     def save_to_xmcda(self, filepath):
-        xmcda = ElementTree.Element("{%s}XMCDA" % XMCDA_URL)
+        xmcda = Element("xmcda:XMCDA", {"xmlns:xmcda": XMCDA_URL})
         xmcda.append(self.criteria.to_xmcda())
         xmcda.append(self.cv.to_xmcda())
         xmcda.append(self.balternatives.to_xmcda())
@@ -596,7 +594,7 @@ class main_window(QDialog, Ui_main_window):
             xmcda.append(self.vpt.to_xmcda())
 
         f = open(filepath, "wb")
-        buf = ElementTree.tostring(xmcda, encoding="UTF-8", method="xml")
+        buf = tostring(xmcda)
         f.write(buf)
         f.close()
 

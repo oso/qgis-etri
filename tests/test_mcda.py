@@ -1,16 +1,17 @@
 import sys
 sys.path.insert(0, "..")
 from mcda.types import Criteria
-from xml.etree import ElementTree
+from qgis_etri.mcda.xml_writer import tostring
+from qgis_etri.xml_utils import safe_fromstring
 from data_ticino_new import *
 
 crit = c.to_xmcda()
-ElementTree.dump(crit)
+print(tostring(crit).decode())
 
 crit2 = Criteria()
-crit2.from_xmcda(crit)
+crit2.from_xmcda(safe_fromstring(tostring(crit)))
 print(crit2)
 
 xmcda = a.to_xmcda()
-ElementTree.dump(xmcda[0])
-ElementTree.dump(xmcda[1])
+print(tostring(xmcda[0]).decode())
+print(tostring(xmcda[1]).decode())

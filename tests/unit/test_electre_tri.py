@@ -4,6 +4,8 @@ from qgis_etri.mcda.generate import generate_categories_profiles
 from qgis_etri.mcda.types import AlternativePerformances, PerformanceTable
 from qgis_etri.mcda.types import Criteria, Criterion
 from qgis_etri.mcda.types import CriteriaValues, CriterionValue
+from qgis_etri.mcda.xml_writer import tostring
+from qgis_etri.xml_utils import safe_fromstring
 
 
 def make_model():
@@ -20,7 +22,8 @@ def make_model():
 def test_xmcda_round_trip():
     model = make_model()
 
-    model2 = ElectreTri().from_xmcda(model.to_xmcda())
+    xmcda = safe_fromstring(tostring(model.to_xmcda()))
+    model2 = ElectreTri().from_xmcda(xmcda)
 
     assert model2.id == 'model'
     assert model2.lbda == 0.75

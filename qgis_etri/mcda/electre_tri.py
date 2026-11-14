@@ -6,7 +6,7 @@ from .types import Criteria, CriteriaValues, PerformanceTable
 from .types import CategoriesProfiles
 from .types import McdaObject
 from .types import marshal, unmarshal
-from xml.etree import ElementTree
+from .xml_writer import Element, SubElement
 
 def eq(a, b, eps=10e-10):
     return abs(a-b) <= eps
@@ -250,7 +250,7 @@ class ElectreTri(McdaObject):
         return auck_sum / len(self.profiles)
 
     def to_xmcda(self):
-        root = ElementTree.Element('ElectreTri')
+        root = Element('ElectreTri')
 
         if self.id is not None:
             root.set('id', self.id)
@@ -259,9 +259,9 @@ class ElectreTri(McdaObject):
             xmcda = getattr(self, obj).to_xmcda()
             root.append(xmcda)
 
-        mparams = ElementTree.SubElement(root, 'methodParameters')
-        param = ElementTree.SubElement(mparams, 'parameter')
-        value = ElementTree.SubElement(param, 'value')
+        mparams = SubElement(root, 'methodParameters')
+        param = SubElement(mparams, 'parameter')
+        value = SubElement(param, 'value')
         lbda = marshal(self.lbda)
         value.append(lbda)
 

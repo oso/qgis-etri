@@ -6,27 +6,10 @@ from qgis.PyQt import QtGui
 from qgis.PyQt import QtWidgets
 from qgis_etri.mcda.types import Criterion
 from qgis_etri.table import qt_criteria_table
-from xml.etree import ElementTree
-
-ElementTree.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
-ElementTree.register_namespace("xmcda", "http://www.decision-deck.org/2009/XMCDA-2.1.0")
+from qgis_etri.mcda.xml_writer import Element, tostring
+from qgis_etri.xml_utils import safe_parse
 
 crit_table = None
-
-def indent(elem, level=0):
-    i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
-            indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
 
 def save_dialog_box():
     fname = QtWidgets.QFileDialog.getSaveFileName(None,
@@ -55,14 +38,13 @@ def save_to_xmcda():
 
     fname = save_dialog_box()
     if fname:
-        root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
+        root = Element('xmcda:XMCDA', {'xmlns:xmcda': 'http://www.decision-deck.org/2009/XMCDA-2.1.0'})
         criteria_xmcda = c.to_xmcda()
         criteria_values_xmcda = cv.to_xmcda()
         root.append(criteria_xmcda)
         root.append(criteria_values_xmcda)
-        indent(root)
-        ElementTree.ElementTree(root).write(fname, xml_declaration=True,
-                                            encoding='utf-8', method='xml')
+        with open(fname, 'wb') as f:
+            f.write(tostring(root, xml_declaration=True))
 
 def load_from_xmcda():
     if not crit_table:
@@ -70,9 +52,8 @@ def load_from_xmcda():
 
     fname = load_dialog_box()
     if fname:
-        tree = ElementTree.parse(fname)
+        tree = safe_parse(fname)
         root = tree.getroot()
-        ElementTree.dump(root)
 
         c = Criteria()
         c.from_xmcda(root.find('.//criteria'))

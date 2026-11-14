@@ -188,3 +188,22 @@ def test_load_model_with_one_threshold_per_profile(make_window, load_xmcda):
     assert window.qpt['b2'].performances['PRICE'] == 16
     assert window.table_indiff.rowCount() == 2
     assert window.table_indiff.item(1, 0).text() == "16"
+
+
+def test_save_and_load_xmcda(make_window, load_xmcda, tmp_path):
+    window = make_window("ticino")
+    path = str(tmp_path / "saved.xmcda")
+    window.save_to_xmcda(path)
+
+    with open(path) as f:
+        saved = f.read()
+    assert saved.startswith('<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2009/XMCDA-2.0.0">')
+
+    window2 = make_window("ticino", ticino_xmcda(q=None, p=None, v=None))
+    load_xmcda(window2, saved)
+
+    assert list(window2.criteria) == list(window.criteria)
+    assert list(window2.cv) == list(window.cv)
+    for pt in ['bpt', 'qpt', 'ppt', 'vpt']:
+        assert list(getattr(window2, pt)) == list(getattr(window, pt))
+    assert window2.spinbox_cutlevel.value() == window.spinbox_cutlevel.value()

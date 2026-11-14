@@ -8,7 +8,7 @@ from qgis.PyQt import QtWidgets
 from qgis_etri.table import qt_criteria_table
 from qgis_etri.table import qt_performance_table
 from qgis_etri.table import qt_threshold_table
-from xml.etree import ElementTree
+from qgis_etri.mcda.xml_writer import Element, tostring
 from qgis_etri.mcda.electre_tri import ElectreTri
 from qgis_etri.main import main_window
 
@@ -19,20 +19,6 @@ pref_table = None
 veto_table = None
 thresh_cbox = None
 
-def indent(elem, level=0):
-    i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
-            indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
 
 def criterion_direction_changed(criterion):
     print(criterion.id, ":", criterion.direction)
@@ -146,16 +132,14 @@ def save_dialog_box():
 def save_to_xmcda():
     fname = save_dialog_box()
     if fname:
-        root = ElementTree.Element('{http://www.decision-deck.org/2009/XMCDA-2.1.0}XMCDA')
+        root = Element('xmcda:XMCDA', {'xmlns:xmcda': 'http://www.decision-deck.org/2009/XMCDA-2.1.0'})
         pt_xmcda = ptb.to_xmcda()
         criteria_xmcda = c.to_xmcda()
         alternatives_xmcda = b.to_xmcda()[0]
         root.append(pt_xmcda)
         root.append(criteria_xmcda)
         root.append(alternatives_xmcda)
-        indent(root)
-        ElementTree.dump(root)
-        buf = ElementTree.tostring(root, encoding="UTF-8", method="xml")
+        buf = tostring(root)
         with open(fname, 'wb') as f:
             f.write(buf)
 

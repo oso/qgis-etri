@@ -12,6 +12,7 @@ PKG_FILES +=	qgis_etri/mcda/__init__.py
 PKG_FILES +=	qgis_etri/mcda/electre_tri.py
 PKG_FILES +=	qgis_etri/mcda/generate.py
 PKG_FILES +=	qgis_etri/mcda/types.py
+PKG_FILES +=	qgis_etri/mcda/xml_writer.py
 
 PKG_FILES +=	qgis_etri/ui/__init__.py
 PKG_FILES +=	qgis_etri/ui/main_window.ui
