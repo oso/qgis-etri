@@ -1,5 +1,4 @@
 import os
-import colorsys
 
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QColor

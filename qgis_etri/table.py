@@ -1,8 +1,7 @@
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QRegularExpressionValidator
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
-from collections import OrderedDict
-from qgis_etri.mcda.types import Criteria, Criterion, Constant
+from qgis_etri.mcda.types import Criterion
 
 COMBO_INDEX_MAX=0
 COMBO_INDEX_MIN=1

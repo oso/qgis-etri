@@ -1,7 +1,4 @@
-import os, sys
-import colorsys
 from itertools import combinations
-from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QBrush, QColor, QFont, QPen
 from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsTextItem, QGraphicsView
 

@@ -8,7 +8,6 @@ from qgis_etri.mcda.electre_tri import ElectreTri
 from qgis_etri.mcda.types import Criteria, CriteriaValues, CriterionValue
 from qgis_etri.mcda.types import PerformanceTable, Alternatives
 from qgis_etri.mcda.types import Alternative, AlternativePerformances
-from qgis_etri.mcda.types import Thresholds, Threshold
 from qgis_etri.mcda.generate import generate_categories
 from qgis_etri.mcda.xml_writer import Element, SubElement, tostring
 from qgis_etri.mcda.generate import generate_categories_profiles
@@ -631,7 +630,6 @@ class main_window(QDialog, Ui_main_window):
 
 
 if __name__ == "__main__":
-    import sys
     # from qgis.PyQt import QtGui
     from qgis.core import *
 

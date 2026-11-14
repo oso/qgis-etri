@@ -1,5 +1,3 @@
-import math
-from copy import deepcopy
 from itertools import product
 from .types import AlternativeAssignment, AlternativesAssignments
 from .types import Criteria, CriteriaValues, PerformanceTable

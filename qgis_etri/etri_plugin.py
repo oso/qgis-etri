@@ -3,7 +3,7 @@ from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import *
 
-import sys, os
+import os
 
 from qgis_etri.main import main_window
 
