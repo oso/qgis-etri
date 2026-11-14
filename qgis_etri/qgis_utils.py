@@ -25,8 +25,8 @@ def layer_get_criteria(layer):
         criterion['id'] = id
         criterion['min'] = mins[id]
         criterion['max'] = maxs[id]
-        criterion['mean'] = (maxs[id]+mins[id])/2
-        criterion['diff'] = maxs[id]-mins[id]
+        criterion['mean'] = (maxs[id] + mins[id]) / 2
+        criterion['diff'] = maxs[id] - mins[id]
         criteria.append(criterion)
 
     return criteria

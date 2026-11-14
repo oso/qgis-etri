@@ -8,7 +8,7 @@ from .xml_writer import Element, SubElement
 
 
 def eq(a, b, eps=10e-10):
-    return abs(a-b) <= eps
+    return abs(a - b) <= eps
 
 
 class ElectreTri(McdaObject):
@@ -81,7 +81,7 @@ class ElectreTri(McdaObject):
 
     def __partial_concordance(self, x, y, c, profile):
         # compute g_j(b) - g_j(a)
-        diff = (y.performances[c.id]-x.performances[c.id])*c.direction
+        diff = (y.performances[c.id] - x.performances[c.id]) * c.direction
 
         # compute c_j(a, b)
         p = self.get_threshold_by_profile(c, 'p', profile)
@@ -96,9 +96,9 @@ class ElectreTri(McdaObject):
         elif diff <= q:
             return 1
         else:
-            num = float(p-diff)
-            den = float(p-q)
-            return num/den
+            num = float(p - diff)
+            den = float(p - q)
+            return num / den
 
     def __concordance(self, x, y, profile):
         wsum = 0
@@ -111,16 +111,16 @@ class ElectreTri(McdaObject):
 
             cval = self.cv[c.id]
             weight = cval.value
-            wcj = float(weight)*cj
+            wcj = float(weight) * cj
 
             pjcj += wcj
             wsum += weight
 
-        return pjcj/wsum
+        return pjcj / wsum
 
     def __partial_discordance(self, x, y, c, profile):
         # compute g_j(b) - g_j(a)
-        diff = (y.performances[c.id]-x.performances[c.id])*c.direction
+        diff = (y.performances[c.id] - x.performances[c.id]) * c.direction
 
         # compute d_j(a,b)
         p = self.get_threshold_by_profile(c, 'p', profile)
@@ -132,9 +132,9 @@ class ElectreTri(McdaObject):
         elif p is None or diff <= p:
             return 0
         else:
-            num = float(diff-p)
-            den = float(v-p)
-            return num/den
+            num = float(diff - p)
+            den = float(v - p)
+            return num / den
 
     def credibility(self, x, y, profile):
         self.__check_input_params()
@@ -147,9 +147,9 @@ class ElectreTri(McdaObject):
 
             dj = self.__partial_discordance(x, y, c, profile)
             if dj > concordance:
-                num = float(1-dj)
-                den = float(1-concordance)
-                sigma = sigma*num/den
+                num = float(1 - dj)
+                den = float(1 - concordance)
+                sigma = sigma * num / den
 
         return sigma
 
@@ -217,7 +217,7 @@ class ElectreTri(McdaObject):
             return self.pessimist(pt)
 
     def auck(self, aa, pt, k):
-        profile = self.profiles[k-1]
+        profile = self.profiles[k - 1]
         lower_cat = self.categories[:k]
 
         lower_aa, upper_aa = {}, {}

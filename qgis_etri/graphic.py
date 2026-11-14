@@ -42,7 +42,7 @@ class QGraphicsSceneEtri(QGraphicsScene):
         self.ymax = -self.axis_height + 25 / 2
         self.ymin = -25 / 2
 
-        self.hspacing = size.width()/len(self.model.criteria)
+        self.hspacing = size.width() / len(self.model.criteria)
         if self.hspacing < 100:
             self.hspacing = 100
 
