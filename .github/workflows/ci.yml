@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Code checks (flake8, bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: pip install flake8 bandit
+      - name: Run checks
+        run: make check
+
+  test:
+    name: Tests (QGIS ${{ matrix.qgis }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        qgis: [ltr, latest]
+    container:
+      image: qgis/qgis:${{ matrix.qgis }}
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pytest
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-pytest
+      - name: Run tests
+        run: python3 -m pytest -v
