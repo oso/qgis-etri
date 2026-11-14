@@ -308,7 +308,7 @@ class main_window(QDialog, Ui_main_window):
         if pt and len(pt) > 0:
             bp = next(pt.itervalues())
         else:
-            bp = AlternativePerformances('b', {c.id: None \
+            bp = AlternativePerformances('b', {c.id: None
                                                for c in self.criteria})
 
         bp.id = 'b'
@@ -326,7 +326,7 @@ class main_window(QDialog, Ui_main_window):
         if pt and len(pt) > 0:
             bp = next(pt.itervalues())
         else:
-            bp = AlternativePerformances('b', {c.id: None \
+            bp = AlternativePerformances('b', {c.id: None
                                                for c in self.criteria})
 
         pt.clear()

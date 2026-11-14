@@ -2068,7 +2068,7 @@ class AlternativesAssignments(McdaDict):
         # Compute max column length
         cols_max = {"aids": max([len(aid) for aid in alternative_ids]),
                     "category": max([len(aa.category_id)
-                                    for aa in self.values()] \
+                                    for aa in self.values()]
                                     + [len("category")])}
 
         # Print header
