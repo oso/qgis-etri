@@ -151,8 +151,8 @@ class QGraphicsSceneEtri(QGraphicsScene):
 
         return item
 
-    def __create_profile(self, ap, print_values = False,
-                         color = QColor("red")):
+    def __create_profile(self, ap, print_values=False,
+                         color=QColor("red")):
         item = QGraphicsPathItem()
 
         pen = QPen()

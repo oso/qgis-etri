@@ -22,7 +22,7 @@ COMBO_PROC_OPTIMIST = 1
 
 class main_window(QDialog, Ui_main_window):
 
-    def __init__(self, iface = None, layer = None):
+    def __init__(self, iface=None, layer=None):
         QDialog.__init__(self)
         Ui_main_window.__init__(self)
         self.setupUi(self)
@@ -133,13 +133,13 @@ class main_window(QDialog, Ui_main_window):
                     if c.id not in perfs or perfs[c.id] is None:
                         perfs[c.id] = 0
             elif xmcda.get('id') == 'q':
-                qpt = PerformanceTable(id = 'q')
+                qpt = PerformanceTable(id='q')
                 qpt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'p':
-                ppt = PerformanceTable(id = 'p')
+                ppt = PerformanceTable(id='p')
                 ppt.from_xmcda(xmcda)
             elif xmcda.get('id') == 'v':
-                vpt = PerformanceTable(id = 'v')
+                vpt = PerformanceTable(id='v')
                 vpt.from_xmcda(xmcda)
 
         # An empty threshold table is the same as a missing one
@@ -175,7 +175,7 @@ class main_window(QDialog, Ui_main_window):
 
         # Categories Profiles
         self.categories = generate_categories(len(self.bpt) + 1,
-                                              prefix = "")
+                                              prefix="")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
     def __generate_initial_model(self):
@@ -197,7 +197,7 @@ class main_window(QDialog, Ui_main_window):
 
         # Categories Profiles
         self.categories = generate_categories(len(self.bpt) + 1,
-                                              prefix = "")
+                                              prefix="")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
         self.lbda = 0.75
@@ -255,7 +255,7 @@ class main_window(QDialog, Ui_main_window):
                 # table with its veto thresholds
                 return
 
-            self.vpt = PerformanceTable(id = 'v')
+            self.vpt = PerformanceTable(id='v')
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.vpt,
                                                          self.table_veto)
@@ -283,8 +283,8 @@ class main_window(QDialog, Ui_main_window):
                 # tables with its indifference and preference thresholds
                 return
 
-            self.qpt = PerformanceTable(id = 'q')
-            self.ppt = PerformanceTable(id = 'p')
+            self.qpt = PerformanceTable(id='q')
+            self.ppt = PerformanceTable(id='p')
             if self.cbox_samethresholds.isChecked() is True:
                 self.set_same_threshold_for_all_profiles(self.qpt,
                                                          self.table_indiff)
@@ -459,7 +459,7 @@ class main_window(QDialog, Ui_main_window):
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
 
         self.categories = generate_categories(len(self.bpt) + 1,
-                                              prefix = "")
+                                              prefix="")
         self.cat_profiles = generate_categories_profiles(self.categories)
 
     def on_button_del_profile_pressed(self):
@@ -487,7 +487,7 @@ class main_window(QDialog, Ui_main_window):
 
         self.label_ncategories.setText("%d" % (len(self.bpt) + 1))
         self.categories = generate_categories(len(self.bpt) + 1,
-                                              prefix = "")
+                                              prefix="")
         self.cat_profiles = generate_categories_profiles(self.categories)
         self.__update_graph()
 
@@ -500,8 +500,8 @@ class main_window(QDialog, Ui_main_window):
 
         if self.cbox_samethresholds.isChecked() is True:
             if self.cbox_mrsort.isChecked() is False:
-                qpt = PerformanceTable(id = 'q')
-                ppt = PerformanceTable(id = 'p')
+                qpt = PerformanceTable(id='q')
+                ppt = PerformanceTable(id='p')
                 for i in range(len(self.bpt)):
                     qp = next(self.qpt.itervalues()).copy()
                     pp = next(self.ppt.itervalues()).copy()
@@ -513,7 +513,7 @@ class main_window(QDialog, Ui_main_window):
                 ppt = None
 
             if self.cbox_noveto.isChecked() is False:
-                vpt = PerformanceTable(id = 'v')
+                vpt = PerformanceTable(id='v')
                 for i in range(len(self.bpt)):
                     vp = next(self.vpt.itervalues()).copy()
                     vp.id = "b%d" % (i + 1)
@@ -650,6 +650,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     app = QApplication(sys.argv)
-    window = main_window(layer = layer)
+    window = main_window(layer=layer)
     window.show()
     app.exec()

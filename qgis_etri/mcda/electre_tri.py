@@ -11,9 +11,9 @@ def eq(a, b, eps=10e-10):
 
 class ElectreTri(McdaObject):
 
-    def __init__(self, criteria = None, cv = None, bpt = None, lbda = None,
-                 categories_profiles = None, veto = None, indifference = None,
-                 preference = None, id = None):
+    def __init__(self, criteria=None, cv=None, bpt=None, lbda=None,
+                 categories_profiles=None, veto=None, indifference=None,
+                 preference=None, id=None):
         self.criteria = criteria
         self.cv = cv
         self.bpt = bpt
@@ -207,7 +207,7 @@ class ElectreTri(McdaObject):
 
     PESSIMIST = 0
     OPTIMIST = 1
-    def get_assignments(self, pt, procedure = PESSIMIST):
+    def get_assignments(self, pt, procedure=PESSIMIST):
         if procedure == ElectreTri.OPTIMIST:
             return self.optimist(pt)
         else:
@@ -286,9 +286,9 @@ class ElectreTri(McdaObject):
 
 class MRSort(ElectreTri):
 
-    def __init__(self, criteria = None, cv = None, bpt = None,
-                 lbda = None, categories_profiles = None, veto = None,
-                 veto_weights = None, veto_lbda = None, id = None):
+    def __init__(self, criteria=None, cv=None, bpt=None,
+                 lbda=None, categories_profiles=None, veto=None,
+                 veto_weights=None, veto_lbda=None, id=None):
         super(MRSort, self).__init__(criteria, cv, bpt, lbda,
                                      categories_profiles)
         self.veto = veto

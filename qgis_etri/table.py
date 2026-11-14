@@ -39,7 +39,7 @@ class qt_criteria_table(QTableWidget):
     criterion_direction_changed = QtCore.pyqtSignal(Criterion)
     criterion_state_changed = QtCore.pyqtSignal(Criterion)
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(qt_criteria_table, self).__init__(parent)
 
         self.row_crit = {}
@@ -329,8 +329,8 @@ class qt_performance_table(QTableWidget):
             self.setColumnHidden(col, True)
         self.col_crit[col] = criterion
 
-    def add_assignments(self, assignments, category_colors = None,
-                        top = False):
+    def add_assignments(self, assignments, category_colors=None,
+                        top=False):
         if top is True:
             col = 0
         else:
@@ -363,11 +363,11 @@ class qt_performance_table(QTableWidget):
         self.setColumnHidden(self.__get_criterion_col(criterion),
                              criterion.disabled)
 
-    def add_pt(self, alternatives, pt, editable = True):
+    def add_pt(self, alternatives, pt, editable=True):
         for alternative in alternatives:
             self.add(alternative, pt[alternative.id], editable)
 
-    def add(self, alternative, alt_perfs, editable = True):
+    def add(self, alternative, alt_perfs, editable=True):
         row = self.rowCount()
         self.insertRow(row)
 

@@ -35,7 +35,7 @@ class McdaDict(object):
     It contains usefull methods to manipulate MCDA data.
     """
 
-    def __init__(self, objs = list(), id = None):
+    def __init__(self, objs=list(), id=None):
         """Create a new MCDA dictionnary instance
 
         Kwargs:
@@ -143,7 +143,7 @@ class McdaDict(object):
         ordered by MCDA object ID"""
 
         objs = list(self._d.values())
-        objs.sort(key = lambda x: x.id)
+        objs.sort(key=lambda x: x.id)
         return objs
 
     def get_subset(self, ids):
@@ -152,7 +152,7 @@ class McdaDict(object):
 
         return type(self)([self._d[id] for id in ids])
 
-    def split(self, n, proportions = None, randomize = True):
+    def split(self, n, proportions=None, randomize=True):
         """Split the MCDA dictionnary into two or several parts
 
         Kargs:
@@ -210,7 +210,7 @@ class McdaObject(object):
 
 class Criteria(McdaDict):
 
-    def __init__(self, objs = [], id = None):
+    def __init__(self, objs=[], id=None):
         self.id = id
         self._d = OrderedDict((m.id, m) for m in objs)
 
@@ -250,8 +250,8 @@ class Criteria(McdaDict):
 
         return self
 
-    def from_csv(self, csvreader, crit_col, name_col = None,
-                 disabled_col = None, direction_col = None):
+    def from_csv(self, csvreader, crit_col, name_col=None,
+                 disabled_col=None, direction_col=None):
         """Read the MCDA dictionnary from CSV input"""
 
         cols = None
@@ -426,7 +426,7 @@ class CriteriaValues(McdaDict):
 
         return self
 
-    def display(self, criterion_ids = None, fmt = None, out = sys.stdout):
+    def display(self, criterion_ids=None, fmt=None, out=sys.stdout):
         if criterion_ids is None:
             criterion_ids = self.keys()
             criterion_ids.sort()
@@ -442,14 +442,14 @@ class CriteriaValues(McdaDict):
         line = "  "
         for cid in criterion_ids:
             line += " " * (cols_max[cid] - len(cid)) + str(cid) + " "
-        print(line, file = out)
+        print(line, file=out)
 
         # Print values
         line = "w" + " "
         for cid in criterion_ids:
             val = fmt % self[cid].value
             line += " " * (cols_max[cid] - len(val)) + val + " "
-        print(line, file = out)
+        print(line, file=out)
 
 class CriterionValue(McdaObject):
 
@@ -533,8 +533,8 @@ class Alternatives(McdaDict):
 
         return self
 
-    def from_csv(self, csvreader, alt_col, name_col = None,
-                 disabled_col = None):
+    def from_csv(self, csvreader, alt_col, name_col=None,
+                 disabled_col=None):
         """Read the MCDA dictionnary from CSV input"""
 
         cols = None
@@ -689,7 +689,7 @@ class PerformanceTable(McdaDict):
         for ap in self._d.values():
             ap.update_direction(c)
 
-    def round(self, k = 3, cids = None):
+    def round(self, k=3, cids=None):
         """Round all performances on criteria cids to maximum k digit
 
         Kwargs:
@@ -704,7 +704,7 @@ class PerformanceTable(McdaDict):
         for ap in self._d.values():
             ap.round(k, cids)
 
-    def multiply(self, value, cids = None):
+    def multiply(self, value, cids=None):
         """Multiply all performance on criteria cids by value
 
         Kwargs:
@@ -824,8 +824,8 @@ class PerformanceTable(McdaDict):
 
         return self
 
-    def display(self, criterion_ids = None, alternative_ids = None,
-                fmt = None, out = sys.stdout):
+    def display(self, criterion_ids=None, alternative_ids=None,
+                fmt=None, out=sys.stdout):
         if criterion_ids is None:
             criterion_ids = next(self.itervalues()).performances.keys()
             criterion_ids.sort()
@@ -845,7 +845,7 @@ class PerformanceTable(McdaDict):
         line = " " * (cols_max["aids"] + 1)
         for cid in criterion_ids:
             line += " " * (cols_max[cid] - len(cid)) + str(cid) + " "
-        print(line, file = out)
+        print(line, file=out)
 
         # Print values
         for aid in alternative_ids:
@@ -856,7 +856,7 @@ class PerformanceTable(McdaDict):
                 perf = fmt[cid] % self[aid].performances[cid]
                 line += " " * (cols_max[cid] - len(perf)) + perf + " "
 
-            print(line, file = out)
+            print(line, file=out)
 
     def from_csv(self, csvreader, alt_col, perf_cols):
         """Read the MCDA dictionnary from CSV input"""
@@ -972,7 +972,7 @@ class AlternativePerformances(McdaObject):
         for crit in c:
             self.performances[crit.id] *= crit.direction
 
-    def round(self, k = 3, cids = None):
+    def round(self, k=3, cids=None):
         """Round all performances on criteria cids to maximum k digit
         Kwargs:
            k (int): max number of digit
@@ -986,7 +986,7 @@ class AlternativePerformances(McdaObject):
         for key, value in self.performances.items():
             self.performances[key] = round(value, k)
 
-    def multiply(self, value, cids = None):
+    def multiply(self, value, cids=None):
         """Multiply all performance on criteria cids by value
 
         Kwargs:
@@ -1053,7 +1053,7 @@ class CategoriesValues(McdaDict):
 
         return "categories_values(%s)" % self.values()
 
-    def display(self, out = sys.stdout):
+    def display(self, out=sys.stdout):
         for cv in self:
             cv.display(out)
 
@@ -1082,7 +1082,7 @@ class CategoriesValues(McdaDict):
     def get_ordered_categories(self):
         """Get the list of ordered categories"""
 
-        catvs = sorted(self, cmp = self.__cmp_categories_values)
+        catvs = sorted(self, cmp=self.__cmp_categories_values)
         return [catv.id for catv in catvs]
 
     def to_categories(self):
@@ -1090,7 +1090,7 @@ class CategoriesValues(McdaDict):
 
         cats = Categories()
         for i, cat in enumerate(reversed(self.get_ordered_categories())):
-            cat = Category(cat, rank = i + 1)
+            cat = Category(cat, rank=i + 1)
             cats.append(cat)
         return cats
 
@@ -1124,7 +1124,7 @@ class CategoriesValues(McdaDict):
 
 class CategoryValue(McdaObject):
 
-    def __init__(self, id = None, value = None):
+    def __init__(self, id=None, value=None):
         self.id = id
         self.value = value
 
@@ -1136,8 +1136,8 @@ class CategoryValue(McdaObject):
     def pprint(self):
         return "%s: %s" % (self.id, self.value.pprint())
 
-    def display(self, out = sys.stdout):
-        print(self.pprint(), file = out)
+    def display(self, out=sys.stdout):
+        print(self.pprint(), file=out)
 
     def to_xmcda(self):
         """Convert the MCDA object into XMCDA output"""
@@ -1166,7 +1166,7 @@ class CategoryValue(McdaObject):
 
 class Interval(McdaObject):
 
-    def __init__(self, lower = float("-inf"), upper = float("inf")):
+    def __init__(self, lower=float("-inf"), upper=float("inf")):
         self.lower = lower
         self.upper = upper
 
@@ -1245,7 +1245,7 @@ class AlternativesValues(McdaDict):
 
 class AlternativeValue(McdaObject):
 
-    def __init__(self, id = None, value = None):
+    def __init__(self, id=None, value=None):
         self.id = id
         self.value = value
 
@@ -1283,7 +1283,7 @@ class CriteriaFunctions(McdaDict):
 
         return "criteria_functions(%s)" % self.values()
 
-    def pprint(self, criterion_ids = None):
+    def pprint(self, criterion_ids=None):
         if criterion_ids is None:
             criterion_ids = []
             for cv in self:
@@ -1296,7 +1296,7 @@ class CriteriaFunctions(McdaDict):
 
         return string[:-1]
 
-    def display(self, criterion_ids = None):
+    def display(self, criterion_ids=None):
         print(self.pprint(criterion_ids))
 
     def multiply_y(self, cvs):
@@ -1402,7 +1402,7 @@ class Linear(object):
 
 class Segment(McdaObject):
 
-    def __init__(self, p1, p2, p1_in = True, p2_in = False):
+    def __init__(self, p1, p2, p1_in=True, p2_in=False):
         if p1.x <= p2.x:
             self.pl, self.ph = p1, p2
             self.pl_in, self.ph_in = p1_in, p2_in
@@ -1523,7 +1523,7 @@ class PiecewiseLinear(list):
     def get_ordered(self):
         """Return segments ordered by x value"""
 
-        return sorted(self, key = lambda s: s.pl.x)
+        return sorted(self, key=lambda s: s.pl.x)
 
     def pprint(self):
         string = "f("
@@ -1593,7 +1593,7 @@ class Points(list):
 
 class Point(McdaObject):
 
-    def __init__(self, x, y, id = None):
+    def __init__(self, x, y, id=None):
         self.id = id
         self.x = x
         self.y = y
@@ -1766,7 +1766,7 @@ class Categories(McdaDict):
 
     def get_ordered_categories(self):
         d = {c.id: c.rank for c in self}
-        return sorted(d, key = lambda key: d[key], reverse = True)
+        return sorted(d, key=lambda key: d[key], reverse=True)
 
     def from_xmcda(self, xmcda):
         """Read the MCDA dictionnary from XMCDA input"""
@@ -1784,8 +1784,8 @@ class Categories(McdaDict):
 
         return self
 
-    def from_csv(self, csvreader, cat_col, name_col = None,
-                 rank_col = None, disabled_col = None):
+    def from_csv(self, csvreader, cat_col, name_col=None,
+                 rank_col=None, disabled_col=None):
         """Read the MCDA dictionnary from CSV input"""
 
         cols = None
@@ -1935,7 +1935,7 @@ class CategoriesProfiles(McdaDict):
     def to_categories(self):
         cats = Categories()
         for i, cat in enumerate(reversed(self.get_ordered_categories())):
-            cat = Category(cat, rank = i + 1)
+            cat = Category(cat, rank=i + 1)
             cats.append(cat)
         return cats
 
@@ -1969,7 +1969,7 @@ class CategoriesProfiles(McdaDict):
 
 class CategoryProfile(McdaObject):
 
-    def __init__(self, id = None, value = None):
+    def __init__(self, id=None, value=None):
         self.id = id
         self.value = value
 
@@ -2028,7 +2028,7 @@ class AlternativesAssignments(McdaDict):
 
         return ids
 
-    def display(self, alternative_ids = None, out = sys.stdout):
+    def display(self, alternative_ids=None, out=sys.stdout):
         if alternative_ids is None:
             alternative_ids = self.keys()
             alternative_ids.sort()
@@ -2043,7 +2043,7 @@ class AlternativesAssignments(McdaDict):
         line = " " * (cols_max["aids"] + 1)
         line += " " * (cols_max["category"] - len("category")) \
                 + "category"
-        print(line, file = out)
+        print(line, file=out)
 
         # Print values
         for aid in alternative_ids:
@@ -2051,7 +2051,7 @@ class AlternativesAssignments(McdaDict):
             line = str(aid) + " " * (cols_max["aids"] - len(str(aid)) + 1)
             line += " " * (cols_max["category"] - len(category_id)) \
                     + category_id
-            print(line, file = out)
+            print(line, file=out)
 
     def to_xmcda(self):
         """Convert the MCDA dictionnary into XMCDA output"""
