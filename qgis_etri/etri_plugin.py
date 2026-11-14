@@ -14,7 +14,10 @@ class etri_plugin(object):
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction(QIcon(os.path.join(os.path.dirname(__file__), "images", "etri.png")), "Electre Tri Plugin", self.iface.mainWindow())
+        icon_path = os.path.join(os.path.dirname(__file__), "images",
+                                 "etri.png")
+        self.action = QAction(QIcon(icon_path), "Electre Tri Plugin",
+                              self.iface.mainWindow())
         # connect the action to the run method
         self.action.triggered.connect(self.run)
         # Add toolbar button and menu item

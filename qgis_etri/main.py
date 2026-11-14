@@ -13,7 +13,8 @@ from qgis_etri.mcda.types import Alternative, AlternativePerformances
 from qgis_etri.mcda.generate import generate_categories
 from qgis_etri.mcda.xml_writer import Element, SubElement, tostring
 from qgis_etri.mcda.generate import generate_categories_profiles
-from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
+from qgis_etri.qgis_utils import (generate_decision_map, saveDialog,
+                                  addtocDialog)
 from qgis_etri.graphic import QGraphicsSceneEtri
 from qgis_etri.xml_utils import safe_parse
 
@@ -41,7 +42,8 @@ class main_window(QDialog, Ui_main_window):
             self.__loadlayer()
             self.__reset_buttons()
 
-        self.table_criteria.criterion_state_changed.connect(self.__criterion_state_changed)
+        self.table_criteria.criterion_state_changed.connect(
+            self.__criterion_state_changed)
 
     def closeEvent(self, event):
         val = QMessageBox.question(
@@ -646,8 +648,9 @@ if __name__ == "__main__":
     QgsApplication.setPrefixPath("/usr/", True)
     QgsApplication.initQgis()
 
-    layer = QgsVectorLayer('/home/oso/dev/qgis-etri/tests/data/loulouka/criteria.shp',
-                           'criteria', 'ogr')
+    layer = QgsVectorLayer(
+        '/home/oso/dev/qgis-etri/tests/data/loulouka/criteria.shp',
+        'criteria', 'ogr')
     if not layer.isValid():
         print("Failed to load layer!")
         sys.exit(1)

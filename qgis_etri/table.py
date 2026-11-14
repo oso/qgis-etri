@@ -1,6 +1,8 @@
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QRegularExpressionValidator
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QItemDelegate, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem
+from qgis.PyQt.QtWidgets import (QCheckBox, QComboBox, QItemDelegate,
+                                 QLineEdit, QMessageBox, QTableWidget,
+                                 QTableWidgetItem)
 from qgis_etri.mcda.types import Criterion
 
 COMBO_INDEX_MAX = 0
@@ -133,12 +135,14 @@ class qt_criteria_table(QTableWidget):
             c.disabled = False
             item_cv.setText("0")
             combo_dir.setDisabled(False)
-            item_cv.setFlags(item_cv.flags() | QtCore.Qt.ItemFlag.ItemIsEnabled)
+            item_cv.setFlags(item_cv.flags()
+                             | QtCore.Qt.ItemFlag.ItemIsEnabled)
         else:
             c.disabled = True
             item_cv.setText("")
             combo_dir.setDisabled(True)
-            item_cv.setFlags(item_cv.flags() & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
+            item_cv.setFlags(item_cv.flags()
+                             & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
         self.criterion_state_changed.emit(c)
 
     def __add_combo_signal(self, combo, row):
@@ -186,7 +190,8 @@ class qt_criteria_table(QTableWidget):
 
         # Add weight column
         item = QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight
+                              | QtCore.Qt.AlignmentFlag.AlignVCenter)
         if c.disabled is True:
             item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEnabled)
         else:
@@ -225,7 +230,8 @@ class qt_criteria_table(QTableWidget):
 
     def clone_selection(self):
         for r in range(self.rowCount()):
-            self.cellWidget(r, COL_EXPORT).setChecked(self.cellWidget(r, COL_NAME).isChecked())
+            checked = self.cellWidget(r, COL_NAME).isChecked()
+            self.cellWidget(r, COL_EXPORT).setChecked(checked)
 
 
 class profiles_table(QTableWidget):
@@ -391,7 +397,8 @@ class qt_performance_table(QTableWidget):
                performances[crit.id] is not None:
                 item.setText(str(performances[crit.id]))
             if editable is False:
-                item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
+                item.setFlags(item.flags()
+                              & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.setItem(row, col, item)
         self.row_altp.append(alt_perfs)
 

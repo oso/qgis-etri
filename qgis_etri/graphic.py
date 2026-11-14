@@ -1,6 +1,7 @@
 from itertools import combinations
 from qgis.PyQt.QtGui import QBrush, QColor, QFont, QPen
-from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsScene, QGraphicsTextItem, QGraphicsView
+from qgis.PyQt.QtWidgets import (QGraphicsPathItem, QGraphicsScene,
+                                 QGraphicsTextItem, QGraphicsView)
 
 
 class _MyGraphicsview(QGraphicsView):

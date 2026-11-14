@@ -103,7 +103,8 @@ def layer_get_attributes(layer):
     return actions
 
 
-def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=[]):
+def generate_decision_map(layer_in, aa, out, out_encoding,
+                          export_source_fields=[]):
     vprovider = layer_in.dataProvider()
     fields = QgsFields()
     fields.append(QgsField("Category", QtCore.QMetaType.Type.Int))
@@ -117,9 +118,12 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
     except FileNotFoundError:
         pass
 
-    writer = QgsVectorFileWriter(out, out_encoding, fields, vprovider.wkbType(), vprovider.crs(), 'ESRI Shapefile')
+    writer = QgsVectorFileWriter(out, out_encoding, fields,
+                                 vprovider.wkbType(), vprovider.crs(),
+                                 'ESRI Shapefile')
     if writer.hasError():
-        raise Exception(f"Problem creating file writer: {writer.errorMessage()}")
+        raise Exception("Problem creating file writer: "
+                        f"{writer.errorMessage()}")
 
     outFeat = QgsFeature(fields)
 
@@ -127,8 +131,11 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
         inGeom = feat.geometry()
         id = str(feat.id())
         outFeat.setGeometry(inGeom)
-        attributes_from_input_file = [feat.attribute(f.name()) for f in fields if f.name() in export_source_fields]
-        outFeat.setAttributes([aa[id].category_id] + attributes_from_input_file)
+        attributes_from_input_file = [feat.attribute(f.name())
+                                      for f in fields
+                                      if f.name() in export_source_fields]
+        outFeat.setAttributes([aa[id].category_id]
+                              + attributes_from_input_file)
         writer.addFeature(outFeat)
 
     del writer

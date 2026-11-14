@@ -205,7 +205,8 @@ class McdaObject(object):
     def __hash__(self):
         if hasattr(self, 'id'):
             return hash(self.id)
-        raise TypeError("unhashable type or subtype of: 'McdaObject' (has no attribute 'id')")
+        raise TypeError("unhashable type or subtype of: 'McdaObject' "
+                        "(has no attribute 'id')")
 
     def copy(self):
         """Return a copy of the current MCDA object"""
