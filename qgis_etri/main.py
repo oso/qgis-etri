@@ -630,7 +630,7 @@ class main_window(QDialog, Ui_main_window):
 
 if __name__ == "__main__":
     # from qgis.PyQt import QtGui
-    from qgis.core import *
+    from qgis.core import QgsApplication, QgsVectorLayer
 
     if len(sys.argv) != 2:
         print("usage: %s map.shp" % sys.argv[0])

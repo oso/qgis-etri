@@ -3,8 +3,10 @@ import os
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import (QgsCategorizedSymbolRenderer, QgsFeature, QgsField,
+                       QgsFields, QgsProject, QgsRendererCategory,
+                       QgsSymbol, QgsVectorFileWriter, QgsVectorLayer)
+from qgis.gui import QgsEncodingFileDialog
 
 def layer_get_criteria(layer):
     minmax = layer_get_minmax(layer)
