@@ -35,16 +35,16 @@ class McdaDict(object):
     It contains usefull methods to manipulate MCDA data.
     """
 
-    def __init__(self, l = list(), id = None):
+    def __init__(self, objs = list(), id = None):
         """Create a new MCDA dictionnary instance
 
         Kwargs:
-           l (list): A list containing a set of MCDA objects
+           objs (list): A list containing a set of MCDA objects
            id (str): The identifier of the dictionnary
         """
         self.id = id
         self._d = OrderedDict()
-        for i in l:
+        for i in objs:
             self._d[i.id] = i
 
     def __cmp__(self, mcda_dict):
@@ -142,9 +142,9 @@ class McdaDict(object):
         """Return a list of MCDA objects contained in the MCDA dictionnary
         ordered by MCDA object ID"""
 
-        l = list(self._d.values())
-        l.sort(key = lambda x: x.id)
-        return l
+        objs = list(self._d.values())
+        objs.sort(key = lambda x: x.id)
+        return objs
 
     def get_subset(self, ids):
         """Return a subset of the current MCDA dictionnary containing the
@@ -210,9 +210,9 @@ class McdaObject(object):
 
 class Criteria(McdaDict):
 
-    def __init__(self, l = [], id = None):
+    def __init__(self, objs = [], id = None):
         self.id = id
-        self._d = OrderedDict((m.id, m) for m in l)
+        self._d = OrderedDict((m.id, m) for m in objs)
 
     def __repr__(self):
         """Manner to represent the MCDA dictionnary"""
@@ -2013,20 +2013,20 @@ class AlternativesAssignments(McdaDict):
         return "alternatives_assignments(%s)" % self.values()
 
     def get_alternatives_in_category(self, category_id):
-        l = []
+        ids = []
         for aa in self:
             if aa.is_in_category(category_id):
-                l.append(aa.id)
+                ids.append(aa.id)
 
-        return l
+        return ids
 
     def get_alternatives_in_categories(self, *category_ids):
-        l = []
+        ids = []
         for aa, cat in product(self, *category_ids):
             if aa.is_in_category(cat):
-                l.append(aa.id)
+                ids.append(aa.id)
 
-        return l
+        return ids
 
     def display(self, alternative_ids = None, out = sys.stdout):
         if alternative_ids is None:
