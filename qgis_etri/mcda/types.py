@@ -43,6 +43,27 @@ def unmarshal(xml):
     return m(xml)
 
 
+def unmarshal_value(xml):
+    """Read the number held by a value container such as <value>.
+
+    The number is normally wrapped in a type tag (e.g. <real>1.5</real>),
+    but older versions wrote the numbers they couldn't marshal without it
+    (e.g. <value>1.5</value>). Read those as numbers too. Returns None if
+    the container is empty or doesn't hold a number."""
+    children = list(xml)
+    if children:
+        return unmarshal(children[0])
+
+    text = (xml.text or '').strip()
+    for parse in (int, float):
+        try:
+            return parse(text)
+        except ValueError:
+            pass
+
+    return None
+
+
 class McdaDict(object):
     """This class allows to declare an MCDA dictionnary element.
     It contains usefull methods to manipulate MCDA data.
@@ -390,7 +411,7 @@ class Criterion(McdaObject):
 
         value = xmcda.find('.//criterionValue/value')
         if value is not None:
-            self.weight = unmarshal(list(value)[0])
+            self.weight = unmarshal_value(value)
 
         value = xmcda.find('.//thresholds')
         if value is not None:
@@ -512,7 +533,7 @@ class CriterionValue(McdaObject):
 
         value = xmcda.find('.//value')
         if value is not None:
-            self.value = unmarshal(list(value)[0])
+            self.value = unmarshal_value(value)
 
         return self
 
@@ -1059,11 +1080,7 @@ class AlternativePerformances(McdaObject):
         tag_list = xmcda.iter('performance')
         for tag in tag_list:
             crit_id = tag.find('.//criterionID').text
-            value = list(tag.find('.//value'))
-            if len(value) > 0:
-                crit_val = unmarshal(value[0])
-            else:
-                crit_val = None
+            crit_val = unmarshal_value(tag.find('.//value'))
             self.performances[crit_id] = crit_val
 
         return self
@@ -1180,11 +1197,12 @@ class CategoryValue(McdaObject):
             raise TypeError('categoryValue::invalid tag')
 
         self.id = xmcda.find('.//categoryID').text
-        value = list(xmcda.find('.//value'))[0]
-        if value.tag == 'interval':
-            self.value = Interval().from_xmcda(value)
+        value = xmcda.find('.//value')
+        interval = value.find('interval')
+        if interval is not None:
+            self.value = Interval().from_xmcda(interval)
         else:
-            self.value = unmarshal(value)
+            self.value = unmarshal_value(value)
 
         return self
 
@@ -1232,9 +1250,9 @@ class Interval(McdaObject):
             raise TypeError('interval::invalid tag')
 
         lower = xmcda.find('.//lowerBound')
-        self.lower = unmarshal(list(lower)[0])
+        self.lower = unmarshal_value(lower)
         upper = xmcda.find('.//upperBound')
-        self.upper = unmarshal(list(upper)[0])
+        self.upper = unmarshal_value(upper)
         return self
 
 
@@ -1298,8 +1316,7 @@ class AlternativeValue(McdaObject):
             raise TypeError('alternativesValues::invalid tag')
 
         self.id = xmcda.find('.//alternativeID').text
-        value = list(xmcda.find('.//value'))[0]
-        self.value = unmarshal(value)
+        self.value = unmarshal_value(xmcda.find('.//value'))
 
         return self
 
@@ -1655,10 +1672,8 @@ class Point(McdaObject):
 
         self.id = xmcda.get('id')
 
-        x = list(xmcda.find('.//abscissa'))[0]
-        self.x = unmarshal(x)
-        y = list(xmcda.find('.//ordinate'))[0]
-        self.y = unmarshal(y)
+        self.x = unmarshal_value(xmcda.find('.//abscissa'))
+        self.y = unmarshal_value(xmcda.find('.//ordinate'))
 
         return self
 
@@ -1691,7 +1706,7 @@ class Constant(McdaObject):
             raise TypeError('constant::invalid tag')
 
         self.id = xmcda.get('id')
-        self.value = unmarshal(list(xmcda)[0])
+        self.value = unmarshal_value(xmcda)
 
 
 class Thresholds(McdaDict):
@@ -1898,7 +1913,7 @@ class Category(McdaObject):
                 self.disabled = False
 
         rank = xmcda.find('.//rank')
-        self.rank = unmarshal(list(rank)[0])
+        self.rank = unmarshal_value(rank)
 
         return self
 

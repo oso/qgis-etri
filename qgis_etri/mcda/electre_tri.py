@@ -3,7 +3,7 @@ from .types import AlternativeAssignment, AlternativesAssignments
 from .types import Criteria, CriteriaValues, PerformanceTable
 from .types import CategoriesProfiles
 from .types import McdaObject
-from .types import marshal, unmarshal
+from .types import marshal, unmarshal_value
 from .xml_writer import Element, SubElement
 
 
@@ -273,7 +273,7 @@ class ElectreTri(McdaObject):
 
         self.id = xmcda.get('id')
         value = xmcda.find('.//methodParameters/parameter/value')
-        self.lbda = unmarshal(value[0])
+        self.lbda = unmarshal_value(value)
 
         criteria = xmcda.find('.//criteria')
         setattr(self, 'criteria', Criteria().from_xmcda(criteria))
