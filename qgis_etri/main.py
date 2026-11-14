@@ -1,4 +1,6 @@
-import os, sys, traceback
+import os
+import sys
+import traceback
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QFileDialog, QMessageBox
 from itertools import product
