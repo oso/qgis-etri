@@ -4,6 +4,7 @@ from qgis.core import QgsVectorLayer
 from qgis_etri.mcda.types import Criteria, Criterion, Alternative, Alternatives
 from qgis_etri.mcda.types import PerformanceTable, AlternativePerformances
 
+
 class criteria_layer(QgsVectorLayer):
 
     def __init__(self, layer):

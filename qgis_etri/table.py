@@ -10,6 +10,7 @@ COL_DIRECTION = 1
 COL_WEIGHT = 2
 COL_EXPORT = 3
 
+
 def _parse_number(text):
     """Parse a number typed in a table cell, as an int when possible.
 
@@ -18,6 +19,7 @@ def _parse_number(text):
         return int(text)
     except ValueError:
         return float(text)
+
 
 class float_delegate(QItemDelegate):
 
@@ -33,6 +35,7 @@ class float_delegate(QItemDelegate):
             return line
         else:
             QItemDelegate.createEditor(self, parent, option, index)
+
 
 class qt_criteria_table(QTableWidget):
 
@@ -281,8 +284,10 @@ class profiles_table(QTableWidget):
         self.setColumnHidden(self.__get_criterion_col(criterion),
                              criterion.disabled)
 
+
 class threshold_table(profiles_table):
     pass
+
 
 class qt_performance_table(QTableWidget):
 
@@ -427,6 +432,7 @@ class qt_performance_table(QTableWidget):
                                 "Alternative [%s] %s"
                                 % (alt.id, alt.name),
                                 "Invalid evaluation")
+
 
 class qt_threshold_table(QTableWidget):
 

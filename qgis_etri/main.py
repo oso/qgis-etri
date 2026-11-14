@@ -20,6 +20,7 @@ XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 COMBO_PROC_PESSIMIST = 0
 COMBO_PROC_OPTIMIST = 1
 
+
 class main_window(QDialog, Ui_main_window):
 
     def __init__(self, iface=None, layer=None):

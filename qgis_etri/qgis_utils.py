@@ -8,6 +8,7 @@ from qgis.core import (QgsCategorizedSymbolRenderer, QgsFeature, QgsField,
                        QgsSymbol, QgsVectorFileWriter, QgsVectorLayer)
 from qgis.gui import QgsEncodingFileDialog
 
+
 def layer_get_criteria(layer):
     minmax = layer_get_minmax(layer)
     mins = minmax['mins']
@@ -29,6 +30,7 @@ def layer_get_criteria(layer):
         criteria.append(criterion)
 
     return criteria
+
 
 def layer_get_minmax(layer):
     provider = layer.dataProvider()
@@ -56,6 +58,7 @@ def layer_get_minmax(layer):
 
     return {'mins': mins, 'maxs': maxs}
 
+
 def layer_load(path, name):
     layerProvider = "ogr"
     layer = QgsVectorLayer(path, name, layerProvider)
@@ -63,6 +66,7 @@ def layer_load(path, name):
         raise NameError("Layer failed to load!")
 
     return layer
+
 
 def layer_get_feature_attribute(layer, featid):
     provider = layer.dataProvider()
@@ -79,6 +83,7 @@ def layer_get_feature_attribute(layer, featid):
             attributes[k] = attr.toString().trimmed()
 
     return attributes
+
 
 def layer_get_attributes(layer):
     provider = layer.dataProvider()
@@ -127,6 +132,7 @@ def generate_decision_map(layer_in, aa, out, out_encoding, export_source_fields=
         writer.addFeature(outFeat)
 
     del writer
+
 
 def saveDialog(parent, title, filtering, extension, acceptmode):
     settings = QtCore.QSettings()
@@ -179,6 +185,7 @@ def addtocDialog(parent, filename, nprofils):
 
         QgsProject.instance().addMapLayer(vlayer)
 
+
 def render_decision_map_new(layer, nprofils):
     cat_list = []
     nclasses = nprofils + 1
@@ -195,6 +202,7 @@ def render_decision_map_new(layer, nprofils):
     sr = QgsCategorizedSymbolRenderer("categories", cat_list)
     sr.setClassAttribute("category")
     layer.setRenderer(sr)
+
 
 def render_decision_map(layer, nprofils):
     render_decision_map_new(layer, nprofils)

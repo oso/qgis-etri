@@ -20,15 +20,18 @@ unmarshallers = {
     'real': lambda x: float(x.text),
 }
 
+
 def marshal(value):
     tag = type2tag.get(type(value))
     e = Element(tag)
     e.text = str(value)
     return e
 
+
 def unmarshal(xml):
     m = unmarshallers.get(xml.tag)
     return m(xml)
+
 
 class McdaDict(object):
     """This class allows to declare an MCDA dictionnary element.
@@ -190,6 +193,7 @@ class McdaDict(object):
 
         return tuple(subsets)
 
+
 class McdaObject(object):
 
     def __eq__(self, other):
@@ -207,6 +211,7 @@ class McdaObject(object):
         """Return a copy of the current MCDA object"""
 
         return deepcopy(self)
+
 
 class Criteria(McdaDict):
 
@@ -382,6 +387,7 @@ class Criterion(McdaObject):
 
         return self
 
+
 class CriteriaValues(McdaDict):
 
     def __repr__(self):
@@ -451,6 +457,7 @@ class CriteriaValues(McdaDict):
             line += " " * (cols_max[cid] - len(val)) + val + " "
         print(line, file=out)
 
+
 class CriterionValue(McdaObject):
 
     def __init__(self, id=None, value=None):
@@ -497,6 +504,7 @@ class CriterionValue(McdaObject):
             self.value = unmarshal(list(value)[0])
 
         return self
+
 
 class Alternatives(McdaDict):
 
@@ -556,6 +564,7 @@ class Alternatives(McdaDict):
 
         return self
 
+
 class Alternative(McdaObject):
 
     def __init__(self, id=None, name=None, disabled=False):
@@ -607,6 +616,7 @@ class Alternative(McdaObject):
             self.disabled = False
 
         return self
+
 
 class PerformanceTable(McdaDict):
 
@@ -882,6 +892,7 @@ class PerformanceTable(McdaDict):
 
         return self
 
+
 class AlternativePerformances(McdaObject):
 
     def __init__(self, id=None, performances=None, alternative_id=None):
@@ -1046,6 +1057,7 @@ class AlternativePerformances(McdaObject):
 
         return self
 
+
 class CategoriesValues(McdaDict):
 
     def __repr__(self):
@@ -1122,6 +1134,7 @@ class CategoriesValues(McdaDict):
 
         return self
 
+
 class CategoryValue(McdaObject):
 
     def __init__(self, id=None, value=None):
@@ -1163,6 +1176,7 @@ class CategoryValue(McdaObject):
             self.value = unmarshal(value)
 
         return self
+
 
 class Interval(McdaObject):
 
@@ -1212,6 +1226,7 @@ class Interval(McdaObject):
         self.upper = unmarshal(list(upper)[0])
         return self
 
+
 class AlternativesValues(McdaDict):
 
     def __repr__(self):
@@ -1242,6 +1257,7 @@ class AlternativesValues(McdaDict):
             self.append(altp)
 
         return self
+
 
 class AlternativeValue(McdaObject):
 
@@ -1275,6 +1291,7 @@ class AlternativeValue(McdaObject):
         self.value = unmarshal(value)
 
         return self
+
 
 class CriteriaFunctions(McdaDict):
 
@@ -1331,6 +1348,7 @@ class CriteriaFunctions(McdaDict):
 
         return self
 
+
 class CriterionFunction(McdaObject):
 
     def __init__(self, id, function):
@@ -1382,6 +1400,7 @@ class CriterionFunction(McdaObject):
 
         return self
 
+
 class Linear(object):
 
     def __init__(self, slope, intercept):
@@ -1399,6 +1418,7 @@ class Linear(object):
 
     def x(self, y):
         return (y - self.intercept) / self.slope
+
 
 class Segment(McdaObject):
 
@@ -1467,6 +1487,7 @@ class Segment(McdaObject):
             self.pl, self.ph = p2, p1
 
         return self
+
 
 class PiecewiseLinear(list):
 
@@ -1557,6 +1578,7 @@ class PiecewiseLinear(list):
 
         return self
 
+
 class Points(list):
 
     def __call__(self, id):
@@ -1590,6 +1612,7 @@ class Points(list):
             self.append(p)
 
         return self
+
 
 class Point(McdaObject):
 
@@ -1628,6 +1651,7 @@ class Point(McdaObject):
 
         return self
 
+
 class Constant(McdaObject):
 
     def __init__(self, id, value):
@@ -1657,6 +1681,7 @@ class Constant(McdaObject):
 
         self.id = xmcda.get('id')
         self.value = unmarshal(list(xmcda)[0])
+
 
 class Thresholds(McdaDict):
 
@@ -1701,6 +1726,7 @@ class Thresholds(McdaDict):
 
         return self
 
+
 class Threshold(McdaObject):
 
     def __init__(self, id, name=None, values=None):
@@ -1740,6 +1766,7 @@ class Threshold(McdaObject):
             self.values = c
 
         return self
+
 
 class Categories(McdaDict):
 
@@ -1811,6 +1838,7 @@ class Categories(McdaDict):
                 self.append(c)
         return self
 
+
 class Category(McdaObject):
 
     def __init__(self, id=None, name=None, disabled=False, rank=None):
@@ -1863,6 +1891,7 @@ class Category(McdaObject):
 
         return self
 
+
 class Limits(McdaObject):
 
     def __init__(self, lower=None, upper=None):
@@ -1903,6 +1932,7 @@ class Limits(McdaObject):
         self.upper = upper.text
 
         return self
+
 
 class CategoriesProfiles(McdaDict):
 
@@ -1967,6 +1997,7 @@ class CategoriesProfiles(McdaDict):
 
         return self
 
+
 class CategoryProfile(McdaObject):
 
     def __init__(self, id=None, value=None):
@@ -2001,6 +2032,7 @@ class CategoryProfile(McdaObject):
             self.value = Limits().from_xmcda(value)
 
         return self
+
 
 class AlternativesAssignments(McdaDict):
 
@@ -2097,6 +2129,7 @@ class AlternativesAssignments(McdaDict):
                 self.append(aa)
 
         return self
+
 
 class AlternativeAssignment(McdaObject):
 

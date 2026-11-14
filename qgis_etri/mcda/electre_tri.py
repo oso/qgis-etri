@@ -6,8 +6,10 @@ from .types import McdaObject
 from .types import marshal, unmarshal
 from .xml_writer import Element, SubElement
 
+
 def eq(a, b, eps=10e-10):
     return abs(a-b) <= eps
+
 
 class ElectreTri(McdaObject):
 
@@ -207,6 +209,7 @@ class ElectreTri(McdaObject):
 
     PESSIMIST = 0
     OPTIMIST = 1
+
     def get_assignments(self, pt, procedure=PESSIMIST):
         if procedure == ElectreTri.OPTIMIST:
             return self.optimist(pt)
@@ -283,6 +286,7 @@ class ElectreTri(McdaObject):
                 CategoriesProfiles().from_xmcda(categories_profiles))
 
         return self
+
 
 class MRSort(ElectreTri):
 

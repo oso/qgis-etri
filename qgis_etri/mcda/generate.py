@@ -2,6 +2,7 @@ from .types import Categories, Category
 from .types import CategoriesProfiles, CategoryProfile
 from .types import Limits
 
+
 def generate_categories(number, prefix='cat'):
     cats = Categories()
     for i in range(number):
@@ -10,6 +11,7 @@ def generate_categories(number, prefix='cat'):
         c.rank = i+1
         cats.append(c)
     return cats
+
 
 def generate_categories_profiles(cats, prefix='b'):
     cat_ids = cats.get_ordered_categories()
