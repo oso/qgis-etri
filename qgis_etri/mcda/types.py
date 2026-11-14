@@ -3,6 +3,7 @@
 .. moduleauthor:: Olivier Sobrie <olivier@sobrie.be>
 """
 
+import numbers
 import random
 import sys
 from itertools import product
@@ -22,7 +23,16 @@ unmarshallers = {
 
 
 def marshal(value):
+    if isinstance(value, numbers.Integral):
+        value = int(value)
+    elif isinstance(value, numbers.Real):
+        value = float(value)
+
     tag = type2tag.get(type(value))
+    if tag is None:
+        raise TypeError("cannot marshal value %r of type %s"
+                        % (value, type(value).__name__))
+
     e = Element(tag)
     e.text = str(value)
     return e
@@ -1028,8 +1038,8 @@ class AlternativePerformances(McdaObject):
             critid = SubElement(perf, 'criterionID')
             critid.text = crit_id
             value = SubElement(perf, 'value')
-            p = marshal(val)
-            value.append(p)
+            if val is not None:
+                value.append(marshal(val))
 
         return xmcda
 
