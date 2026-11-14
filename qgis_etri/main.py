@@ -210,7 +210,7 @@ class main_window(QDialog, Ui_main_window):
             self.__clear_tables()
             self.__loadlayer()
             self.__reset_buttons()
-        except:
+        except Exception:
             traceback.print_exc(file=sys.stderr)
             QMessageBox.information(None, "Error",
                                           "Cannot load specified layer")
@@ -373,7 +373,7 @@ class main_window(QDialog, Ui_main_window):
             xmcda_file = os.path.splitext(str(self.layer.layer.source()))[0] \
                             + ".xmcda"
             self.__load_from_xmcda(xmcda_file)
-        except:
+        except Exception:
             traceback.print_exc(file=sys.stderr)
             self.__generate_initial_model()
 
@@ -605,7 +605,7 @@ class main_window(QDialog, Ui_main_window):
 
         try:
             self.__load_from_xmcda(f)
-        except:
+        except Exception:
             traceback.print_exc(file=sys.stderr)
             QMessageBox.information(None, "Error",
                                           "Cannot load XMCDA data")

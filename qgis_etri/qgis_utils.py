@@ -73,7 +73,7 @@ def layer_get_feature_attribute(layer, featid):
     for (k, attr) in attrs.items():
         try:
             attributes[k] = str(attr.toString()).trimmed()
-        except:
+        except AttributeError:
             attributes[k] = attr.toString().trimmed()
 
     return attributes
@@ -131,12 +131,12 @@ def saveDialog(parent, title, filtering, extension, acceptmode):
 
     try:
         dirName = settings.value("/UI/lastShapefileDir").toString()
-    except:
+    except AttributeError:
         dirName = str(settings.value("/UI/lastShapefileDir"))
 
     try:
         encode = settings.value("/UI/encoding").toString()
-    except:
+    except AttributeError:
         encode = str(settings.value("/UI/encoding"))
 
     fileDialog = QgsEncodingFileDialog(parent, title, dirName,

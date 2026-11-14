@@ -40,7 +40,7 @@ class criteria_layer(QgsVectorLayer):
             for criterion in self.criteria:
                 try:
                     perfs[criterion.id] = float(feat[criterion.id])
-                except:
+                except (TypeError, ValueError):
                     perfs[criterion.id] = feat[criterion.id].toDouble()[0]
 
             self.alternatives.append(Alternative(featid, featid))
