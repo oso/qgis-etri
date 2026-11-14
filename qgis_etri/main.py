@@ -55,7 +55,7 @@ class main_window(QDialog, Ui_main_window):
             self.close()
 
     def __update_layer_list(self, map_canvas):
-        if map_canvas == None:
+        if map_canvas is None:
             return
 
         for i in range(map_canvas.layerCount()):

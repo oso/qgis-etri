@@ -26,7 +26,7 @@ class float_delegate(QItemDelegate):
         self.columns = columns
 
     def createEditor(self, parent, option, index):
-        if self.columns == None or index.column() in self.columns:
+        if self.columns is None or index.column() in self.columns:
             line = QLineEdit(parent)
             expr = QtCore.QRegularExpression(r"[0-9]*\.?[0-9]*")
             line.setValidator(QRegularExpressionValidator(expr, self))
@@ -234,11 +234,11 @@ class profiles_table(QTableWidget):
 
         self.setItemDelegate(float_delegate(self))
 
-        if criteria != None:
+        if criteria is not None:
             for criterion in criteria:
                 self.add_criterion(criterion)
 
-        if profiles != None:
+        if profiles is not None:
             for profile in profiles:
                 self.add(profile)
 

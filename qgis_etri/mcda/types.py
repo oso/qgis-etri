@@ -913,7 +913,7 @@ class AlternativePerformances(McdaObject):
 
     def __mathop(self, value, op):
         out = AlternativePerformances(self.id)
-        if type(value) == float or type(value) == int:
+        if isinstance(value, (float, int)):
             for key in self.performances.keys():
                 if op == 'add':
                     out.performances[key] = self.performances[key] + value
@@ -923,7 +923,7 @@ class AlternativePerformances(McdaObject):
                     out.performances[key] = self.performances[key] * value
                 elif op == 'div':
                     out.performances[key] = self.performances[key] / value
-        elif type(value) == AlternativePerformances:
+        elif isinstance(value, AlternativePerformances):
             for key in self.performances.keys():
                 if op == 'add':
                     out.performances[key] = self.performances[key] + \

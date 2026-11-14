@@ -41,7 +41,7 @@ def layer_get_minmax(layer):
         attrs = feat.attributeMap()
         for (k, attr) in attrs.items():
             value = attr.toDouble()[0]
-            if first == True:
+            if first:
                 mins[k] = value
                 maxs[k] = value
             else:
