@@ -6,6 +6,7 @@ PKG_FILES +=	qgis_etri/layer.py
 PKG_FILES +=	qgis_etri/main.py
 PKG_FILES +=	qgis_etri/qgis_utils.py
 PKG_FILES +=	qgis_etri/table.py
+PKG_FILES +=	qgis_etri/xml_utils.py
 
 PKG_FILES +=	qgis_etri/mcda/__init__.py
 PKG_FILES +=	qgis_etri/mcda/electre_tri.py

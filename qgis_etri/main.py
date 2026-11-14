@@ -14,6 +14,7 @@ from qgis_etri.mcda.generate import generate_categories
 from qgis_etri.mcda.generate import generate_categories_profiles
 from qgis_etri.qgis_utils import generate_decision_map, saveDialog, addtocDialog
 from qgis_etri.graphic import QGraphicsSceneEtri
+from qgis_etri.xml_utils import safe_parse
 
 XMCDA_URL = 'http://www.decision-deck.org/2009/XMCDA-2.0.0'
 ElementTree.register_namespace('xmcda', XMCDA_URL)
@@ -92,7 +93,7 @@ class main_window(QDialog, Ui_main_window):
             raise Exception("Invalid veto performance table")
 
     def __load_from_xmcda(self, xmcda_file):
-        tree = ElementTree.parse(xmcda_file)
+        tree = safe_parse(xmcda_file)
         root = tree.getroot()
 #        ElementTree.dump(root)
         xmcda_formatversion = root.find('.//formatversion')
