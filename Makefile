@@ -60,4 +60,13 @@ uninstall:
 test:
 	python -m pytest
 
+check: flake8 bandit
+
+flake8:
+	flake8 $(PLUGINNAME)
+
+bandit:
+	bandit -r -q $(PLUGINNAME)
+
 .PHONY: all clean mrproper zip link unlink install uninstall test
+.PHONY: check flake8 bandit
